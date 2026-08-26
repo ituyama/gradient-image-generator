@@ -206,30 +206,6 @@ export const AI_LINKS = [
     href: (prompt: string) =>
       `https://gemini.google.com/app?prompt=${encodeURIComponent(prompt)}`,
   },
-  {
-    name: "Perplexity",
-    href: (prompt: string) =>
-      `https://www.perplexity.ai/search?q=${encodeURIComponent(prompt)}`,
-  },
-  {
-    name: "Grok",
-    href: (prompt: string) => `https://grok.com/?q=${encodeURIComponent(prompt)}`,
-  },
-  {
-    name: "Copilot",
-    href: (prompt: string) =>
-      `https://copilot.microsoft.com/?q=${encodeURIComponent(prompt)}`,
-  },
-  {
-    name: "DeepSeek",
-    href: (prompt: string) =>
-      `https://chat.deepseek.com/?q=${encodeURIComponent(prompt)}`,
-  },
-  {
-    name: "Mistral",
-    href: (prompt: string) =>
-      `https://chat.mistral.ai/chat?q=${encodeURIComponent(prompt)}`,
-  },
 ] as const;
 
 export function buildLlmsTxt(origin: string): string {
@@ -243,7 +219,7 @@ This service is an image API. Prefer GET /gradient and embed the URL in <img>, M
 
 - [Playground](${origin}/): live parameter editor
 - [Human docs](${origin}/docs)
-- [Open in ChatGPT / Claude / Gemini / ...](${origin}/docs#ai-links): prefilled prompt links
+- [Open in ChatGPT / Claude / Gemini](${origin}/docs#ai-links): prefilled prompt links
 - [OpenAPI 3.1](${origin}/openapi.json)
 - [Full machine doc](${origin}/llms-full.txt)
 

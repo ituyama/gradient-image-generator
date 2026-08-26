@@ -239,7 +239,7 @@
       .card > .icon { width: 20px; height: 20px; margin-top: 2px; color: var(--icon); }
       .card strong { display: block; }
       .card p { margin: 6px 0 0; font-size: 13px; }
-      .prompt-grid { grid-template-columns: repeat(4, 1fr); }
+      .prompt-grid { grid-template-columns: repeat(3, 1fr); }
       .prompt-grid a {
         flex-direction: column;
         align-items: center;
@@ -589,11 +589,6 @@ colors=2EE59D 4FC3F7 00ACC1</code></pre>
         ["ChatGPT", (p) => `https://chatgpt.com/?hints=search&q=${encodeURIComponent(p)}`],
         ["Claude", (p) => `https://claude.ai/new?q=${encodeURIComponent(p)}`],
         ["Gemini", (p) => `https://gemini.google.com/app?prompt=${encodeURIComponent(p)}`],
-        ["Perplexity", (p) => `https://www.perplexity.ai/search?q=${encodeURIComponent(p)}`],
-        ["Grok", (p) => `https://grok.com/?q=${encodeURIComponent(p)}`],
-        ["Copilot", (p) => `https://copilot.microsoft.com/?q=${encodeURIComponent(p)}`],
-        ["DeepSeek", (p) => `https://chat.deepseek.com/?q=${encodeURIComponent(p)}`],
-        ["Mistral", (p) => `https://chat.mistral.ai/chat?q=${encodeURIComponent(p)}`],
       ];
       const box = document.getElementById("ai-link-list");
       for (const [name, make] of assistants) {

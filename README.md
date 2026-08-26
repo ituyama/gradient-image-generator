@@ -30,7 +30,7 @@ GET /gradient?w=800&h=800&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1
 
 認証なし。成功時は PNG、壊れた数値だけ JSON 400 です。
 
-- [各種 AI で開く](http://localhost:8787/docs#ai-links)
+- [ChatGPT / Claude / Gemini で開く](http://localhost:8787/docs#ai-links)
 - [`/prompt.txt`](http://localhost:8787/prompt.txt)
 - [`/llms.txt`](http://localhost:8787/llms.txt)
 - [`/llms-full.txt`](http://localhost:8787/llms-full.txt)
