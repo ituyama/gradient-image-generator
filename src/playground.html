@@ -182,7 +182,6 @@
         border-color: rgba(126, 224, 178, 0.55);
         box-shadow: 0 0 0 3px rgba(126, 224, 178, 0.12);
       }
-      textarea { min-height: 74px; resize: vertical; }
       input[type="range"] {
         width: 100%;
         accent-color: #7ee0b2;
@@ -223,6 +222,33 @@
         display: block;
       }
       .palette.on .swatches i { border-color: #f4f6fb; }
+      .color-list { display: grid; gap: 8px; }
+      .color-row {
+        display: grid;
+        grid-template-columns: 44px 1fr 36px;
+        gap: 8px;
+        align-items: center;
+      }
+      .color-row input[type="color"] {
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border: 1px solid var(--line-strong);
+        border-radius: 12px;
+        background: var(--panel-2);
+        cursor: pointer;
+      }
+      .color-row input[type="color"]::-webkit-color-swatch-wrapper { padding: 3px; }
+      .color-row input[type="color"]::-webkit-color-swatch {
+        border: 0;
+        border-radius: 8px;
+      }
+      .color-row input[data-hex] { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .add-color {
+        width: 100%;
+        margin-top: 8px;
+        border-radius: 12px;
+      }
       .actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 20px; }
       .primary {
         grid-column: 1 / -1;
@@ -289,7 +315,9 @@
           </div>
           <div class="block">
             <div class="label">カラー</div>
-            <textarea id="colors" name="colors">#2EE59D, #4FC3F7, #00ACC1, #80DEEA</textarea>
+            <input id="colors" name="colors" type="hidden" value="#2EE59D, #4FC3F7, #00ACC1, #80DEEA" />
+            <div class="color-list" id="color-list"></div>
+            <button class="ghost add-color" type="button" id="add-color">色を追加</button>
             <div class="palettes" id="palettes" style="margin-top:10px"></div>
           </div>
           <div class="block row">
@@ -361,7 +389,74 @@
         sizeBox.append(button);
       }
 
+      const colorList = document.getElementById("color-list");
       const paletteBox = document.getElementById("palettes");
+
+      function normalizeHex(raw) {
+        let hex = String(raw).trim();
+        if (!hex) return null;
+        if (!hex.startsWith("#")) hex = `#${hex}`;
+        if (/^#[0-9a-f]{3}$/i.test(hex)) {
+          hex = `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}`;
+        }
+        return /^#[0-9a-f]{6}$/i.test(hex) ? hex.toUpperCase() : null;
+      }
+
+      function parseColorList(raw) {
+        return String(raw)
+          .split(/[,| ]+/)
+          .map(normalizeHex)
+          .filter(Boolean);
+      }
+
+      function writeColors() {
+        const hexes = [...colorList.querySelectorAll("[data-hex]")].map((input) => input.value);
+        form.colors.value = hexes.join(", ");
+      }
+
+      function addColorRow(hex) {
+        const color = normalizeHex(hex) ?? "#80DEEA";
+        const row = document.createElement("div");
+        row.className = "color-row";
+        row.innerHTML = `
+          <input type="color" value="${color}" aria-label="色" />
+          <input data-hex type="text" spellcheck="false" maxlength="7" value="${color}" aria-label="HEX" />
+          <button class="icon-btn" type="button" aria-label="削除">✕</button>
+        `;
+        const picker = row.querySelector('input[type="color"]');
+        const hexInput = row.querySelector("[data-hex]");
+        const remove = row.querySelector("button");
+        picker.addEventListener("input", () => {
+          hexInput.value = picker.value.toUpperCase();
+          writeColors();
+        });
+        hexInput.addEventListener("change", () => {
+          const next = normalizeHex(hexInput.value);
+          if (!next) {
+            hexInput.value = picker.value.toUpperCase();
+            return;
+          }
+          hexInput.value = next;
+          picker.value = next;
+          writeColors();
+          render();
+        });
+        remove.addEventListener("click", () => {
+          if (colorList.children.length <= 2) return;
+          row.remove();
+          writeColors();
+          render();
+        });
+        colorList.append(row);
+      }
+
+      function rebuildColors(raw) {
+        const list = parseColorList(raw);
+        colorList.replaceChildren();
+        (list.length >= 2 ? list : ["#2EE59D", "#4FC3F7", "#00ACC1", "#80DEEA"]).forEach(addColorRow);
+        writeColors();
+      }
+
       for (const [label, value] of palettes) {
         const button = document.createElement("button");
         button.type = "button";
@@ -370,11 +465,18 @@
         const dots = value.split(",").map((hex) => `<i style="background:${hex.trim()}"></i>`).join("");
         button.innerHTML = `<span class="swatches">${dots}</span>${label}`;
         button.addEventListener("click", () => {
-          form.colors.value = value;
+          rebuildColors(value);
           render();
         });
         paletteBox.append(button);
       }
+
+      document.getElementById("add-color").addEventListener("click", () => {
+        if (colorList.children.length >= 8) return;
+        addColorRow("#80DEEA");
+        writeColors();
+        render();
+      });
 
       function params() {
         const search = new URLSearchParams();
@@ -432,6 +534,7 @@
       for (const [key, value] of initial.entries()) {
         if (form.elements[key]) form.elements[key].value = value;
       }
+      rebuildColors(form.colors.value);
 
       let timer = 0;
       form.addEventListener("input", () => {
