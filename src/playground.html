@@ -148,6 +148,32 @@
       .urlbar button {
         flex: none;
       }
+      .ai-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+      .ai-row .label {
+        margin: 0;
+      }
+      .ai-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .ai-links a {
+        border: 1px solid var(--line-strong);
+        background: var(--panel);
+        color: var(--text);
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .ai-links a:hover { border-color: rgba(255, 255, 255, 0.22); }
       .panel {
         background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent 28%), var(--panel);
         border: 1px solid var(--line);
@@ -348,6 +374,14 @@
             <code id="url"></code>
             <button class="ghost" type="button" id="copy">コピー</button>
           </div>
+          <div class="ai-row">
+            <div class="label">チャット</div>
+            <div class="ai-links" id="ai-links">
+              <a data-ai="chatgpt" target="_blank" rel="noreferrer">ChatGPT</a>
+              <a data-ai="claude" target="_blank" rel="noreferrer">Claude</a>
+              <a data-ai="gemini" target="_blank" rel="noreferrer">Gemini</a>
+            </div>
+          </div>
         </div>
       </div>
     </main>
@@ -498,6 +532,39 @@
         return `${location.origin}${path()}`;
       }
 
+      function agentPrompt() {
+        const origin = location.origin;
+        const example = absolute();
+        return [
+          "You are helping me use Gradient Image Generator, an unauthenticated HTTP image API.",
+          "Read the spec if reachable, otherwise use only this contract. Do not invent endpoints.",
+          `Spec: ${origin}/llms.txt`,
+          `Full spec: ${origin}/llms-full.txt`,
+          `OpenAPI: ${origin}/openapi.json`,
+          `Docs: ${origin}/docs`,
+          `Playground: ${origin}/`,
+          "Contract:",
+          `GET ${origin}/gradient?w=&h=&seed=&colors=&warp=&grain=&blur=`,
+          "Success is image/png. Broken numeric params return JSON 400 {error}. CORS is open. Same query always returns the same PNG.",
+          "w/h: integer 16-2048, default 800, clamped. seed: any string, default 0. colors: 2+ hex (# optional), split by comma/space/|. warp: 0-1.5 default 0.62. grain: 0-0.2 default 0.035. blur: 0-32 default 0.",
+          `Current example image: ${example}`,
+          "Help me assemble URLs, embed them in HTML/Markdown/OG tags, and pick seeds/colors. If the origin is localhost you cannot fetch the spec; stay inside this prompt.",
+        ].join("\n");
+      }
+
+      const aiHrefs = {
+        chatgpt: (p) => `https://chatgpt.com/?hints=search&q=${encodeURIComponent(p)}`,
+        claude: (p) => `https://claude.ai/new?q=${encodeURIComponent(p)}`,
+        gemini: (p) => `https://gemini.google.com/app?prompt=${encodeURIComponent(p)}`,
+      };
+
+      function syncAiLinks() {
+        const prompt = agentPrompt();
+        for (const a of document.querySelectorAll("#ai-links [data-ai]")) {
+          a.href = aiHrefs[a.dataset.ai](prompt);
+        }
+      }
+
       function syncChrome() {
         const w = Number(form.w.value);
         const h = Number(form.h.value);
@@ -527,6 +594,7 @@
         }
         urlEl.textContent = absolute();
         syncChrome();
+        syncAiLinks();
         history.replaceState(null, "", `/?${params().toString()}`);
       }
 
