@@ -299,20 +299,19 @@
         align-items: center;
         gap: 10px;
         min-width: 176px;
-        color: #fff;
+        background: none;
+        color: inherit;
         text-decoration: none;
         font-size: 15px;
         font-weight: 750;
         letter-spacing: -0.02em;
-        padding: 13px 16px;
-        border-radius: 16px;
-        box-shadow: 0 12px 32px rgba(24, 24, 27, 0.22);
+        padding: 8px 0;
       }
-      .ai-float a:hover { transform: translateY(-1px); filter: brightness(1.06); }
+      .ai-float a:hover { opacity: 0.75; }
       .ai-float .logo { width: 22px; height: 22px; }
-      .ai-float a[data-ai="chatgpt"] { background: #10a37f; }
-      .ai-float a[data-ai="claude"] { background: #d97757; }
-      .ai-float a[data-ai="gemini"] { background: #1a73e8; }
+      .ai-float a[data-ai="chatgpt"] { color: #10a37f; }
+      .ai-float a[data-ai="claude"] { color: #d97757; }
+      .ai-float a[data-ai="gemini"] { color: #1a73e8; }
       .prompt-grid .logo { width: 28px; height: 28px; }
       @media (max-width: 880px) {
         .shell { grid-template-columns: 1fr; }
@@ -321,7 +320,7 @@
         .samples, .grid, .prompt-grid, .facts { grid-template-columns: 1fr 1fr; }
         h1 { font-size: 28px; }
         .ai-float { right: 12px; bottom: 12px; }
-        .ai-float a { min-width: 0; padding: 11px 14px; font-size: 13px; }
+        .ai-float a { min-width: 0; font-size: 13px; }
       }
     </style>
   </head>
