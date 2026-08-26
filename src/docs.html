@@ -293,6 +293,11 @@
               <td>number</td><td>0.035</td><td>0–0.2</td>
               <td>粒子感。</td>
             </tr>
+            <tr>
+              <td><code>blur</code></td>
+              <td>number</td><td>0</td><td>0–32</td>
+              <td>ぼかし半径（出力 px）。0 はシャープ。</td>
+            </tr>
           </tbody>
         </table>
 
@@ -319,7 +324,7 @@ colors=2EE59D 4FC3F7 00ACC1</code></pre>
 
         <h2 id="errors">エラー</h2>
         <p>
-          <code>w</code> / <code>h</code> / <code>warp</code> / <code>grain</code> が存在するのに数値でないときだけ 400 です。
+          <code>w</code> / <code>h</code> / <code>warp</code> / <code>grain</code> / <code>blur</code> が存在するのに数値でないときだけ 400 です。
         </p>
         <pre><code>{
   "error": "w と h は数値で指定してください"
@@ -402,9 +407,9 @@ colors=2EE59D 4FC3F7 00ACC1</code></pre>
         `Docs: ${origin}/docs`,
         `Playground: ${origin}/`,
         "Contract:",
-        `GET ${origin}/gradient?w=&h=&seed=&colors=&warp=&grain=`,
+        `GET ${origin}/gradient?w=&h=&seed=&colors=&warp=&grain=&blur=`,
         "Success is image/png. Broken numeric params return JSON 400 {error}. CORS is open. Same query always returns the same PNG.",
-        "w/h: integer 16-2048, default 800, clamped. seed: any string, default 0. colors: 2+ hex (# optional), split by comma/space/|. warp: 0-1.5 default 0.62. grain: 0-0.2 default 0.035.",
+        "w/h: integer 16-2048, default 800, clamped. seed: any string, default 0. colors: 2+ hex (# optional), split by comma/space/|. warp: 0-1.5 default 0.62. grain: 0-0.2 default 0.035. blur: 0-32 default 0.",
         `Current example image: ${example}`,
         "Help me assemble URLs, embed them in HTML/Markdown/OG tags, and pick seeds/colors. If the origin is localhost you cannot fetch the spec; stay inside this prompt.",
       ].join("\n");

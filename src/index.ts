@@ -55,6 +55,7 @@ app.get("/gradient", (c) => {
   const colors = query.colors;
   const warp = query.warp === undefined ? undefined : Number(query.warp);
   const grain = query.grain === undefined ? undefined : Number(query.grain);
+  const blur = query.blur === undefined ? undefined : Number(query.blur);
 
   if (warp !== undefined && !Number.isFinite(warp)) {
     return c.json({ error: "warp は数値で指定してください" }, 400);
@@ -62,8 +63,11 @@ app.get("/gradient", (c) => {
   if (grain !== undefined && !Number.isFinite(grain)) {
     return c.json({ error: "grain は数値で指定してください" }, 400);
   }
+  if (blur !== undefined && !Number.isFinite(blur)) {
+    return c.json({ error: "blur は数値で指定してください" }, 400);
+  }
 
-  const png = generateGradient({ width, height, seed, colors, warp, grain });
+  const png = generateGradient({ width, height, seed, colors, warp, grain, blur });
 
   return new Response(Uint8Array.from(png), {
     headers: {

@@ -18,6 +18,7 @@ export type GenerateOptions = {
   colors?: string;
   warp?: number;
   grain?: number;
+  blur?: number;
 };
 
 type Blob = {
@@ -120,6 +121,58 @@ function sampleBilinear(
   return [r, g, b];
 }
 
+function boxBlurPass(
+  src: Uint8Array,
+  w: number,
+  h: number,
+  radius: number,
+  horizontal: boolean,
+): Uint8Array {
+  const out = new Uint8Array(src.length);
+  const extent = horizontal ? w : h;
+  const lines = horizontal ? h : w;
+  const window = radius * 2 + 1;
+
+  for (let line = 0; line < lines; line++) {
+    let r = 0;
+    let g = 0;
+    let b = 0;
+    for (let i = -radius; i <= radius; i++) {
+      const p = clamp(i, 0, extent - 1);
+      const idx = horizontal ? (line * w + p) * 4 : (p * w + line) * 4;
+      r += src[idx];
+      g += src[idx + 1];
+      b += src[idx + 2];
+    }
+    for (let i = 0; i < extent; i++) {
+      const idx = horizontal ? (line * w + i) * 4 : (i * w + line) * 4;
+      out[idx] = r / window;
+      out[idx + 1] = g / window;
+      out[idx + 2] = b / window;
+      out[idx + 3] = 255;
+      const drop = clamp(i - radius, 0, extent - 1);
+      const add = clamp(i + radius + 1, 0, extent - 1);
+      const di = horizontal ? (line * w + drop) * 4 : (drop * w + line) * 4;
+      const ai = horizontal ? (line * w + add) * 4 : (add * w + line) * 4;
+      r += src[ai] - src[di];
+      g += src[ai + 1] - src[di + 1];
+      b += src[ai + 2] - src[di + 2];
+    }
+  }
+  return out;
+}
+
+function blurPixels(src: Uint8Array, w: number, h: number, radius: number): Uint8Array {
+  const r = Math.round(radius);
+  if (r < 1) return src;
+  let pixels = src;
+  for (let i = 0; i < 3; i++) {
+    pixels = boxBlurPass(pixels, w, h, r, true);
+    pixels = boxBlurPass(pixels, w, h, r, false);
+  }
+  return pixels;
+}
+
 function renderField(
   width: number,
   height: number,
@@ -201,11 +254,14 @@ export function generateGradient(options: GenerateOptions): Buffer {
   const seedValue = hashSeed(options.seed);
   const warp = clamp(options.warp ?? 0.62, 0, 1.5);
   const grain = clamp(options.grain ?? 0.02, 0, 0.2);
+  const blur = clamp(options.blur ?? 0, 0, 32);
 
   const rgbPalette = parseColors(options.colors, DEFAULT_COLORS);
   const palette = rgbPalette.map(rgbToOklab);
   const { w, h } = workingSize(width, height);
-  const src = renderField(w, h, seedValue, palette, warp);
+  const field = renderField(w, h, seedValue, palette, warp);
+  const workRadius = blur * (w / Math.max(width, 1));
+  const src = blurPixels(field, w, h, workRadius);
 
   const png = new PNG({ width, height });
   const data = png.data;

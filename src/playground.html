@@ -302,6 +302,10 @@
               <input id="grain" name="grain" type="range" min="0" max="0.2" step="0.005" value="0.035" />
             </div>
           </div>
+          <div class="block">
+            <div class="label">ぼかし blur <span id="blur-val">0</span></div>
+            <input id="blur" name="blur" type="range" min="0" max="32" step="1" value="0" />
+          </div>
           <div class="actions">
             <button class="primary" type="submit">生成する</button>
             <button class="ghost" type="button" id="open">新しいタブ</button>
@@ -327,6 +331,7 @@
       const copyBtn = document.getElementById("copy");
       const warpVal = document.getElementById("warp-val");
       const grainVal = document.getElementById("grain-val");
+      const blurVal = document.getElementById("blur-val");
 
       const sizes = [
         ["1:1", 800, 800],
@@ -379,6 +384,7 @@
         search.set("colors", String(form.colors.value).trim());
         search.set("warp", String(form.warp.value).trim());
         search.set("grain", String(form.grain.value).trim());
+        search.set("blur", String(form.blur.value).trim());
         return search;
       }
 
@@ -403,6 +409,7 @@
         }
         warpVal.textContent = Number(form.warp.value).toFixed(2);
         grainVal.textContent = Number(form.grain.value).toFixed(3);
+        blurVal.textContent = String(Math.round(Number(form.blur.value)));
       }
 
       function render() {

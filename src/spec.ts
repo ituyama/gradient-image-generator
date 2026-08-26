@@ -60,6 +60,16 @@ export const PARAMS = [
     max: 0.2,
     description: "Film-grain amount over the final image.",
   },
+  {
+    name: "blur",
+    aliases: [],
+    type: "number",
+    required: false,
+    default: 0,
+    min: 0,
+    max: 32,
+    description: "Gaussian-like blur radius in output pixels. 0 is sharp.",
+  },
 ] as const;
 
 export function buildOpenApi(origin: string) {
@@ -154,6 +164,8 @@ function exampleFor(name: string) {
       return { default: { value: 0.62 } };
     case "grain":
       return { default: { value: 0.035 } };
+    case "blur":
+      return { soft: { value: 8 }, off: { value: 0 } };
     default:
       return undefined;
   }
@@ -171,9 +183,9 @@ export function buildAgentPrompt(origin: string, exampleUrl?: string): string {
     `Docs: ${origin}/docs`,
     `Playground: ${origin}/`,
     "Contract:",
-    `GET ${origin}/gradient?w=&h=&seed=&colors=&warp=&grain=`,
+    `GET ${origin}/gradient?w=&h=&seed=&colors=&warp=&grain=&blur=`,
     "Success is image/png. Broken numeric params return JSON 400 {error}. CORS is open. Same query always returns the same PNG.",
-    "w/h: integer 16-2048, default 800, clamped. seed: any string, default 0. colors: 2+ hex (# optional), split by comma/space/|. warp: 0-1.5 default 0.62. grain: 0-0.2 default 0.035.",
+    "w/h: integer 16-2048, default 800, clamped. seed: any string, default 0. colors: 2+ hex (# optional), split by comma/space/|. warp: 0-1.5 default 0.62. grain: 0-0.2 default 0.035. blur: 0-32 default 0.",
     `Current example image: ${example}`,
     "Help me assemble URLs, embed them in HTML/Markdown/OG tags, and pick seeds/colors. If the origin is localhost you cannot fetch the spec; stay inside this prompt.",
   ].join("\n");
@@ -253,6 +265,7 @@ Auth: none
 - colors: hex list (# optional), split by comma / space / |. Default ${DEFAULT_COLORS.join(", ")}. Needs 2+ valid colors or defaults are used.
 - warp: number 0-1.5, default 0.62
 - grain: number 0-0.2, default 0.035
+- blur: number 0-32, default 0. Output-pixel blur radius.
 
 ## Examples
 
@@ -309,7 +322,7 @@ ${paramLines}
 
 ## Errors
 
-If w/h/warp/grain are present but not numeric:
+If w/h/warp/grain/blur are present but not numeric:
 
 \`\`\`json
 {"error":"w と h は数値で指定してください"}

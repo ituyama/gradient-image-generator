@@ -24,6 +24,7 @@ GET /gradient?w=800&h=800&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1
 | `colors` | HEX。カンマ / スペース / `\|` 区切り |
 | `warp` | 流れの強さ（0–1.5） |
 | `grain` | 粒子（0–0.2） |
+| `blur` | ぼかし半径（0–32、px） |
 
 ## AI / エージェント向け
 
