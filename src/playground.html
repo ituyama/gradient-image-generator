@@ -6,122 +6,247 @@
     <title>Playground · Gradient Image API</title>
     <style>
       :root {
-        color-scheme: light;
-        --bg: #f4f5f8;
-        --card: #fff;
-        --text: #111318;
-        --muted: #667085;
-        --line: #e5e7ee;
-        --accent: #111318;
-        --chip: #eef0f4;
+        color-scheme: dark;
+        --bg: #0b0c10;
+        --panel: #12141a;
+        --panel-2: #181b23;
+        --text: #f4f6fb;
+        --muted: #8b93a7;
+        --line: rgba(255, 255, 255, 0.08);
+        --line-strong: rgba(255, 255, 255, 0.14);
+        --accent: #f4f6fb;
+        --ok: #7ee0b2;
       }
       * { box-sizing: border-box; }
+      html, body { min-height: 100%; }
       body {
         margin: 0;
-        font-family: Inter, "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
-        background: var(--bg);
         color: var(--text);
-        line-height: 1.55;
+        font-family: ui-sans-serif, system-ui, -apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+        background:
+          radial-gradient(1200px 600px at 10% -10%, rgba(46, 229, 157, 0.12), transparent 50%),
+          radial-gradient(900px 500px at 110% 10%, rgba(79, 195, 247, 0.1), transparent 46%),
+          var(--bg);
+        line-height: 1.45;
       }
       header {
         position: sticky;
         top: 0;
-        z-index: 10;
-        backdrop-filter: blur(12px);
-        background: rgba(244, 245, 248, 0.88);
+        z-index: 20;
         border-bottom: 1px solid var(--line);
+        background: rgba(11, 12, 16, 0.72);
+        backdrop-filter: blur(18px);
       }
-      .bar, main { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
       .bar {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 24px;
+        min-height: 64px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        min-height: 60px;
         gap: 16px;
       }
-      .brand { font-weight: 700; letter-spacing: -0.03em; color: inherit; text-decoration: none; }
-      nav { display: flex; gap: 16px; font-size: 14px; }
-      nav a { color: var(--muted); text-decoration: none; }
-      nav a:hover, nav a.active { color: var(--text); }
-      main { padding-top: 28px; padding-bottom: 80px; }
-      h1 { font-size: 36px; letter-spacing: -0.04em; margin: 0 0 10px; }
-      .lede { color: var(--muted); margin: 0 0 24px; max-width: 62ch; }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: inherit;
+        text-decoration: none;
+        font-weight: 650;
+        letter-spacing: -0.03em;
+      }
+      .mark {
+        width: 22px;
+        height: 22px;
+        border-radius: 7px;
+        background: linear-gradient(135deg, #2ee59d, #4fc3f7);
+      }
+      nav { display: flex; gap: 6px; }
+      nav a {
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 13px;
+        padding: 7px 11px;
+        border-radius: 999px;
+      }
+      nav a:hover { color: var(--text); background: rgba(255, 255, 255, 0.04); }
+      nav a.active { color: var(--text); background: rgba(255, 255, 255, 0.08); }
+      main {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 28px 24px 72px;
+      }
+      .hero {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: end;
+        margin-bottom: 22px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 34px;
+        letter-spacing: -0.05em;
+        font-weight: 650;
+      }
+      .lede {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .lede a { color: var(--text); }
       .layout {
         display: grid;
-        grid-template-columns: minmax(280px, 360px) 1fr;
-        gap: 24px;
+        grid-template-columns: 1fr;
+        gap: 20px;
         align-items: start;
       }
-      .card {
-        background: var(--card);
+      .preview-wrap {
+        position: sticky;
+        top: 84px;
+      }
+      .preview {
+        position: relative;
+        width: 100%;
+        aspect-ratio: var(--ar, 1);
+        max-height: min(48vh, 520px);
+        border-radius: 28px;
+        overflow: hidden;
+        background: #1a1d26;
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
         border: 1px solid var(--line);
-        border-radius: 20px;
+      }
+      .preview img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 0.35s ease;
+      }
+      .preview img.ready { opacity: 1; }
+      .urlbar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 12px;
+        padding: 10px 10px 10px 14px;
+        border-radius: 16px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+      }
+      .urlbar code {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #c9d0df;
+        font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .urlbar button {
+        flex: none;
+      }
+      .panel {
+        background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent 28%), var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 24px;
         padding: 18px;
       }
-      label { display: block; font-size: 12px; font-weight: 700; margin: 12px 0 6px; }
-      input, textarea {
-        width: 100%;
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        padding: 10px 12px;
-        font: inherit;
-        background: #fff;
+      .block + .block { margin-top: 18px; }
+      .label {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--muted);
       }
-      textarea { min-height: 70px; resize: vertical; }
+      .label span { font-variant-numeric: tabular-nums; color: #d5dbe8; text-transform: none; letter-spacing: 0; }
       .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-      .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-      .chip {
-        border: 0;
+      input[type="number"], input[type="text"], textarea {
+        width: 100%;
+        border: 1px solid var(--line-strong);
+        border-radius: 12px;
+        padding: 11px 12px;
+        font: inherit;
+        color: var(--text);
+        background: var(--panel-2);
+        outline: none;
+      }
+      input:focus, textarea:focus {
+        border-color: rgba(126, 224, 178, 0.55);
+        box-shadow: 0 0 0 3px rgba(126, 224, 178, 0.12);
+      }
+      textarea { min-height: 74px; resize: vertical; }
+      input[type="range"] {
+        width: 100%;
+        accent-color: #7ee0b2;
+      }
+      .seed-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+      .seg, .palettes { display: flex; flex-wrap: wrap; gap: 8px; }
+      .seg button, .chip, .icon-btn, .ghost, .primary {
+        border: 1px solid var(--line-strong);
+        background: var(--panel-2);
+        color: var(--text);
         border-radius: 999px;
-        padding: 6px 10px;
-        background: var(--chip);
+        padding: 8px 11px;
         font: inherit;
         font-size: 12px;
         font-weight: 600;
         cursor: pointer;
       }
-      .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
-      button.primary, button.ghost, a.ghost {
-        border-radius: 12px;
-        padding: 11px 12px;
-        font: inherit;
-        font-weight: 700;
-        cursor: pointer;
+      .seg button.on, .palette.on {
+        border-color: transparent;
+        background: var(--text);
+        color: #111318;
       }
-      button.primary { border: 0; background: var(--accent); color: #fff; }
-      button.ghost, a.ghost {
-        border: 1px solid var(--line);
-        background: #fff;
-        color: inherit;
-        text-decoration: none;
-        display: grid;
-        place-items: center;
+      .icon-btn { width: 42px; border-radius: 12px; }
+      .palette {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        padding: 6px 10px 6px 6px;
       }
-      .preview-wrap { position: sticky; top: 80px; }
-      .preview {
-        width: 100%;
-        max-height: min(68vh, 640px);
-        aspect-ratio: var(--ar, 1);
-        border-radius: 28px;
-        overflow: hidden;
-        background: #e8eaef;
-        box-shadow: 0 16px 40px rgba(17, 19, 24, 0.08);
+      .swatches { display: flex; }
+      .swatches i {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        margin-right: -5px;
+        border: 2px solid var(--panel-2);
+        display: block;
       }
-      .preview img { display: block; width: 100%; height: 100%; object-fit: cover; }
-      .urlbox {
-        margin-top: 12px;
+      .palette.on .swatches i { border-color: #f4f6fb; }
+      .actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 20px; }
+      .primary {
+        grid-column: 1 / -1;
+        border-radius: 14px;
         padding: 12px;
-        border-radius: 12px;
-        background: #111318;
-        color: #e8eaef;
-        font-size: 12px;
-        overflow-x: auto;
-        white-space: nowrap;
-        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        background: var(--text);
+        color: #111318;
+        border: 0;
+        font-size: 14px;
       }
-      @media (max-width: 860px) {
-        .layout { grid-template-columns: 1fr; }
+      .ghost { border-radius: 14px; padding: 11px; }
+      .ghost.copied { color: #0b0c10; background: var(--ok); border-color: transparent; }
+      @media (min-width: 1100px) {
+        .layout {
+          grid-template-columns: minmax(0, 1.25fr) minmax(340px, 400px);
+          grid-template-areas: "preview panel";
+        }
+        .preview-wrap { grid-area: preview; position: sticky; top: 84px; }
+        .panel { grid-area: panel; }
+        .preview { max-height: min(72vh, 720px); }
+      }
+      @media (max-width: 1099px) {
         .preview-wrap { position: static; }
+        .hero { display: block; }
         h1 { font-size: 28px; }
       }
     </style>
@@ -129,7 +254,7 @@
   <body>
     <header>
       <div class="bar">
-        <a class="brand" href="/">Gradient Image API</a>
+        <a class="brand" href="/"><span class="mark"></span>Gradient Image API</a>
         <nav>
           <a class="active" href="/">Playground</a>
           <a href="/docs">Docs</a>
@@ -139,54 +264,58 @@
       </div>
     </header>
     <main>
-      <h1>Playground</h1>
-      <p class="lede">
-        パラメータをいじると、その場で PNG の URL ができます。仕様は
-        <a href="/docs">ドキュメント</a> にあります。
-      </p>
+      <div class="hero">
+        <div>
+          <h1>Playground</h1>
+          <p class="lede">値を動かすと、その場で PNG の URL ができます。<a href="/docs">仕様は Docs</a></p>
+        </div>
+      </div>
       <div class="layout">
-        <form class="card" id="form">
-          <div class="row">
-            <div>
-              <label for="w">幅 w</label>
-              <input id="w" name="w" type="number" min="16" max="2048" value="800" />
+        <form class="panel" id="form">
+          <div class="block">
+            <div class="label">サイズ</div>
+            <div class="row">
+              <input id="w" name="w" type="number" min="16" max="2048" value="800" aria-label="幅" />
+              <input id="h" name="h" type="number" min="16" max="2048" value="800" aria-label="高さ" />
             </div>
-            <div>
-              <label for="h">高さ h</label>
-              <input id="h" name="h" type="number" min="16" max="2048" value="800" />
+            <div class="seg" id="sizes" style="margin-top:10px"></div>
+          </div>
+          <div class="block">
+            <div class="label">シード</div>
+            <div class="seed-row">
+              <input id="seed" name="seed" type="text" value="jalapeno" />
+              <button class="icon-btn" type="button" id="random-seed" title="ランダム">↺</button>
             </div>
           </div>
-          <div class="chips" id="sizes"></div>
-          <label for="seed">シード seed</label>
-          <input id="seed" name="seed" value="jalapeno" />
-          <div class="chips">
-            <button class="chip" type="button" id="random-seed">ランダム</button>
+          <div class="block">
+            <div class="label">カラー</div>
+            <textarea id="colors" name="colors">#2EE59D, #4FC3F7, #00ACC1, #80DEEA</textarea>
+            <div class="palettes" id="palettes" style="margin-top:10px"></div>
           </div>
-          <label for="colors">色 colors</label>
-          <textarea id="colors" name="colors">#2EE59D, #4FC3F7, #00ACC1, #80DEEA</textarea>
-          <div class="chips" id="palettes"></div>
-          <div class="row">
+          <div class="block row">
             <div>
-              <label for="warp">ワープ warp</label>
-              <input id="warp" name="warp" type="number" min="0" max="1.5" step="0.05" value="0.62" />
+              <div class="label">ワープ <span id="warp-val">0.62</span></div>
+              <input id="warp" name="warp" type="range" min="0" max="1.5" step="0.01" value="0.62" />
             </div>
             <div>
-              <label for="grain">グレイン grain</label>
-              <input id="grain" name="grain" type="number" min="0" max="0.2" step="0.005" value="0.035" />
+              <div class="label">グレイン <span id="grain-val">0.035</span></div>
+              <input id="grain" name="grain" type="range" min="0" max="0.2" step="0.005" value="0.035" />
             </div>
           </div>
           <div class="actions">
-            <button class="primary" type="submit">生成</button>
-            <button class="ghost" type="button" id="copy">URL をコピー</button>
+            <button class="primary" type="submit">生成する</button>
             <button class="ghost" type="button" id="open">新しいタブ</button>
-            <button class="ghost" type="button" id="download">ダウンロード</button>
+            <button class="ghost" type="button" id="download">保存</button>
           </div>
         </form>
         <div class="preview-wrap">
           <div class="preview" id="frame">
             <img id="preview" alt="生成されたグラデーション" />
           </div>
-          <div class="urlbox" id="url"></div>
+          <div class="urlbar">
+            <code id="url"></code>
+            <button class="ghost" type="button" id="copy">コピー</button>
+          </div>
         </div>
       </div>
     </main>
@@ -195,12 +324,15 @@
       const preview = document.getElementById("preview");
       const urlEl = document.getElementById("url");
       const frame = document.getElementById("frame");
+      const copyBtn = document.getElementById("copy");
+      const warpVal = document.getElementById("warp-val");
+      const grainVal = document.getElementById("grain-val");
 
       const sizes = [
-        ["800²", 800, 800],
-        ["OG 1200×630", 1200, 630],
-        ["HD 1920×1080", 1920, 1080],
-        ["Story 1080×1920", 1080, 1920],
+        ["1:1", 800, 800],
+        ["OG", 1200, 630],
+        ["HD", 1920, 1080],
+        ["Story", 1080, 1920],
       ];
       const palettes = [
         ["Mint", "#2EE59D, #4FC3F7, #00ACC1, #80DEEA"],
@@ -213,8 +345,9 @@
       for (const [label, w, h] of sizes) {
         const button = document.createElement("button");
         button.type = "button";
-        button.className = "chip";
         button.textContent = label;
+        button.dataset.w = String(w);
+        button.dataset.h = String(h);
         button.addEventListener("click", () => {
           form.w.value = w;
           form.h.value = h;
@@ -227,8 +360,10 @@
       for (const [label, value] of palettes) {
         const button = document.createElement("button");
         button.type = "button";
-        button.className = "chip";
-        button.textContent = label;
+        button.className = "palette";
+        button.dataset.colors = value;
+        const dots = value.split(",").map((hex) => `<i style="background:${hex.trim()}"></i>`).join("");
+        button.innerHTML = `<span class="swatches">${dots}</span>${label}`;
         button.addEventListener("click", () => {
           form.colors.value = value;
           render();
@@ -237,11 +372,13 @@
       }
 
       function params() {
-        const data = new FormData(form);
         const search = new URLSearchParams();
-        for (const [key, value] of data.entries()) {
-          search.set(key, String(value).trim());
-        }
+        search.set("w", String(form.w.value).trim());
+        search.set("h", String(form.h.value).trim());
+        search.set("seed", String(form.seed.value).trim());
+        search.set("colors", String(form.colors.value).trim());
+        search.set("warp", String(form.warp.value).trim());
+        search.set("grain", String(form.grain.value).trim());
         return search;
       }
 
@@ -253,12 +390,34 @@
         return `${location.origin}${path()}`;
       }
 
+      function syncChrome() {
+        const w = Number(form.w.value);
+        const h = Number(form.h.value);
+        for (const button of sizeBox.querySelectorAll("button")) {
+          button.classList.toggle("on", Number(button.dataset.w) === w && Number(button.dataset.h) === h);
+        }
+        const colors = String(form.colors.value).replace(/\s/g, "").toLowerCase();
+        for (const button of paletteBox.querySelectorAll("button")) {
+          const key = button.dataset.colors.replace(/\s/g, "").toLowerCase();
+          button.classList.toggle("on", key === colors);
+        }
+        warpVal.textContent = Number(form.warp.value).toFixed(2);
+        grainVal.textContent = Number(form.grain.value).toFixed(3);
+      }
+
       function render() {
         const w = Number(form.w.value) || 800;
         const h = Number(form.h.value) || 800;
         frame.style.setProperty("--ar", `${w} / ${h}`);
-        preview.src = path();
+        const next = path();
+        if (preview.getAttribute("src") !== next) {
+          preview.classList.remove("ready");
+          preview.src = next;
+        } else if (preview.complete && preview.naturalWidth) {
+          preview.classList.add("ready");
+        }
         urlEl.textContent = absolute();
+        syncChrome();
         history.replaceState(null, "", `/?${params().toString()}`);
       }
 
@@ -269,19 +428,27 @@
 
       let timer = 0;
       form.addEventListener("input", () => {
+        syncChrome();
         clearTimeout(timer);
-        timer = setTimeout(render, 220);
+        timer = setTimeout(render, 180);
       });
       form.addEventListener("submit", (event) => {
         event.preventDefault();
         render();
       });
+      preview.addEventListener("load", () => preview.classList.add("ready"));
       document.getElementById("random-seed").addEventListener("click", () => {
         form.seed.value = Math.random().toString(36).slice(2, 10);
         render();
       });
-      document.getElementById("copy").addEventListener("click", async () => {
+      copyBtn.addEventListener("click", async () => {
         await navigator.clipboard.writeText(absolute());
+        copyBtn.textContent = "コピー済み";
+        copyBtn.classList.add("copied");
+        setTimeout(() => {
+          copyBtn.textContent = "コピー";
+          copyBtn.classList.remove("copied");
+        }, 1200);
       });
       document.getElementById("open").addEventListener("click", () => {
         window.open(absolute(), "_blank");
