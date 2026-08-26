@@ -1,0 +1,35 @@
+# Gradient Image Generator
+
+URL のクエリだけで、有機的なメッシュグラデ PNG を返す API です。
+
+```bash
+npm start
+```
+
+Playground とドキュメント: [http://localhost:8787](http://localhost:8787)
+
+## 画像を取る
+
+```text
+GET /gradient?w=800&h=800&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1
+```
+
+`<img src="...">` にそのまま置けます。同じクエリはいつも同じ画像です。
+
+| パラメータ | 説明 |
+|---|---|
+| `w` / `h` | 幅・高さ（16–2048、省略時 800） |
+| `seed` | 模様を固定する文字列 |
+| `colors` | HEX。カンマ / スペース / `\|` 区切り |
+| `warp` | 流れの強さ（0–1.5） |
+| `grain` | 粒子（0–0.2） |
+
+## AI / エージェント向け
+
+認証なし。成功時は PNG、壊れた数値だけ JSON 400 です。
+
+- [各種 AI で開く](http://localhost:8787/#ai) — ChatGPT / Claude / Gemini / Perplexity / Grok / Copilot / DeepSeek / Mistral へのプロンプト付きリンク
+- [`/prompt.txt`](http://localhost:8787/prompt.txt) — 同じプロンプトの生テキスト
+- [`/llms.txt`](http://localhost:8787/llms.txt) — 短い契約
+- [`/llms-full.txt`](http://localhost:8787/llms-full.txt) — パラメータと例の全文
+- [`/openapi.json`](http://localhost:8787/openapi.json) — OpenAPI 3.1

@@ -5,16 +5,40 @@ import { fileURLToPath } from "node:url";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { generateGradient } from "./generate.js";
+import { buildAgentPrompt, buildLlmsFull, buildLlmsTxt, buildOpenApi } from "./spec.js";
 
 const app = new Hono();
-const demoHtml = readFileSync(
-  join(dirname(fileURLToPath(import.meta.url)), "demo.html"),
-  "utf8",
-);
+const docsPath = join(dirname(fileURLToPath(import.meta.url)), "docs.html");
 
 app.use("*", cors());
 
-app.get("/", (c) => c.html(demoHtml));
+app.get("/", (c) => c.html(readFileSync(docsPath, "utf8")));
+
+app.get("/llms.txt", (c) =>
+  c.text(buildLlmsTxt(new URL(c.req.url).origin), 200, {
+    "Content-Type": "text/plain; charset=utf-8",
+  }),
+);
+
+app.get("/.well-known/llms.txt", (c) => c.redirect("/llms.txt", 307));
+
+app.get("/llms-full.txt", (c) =>
+  c.text(buildLlmsFull(new URL(c.req.url).origin), 200, {
+    "Content-Type": "text/plain; charset=utf-8",
+  }),
+);
+
+app.get("/openapi.json", (c) => c.json(buildOpenApi(new URL(c.req.url).origin)));
+
+app.get("/prompt.txt", (c) =>
+  c.text(buildAgentPrompt(new URL(c.req.url).origin, c.req.query("example")), 200, {
+    "Content-Type": "text/plain; charset=utf-8",
+  }),
+);
+
+app.get("/robots.txt", (c) =>
+  c.text(["User-agent: *", "Allow: /", "Sitemap: /llms.txt"].join("\n")),
+);
 
 app.get("/gradient", (c) => {
   const query = c.req.query();
@@ -39,7 +63,7 @@ app.get("/gradient", (c) => {
 
   const png = generateGradient({ width, height, seed, colors, warp, grain });
 
-  return new Response(png, {
+  return new Response(Uint8Array.from(png), {
     headers: {
       "Content-Type": "image/png",
       "Cache-Control": "public, max-age=31536000, immutable",
