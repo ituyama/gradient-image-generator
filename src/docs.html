@@ -37,6 +37,7 @@
         stroke-width: 2;
         stroke-linecap: round;
         stroke-linejoin: round;
+        pointer-events: none;
       }
       header {
         position: sticky;
@@ -533,7 +534,7 @@ colors=2EE59D 4FC3F7 00ACC1</code></pre>
         <p>
           仕様と作例 URL を入れたプロンプト付きリンクです。ローカルホストだと相手は <code>llms.txt</code> を取れないので、本文に埋め込んであります。
         </p>
-        <div class="grid prompt-grid" id="ai-links"></div>
+        <div class="grid prompt-grid" id="ai-link-list"></div>
         <label for="agent-prompt" style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;margin-top:8px;">
           <svg class="icon" style="width:15px;height:15px;color:var(--icon)"><use href="#i-file"/></svg>
           渡しているプロンプト
@@ -594,14 +595,14 @@ colors=2EE59D 4FC3F7 00ACC1</code></pre>
         ["DeepSeek", (p) => `https://chat.deepseek.com/?q=${encodeURIComponent(p)}`],
         ["Mistral", (p) => `https://chat.mistral.ai/chat?q=${encodeURIComponent(p)}`],
       ];
-      const box = document.getElementById("ai-links");
+      const box = document.getElementById("ai-link-list");
       for (const [name, make] of assistants) {
         const a = document.createElement("a");
         a.className = "card";
         a.target = "_blank";
         a.rel = "noreferrer";
         a.href = make(prompt);
-        a.innerHTML = `<svg class="icon"><use href="#i-message"/></svg><strong>${name}</strong>`;
+        a.innerHTML = `<svg class="icon" aria-hidden="true"><use href="#i-message"></use></svg><strong>${name}</strong>`;
         box.append(a);
       }
       document.getElementById("copy-prompt").addEventListener("click", async () => {
