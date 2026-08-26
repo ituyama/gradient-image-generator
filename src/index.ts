@@ -8,11 +8,13 @@ import { generateGradient } from "./generate.js";
 import { buildAgentPrompt, buildLlmsFull, buildLlmsTxt, buildOpenApi } from "./spec.js";
 
 const app = new Hono();
-const docsPath = join(dirname(fileURLToPath(import.meta.url)), "docs.html");
+const publicDir = dirname(fileURLToPath(import.meta.url));
+const page = (name: string) => readFileSync(join(publicDir, name), "utf8");
 
 app.use("*", cors());
 
-app.get("/", (c) => c.html(readFileSync(docsPath, "utf8")));
+app.get("/", (c) => c.html(page("playground.html")));
+app.get("/docs", (c) => c.html(page("docs.html")));
 
 app.get("/llms.txt", (c) =>
   c.text(buildLlmsTxt(new URL(c.req.url).origin), 200, {

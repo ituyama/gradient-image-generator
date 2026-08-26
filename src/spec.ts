@@ -168,6 +168,7 @@ export function buildAgentPrompt(origin: string, exampleUrl?: string): string {
     `Spec: ${origin}/llms.txt`,
     `Full spec: ${origin}/llms-full.txt`,
     `OpenAPI: ${origin}/openapi.json`,
+    `Docs: ${origin}/docs`,
     `Playground: ${origin}/`,
     "Contract:",
     `GET ${origin}/gradient?w=&h=&seed=&colors=&warp=&grain=`,
@@ -229,7 +230,8 @@ This service is an image API. Prefer GET /gradient and embed the URL in <img>, M
 ## Human docs
 
 - [Playground](${origin}/): live parameter editor
-- [Open in ChatGPT / Claude / Gemini / ...](${origin}/#ai): prefilled prompt links
+- [Human docs](${origin}/docs)
+- [Open in ChatGPT / Claude / Gemini / ...](${origin}/docs#ai-links): prefilled prompt links
 - [OpenAPI 3.1](${origin}/openapi.json)
 - [Full machine doc](${origin}/llms-full.txt)
 
@@ -317,8 +319,9 @@ Invalid hex colors are skipped. If fewer than 2 valid colors remain, the default
 
 ## Related URLs
 
-- Playground / human docs: ${origin}/
-- Prefilled AI prompt links: ${origin}/#ai
+- Playground: ${origin}/
+- Human docs: ${origin}/docs
+- Prefilled AI prompt links: ${origin}/docs#ai-links
 - Short AI summary: ${origin}/llms.txt
 - OpenAPI: ${origin}/openapi.json
 - This document: ${origin}/llms-full.txt

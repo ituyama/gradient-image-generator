@@ -3,19 +3,19 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Gradient Image Generator</title>
+    <title>ドキュメント · Gradient Image API</title>
     <link rel="describedby" href="/openapi.json" type="application/vnd.oai.openapi+json" />
     <link rel="alternate" href="/llms.txt" type="text/plain" title="llms.txt" />
     <style>
       :root {
         color-scheme: light;
-        --bg: #f4f5f8;
+        --bg: #f7f7f8;
         --card: #fff;
-        --text: #111318;
-        --muted: #667085;
-        --line: #e5e7ee;
-        --accent: #111318;
-        --chip: #eef0f4;
+        --text: #18181b;
+        --muted: #71717a;
+        --line: #e4e4e7;
+        --accent: #18181b;
+        --code: #111318;
       }
       * { box-sizing: border-box; }
       html { scroll-behavior: smooth; }
@@ -24,130 +24,156 @@
         font-family: Inter, "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
         background: var(--bg);
         color: var(--text);
-        line-height: 1.55;
+        line-height: 1.7;
       }
       header {
         position: sticky;
         top: 0;
-        z-index: 10;
+        z-index: 20;
+        background: rgba(247, 247, 248, 0.92);
         backdrop-filter: blur(12px);
-        background: rgba(244, 245, 248, 0.88);
         border-bottom: 1px solid var(--line);
       }
-      .bar, main { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
       .bar {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 0 24px;
+        min-height: 56px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        min-height: 60px;
         gap: 16px;
       }
-      .brand { font-weight: 700; letter-spacing: -0.03em; }
+      .brand { font-weight: 700; letter-spacing: -0.03em; color: inherit; text-decoration: none; }
       nav { display: flex; gap: 16px; font-size: 14px; }
       nav a { color: var(--muted); text-decoration: none; }
-      nav a:hover { color: var(--text); }
-      main { padding-top: 28px; padding-bottom: 80px; }
-      h1 { font-size: 36px; letter-spacing: -0.04em; margin: 0 0 10px; }
-      h2 { font-size: 22px; letter-spacing: -0.03em; margin: 48px 0 12px; }
-      .lede, p { color: var(--text); }
-      .lede { color: var(--muted); margin: 0 0 24px; max-width: 62ch; }
-      .layout {
+      nav a:hover, nav a.active { color: var(--text); }
+      .shell {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 28px 24px 96px;
         display: grid;
-        grid-template-columns: minmax(280px, 360px) 1fr;
-        gap: 24px;
+        grid-template-columns: 220px minmax(0, 1fr);
+        gap: 48px;
         align-items: start;
       }
-      .card {
-        background: var(--card);
-        border: 1px solid var(--line);
-        border-radius: 20px;
-        padding: 18px;
+      aside {
+        position: sticky;
+        top: 80px;
+        font-size: 13px;
       }
-      label { display: block; font-size: 12px; font-weight: 700; margin: 12px 0 6px; }
-      input, textarea {
-        width: 100%;
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        padding: 10px 12px;
-        font: inherit;
-        background: #fff;
+      aside a {
+        display: block;
+        color: var(--muted);
+        text-decoration: none;
+        padding: 5px 0;
       }
-      textarea { min-height: 70px; resize: vertical; }
-      .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-      .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-      .chip {
-        border: 0;
-        border-radius: 999px;
-        padding: 6px 10px;
-        background: var(--chip);
-        font: inherit;
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
+      aside a:hover { color: var(--text); }
+      aside .sec { margin-top: 18px; font-weight: 700; color: var(--text); }
+      article { max-width: 760px; }
+      h1 { font-size: 36px; letter-spacing: -0.04em; line-height: 1.2; margin: 0 0 12px; }
+      h2 {
+        font-size: 22px;
+        letter-spacing: -0.03em;
+        margin: 52px 0 12px;
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
       }
-      .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
-      button.primary, button.ghost {
-        border-radius: 12px;
-        padding: 11px 12px;
-        font: inherit;
-        font-weight: 700;
-        cursor: pointer;
+      h3 { font-size: 16px; margin: 28px 0 8px; }
+      p, li { color: #3f3f46; }
+      .lede { color: var(--muted); font-size: 17px; margin: 0 0 28px; }
+      code, pre, .mono {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       }
-      button.primary { border: 0; background: var(--accent); color: #fff; }
-      button.ghost { border: 1px solid var(--line); background: #fff; }
-      .preview-wrap { position: sticky; top: 80px; }
-      .preview {
-        width: 100%;
-        max-height: min(68vh, 640px);
-        aspect-ratio: var(--ar, 1);
-        border-radius: 28px;
-        overflow: hidden;
-        background: #e8eaef;
-        box-shadow: 0 16px 40px rgba(17, 19, 24, 0.08);
+      code {
+        font-size: 0.88em;
+        background: #ececee;
+        padding: 0.12em 0.4em;
+        border-radius: 6px;
       }
-      .preview img { display: block; width: 100%; height: 100%; object-fit: cover; }
-      .urlbox {
-        margin-top: 12px;
-        padding: 12px;
-        border-radius: 12px;
-        background: #111318;
-        color: #e8eaef;
-        font-size: 12px;
-        overflow-x: auto;
-        white-space: nowrap;
-      }
-      table { width: 100%; border-collapse: collapse; font-size: 14px; }
-      th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
-      th { color: var(--muted); font-size: 12px; }
-      code, .urlbox { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
       pre {
-        background: #111318;
+        background: var(--code);
         color: #e8eaef;
-        padding: 14px;
+        padding: 16px 18px;
         border-radius: 14px;
         overflow-x: auto;
-        font-size: 12px;
+        font-size: 13px;
+        line-height: 1.55;
       }
-      .ai-grid, .prompt-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-      .ai-grid a, .prompt-grid a { color: inherit; text-decoration: none; display: block; }
-      .ai-grid p, .prompt-grid p { color: var(--muted); margin: 6px 0 0; font-size: 13px; }
-      .prompt-grid { grid-template-columns: repeat(4, 1fr); margin: 16px 0; }
-      .prompt-grid a {
-        text-align: center;
-        font-weight: 700;
-        padding: 16px 12px;
+      pre code { background: none; color: inherit; padding: 0; }
+      table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 12px 0 20px; }
+      th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+      th { color: var(--muted); font-size: 12px; font-weight: 700; }
+      .note {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 14px 16px;
+        margin: 16px 0;
       }
-      .prompt-grid a:hover { border-color: #111318; }
+      .samples {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin: 16px 0 8px;
+      }
+      .samples figure { margin: 0; }
+      .samples img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: cover;
+        border-radius: 16px;
+        background: #e4e4e7;
+      }
+      .samples figcaption { font-size: 12px; color: var(--muted); margin-top: 6px; }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin: 16px 0;
+      }
+      .card {
+        display: block;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 16px;
+        color: inherit;
+        text-decoration: none;
+      }
+      .card strong { display: block; }
+      .card p { margin: 6px 0 0; font-size: 13px; }
+      .prompt-grid { grid-template-columns: repeat(4, 1fr); }
+      .prompt-grid a { text-align: center; font-weight: 700; }
       textarea.prompt {
-        min-height: 180px;
-        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-        font-size: 12px;
-        line-height: 1.5;
+        width: 100%;
+        min-height: 200px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px;
+        font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace;
+        background: #fff;
       }
-      @media (max-width: 860px) {
-        .layout, .ai-grid { grid-template-columns: 1fr; }
-        .prompt-grid { grid-template-columns: 1fr 1fr; }
-        .preview-wrap { position: static; }
+      .actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+      button, a.btn {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 10px;
+        padding: 8px 12px;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        color: inherit;
+        text-decoration: none;
+      }
+      button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+      @media (max-width: 880px) {
+        .shell { grid-template-columns: 1fr; }
+        aside { position: static; display: flex; flex-wrap: wrap; gap: 8px 14px; }
+        aside .sec { width: 100%; margin-top: 8px; }
+        .samples, .grid, .prompt-grid { grid-template-columns: 1fr 1fr; }
         h1 { font-size: 28px; }
       }
     </style>
@@ -155,130 +181,238 @@
   <body>
     <header>
       <div class="bar">
-        <div class="brand">Gradient Image API</div>
+        <a class="brand" href="/">Gradient Image API</a>
         <nav>
-          <a href="#playground">Playground</a>
-          <a href="#docs">Docs</a>
-          <a href="#ai">AI</a>
+          <a href="/">Playground</a>
+          <a class="active" href="/docs">Docs</a>
           <a href="/openapi.json">OpenAPI</a>
           <a href="/llms.txt">llms.txt</a>
         </nav>
       </div>
     </header>
-    <main>
-      <section id="playground">
-        <h1>URL を組み立てて、PNG が返る</h1>
+    <div class="shell">
+      <aside>
+        <div class="sec">ガイド</div>
+        <a href="#overview">概要</a>
+        <a href="#quickstart">クイックスタート</a>
+        <a href="#endpoint">エンドポイント</a>
+        <a href="#params">パラメータ</a>
+        <a href="#errors">エラー</a>
+        <a href="#behavior">挙動</a>
+        <a href="#embed">埋め込み</a>
+        <div class="sec">AI</div>
+        <a href="#agents">エージェント向け</a>
+        <a href="#ai-links">各種 AI で開く</a>
+      </aside>
+      <article>
+        <h1>ドキュメント</h1>
         <p class="lede">
-          サイズ・シード・色をクエリに載せるだけです。同じ URL はいつも同じ画像になります。
+          クエリ文字列だけでメッシュグラデ PNG を返す HTTP API です。認証はありません。成功時は画像、壊れた数値だけ JSON になります。
         </p>
-        <div class="layout">
-          <form class="card" id="form">
-            <div class="row">
-              <div>
-                <label for="w">幅 w</label>
-                <input id="w" name="w" type="number" min="16" max="2048" value="800" />
-              </div>
-              <div>
-                <label for="h">高さ h</label>
-                <input id="h" name="h" type="number" min="16" max="2048" value="800" />
-              </div>
-            </div>
-            <div class="chips" id="sizes"></div>
-            <label for="seed">シード seed</label>
-            <input id="seed" name="seed" value="jalapeno" />
-            <div class="chips">
-              <button class="chip" type="button" id="random-seed">ランダム</button>
-            </div>
-            <label for="colors">色 colors</label>
-            <textarea id="colors" name="colors">#2EE59D, #4FC3F7, #00ACC1, #80DEEA</textarea>
-            <div class="chips" id="palettes"></div>
-            <div class="row">
-              <div>
-                <label for="warp">ワープ warp</label>
-                <input id="warp" name="warp" type="number" min="0" max="1.5" step="0.05" value="0.62" />
-              </div>
-              <div>
-                <label for="grain">グレイン grain</label>
-                <input id="grain" name="grain" type="number" min="0" max="0.2" step="0.005" value="0.035" />
-              </div>
-            </div>
-            <div class="actions">
-              <button class="primary" type="submit">生成</button>
-              <button class="ghost" type="button" id="copy">URL をコピー</button>
-              <button class="ghost" type="button" id="open">新しいタブ</button>
-              <button class="ghost" type="button" id="download">ダウンロード</button>
-            </div>
-          </form>
-          <div class="preview-wrap">
-            <div class="preview" id="frame">
-              <img id="preview" alt="生成されたグラデーション" />
-            </div>
-            <div class="urlbox" id="url"></div>
-          </div>
-        </div>
-      </section>
 
-      <section id="docs">
-        <h2>エンドポイント</h2>
-        <p><code>GET /gradient</code> が唯一の生成 API です。成功時は <code>image/png</code>、数値パラメータが壊れているときだけ JSON 400 です。</p>
+        <h2 id="overview">概要</h2>
+        <p>
+          生成エンドポイントは <code>GET /gradient</code> だけです。幅・高さ・シード・色を URL に載せると PNG が返ります。同じクエリはいつも同じバイト列になります。カード画像、OGP、プレースホルダ、背景に使えます。
+        </p>
+        <div class="samples">
+          <figure>
+            <img src="/gradient?w=360&h=360&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1,80DEEA" alt="jalapeno" />
+            <figcaption>seed=jalapeno</figcaption>
+          </figure>
+          <figure>
+            <img src="/gradient?w=360&h=360&seed=aurora&colors=2EE59D,4FC3F7,00ACC1,80DEEA" alt="aurora" />
+            <figcaption>seed=aurora</figcaption>
+          </figure>
+          <figure>
+            <img src="/gradient?w=360&h=360&seed=42&colors=FF6B6B,FFD93D,FF8C42,C44569" alt="sunset 42" />
+            <figcaption>seed=42 / sunset</figcaption>
+          </figure>
+        </div>
+        <p>試すだけなら <a href="/">Playground</a> を開いてください。こちらは契約と埋め方の説明です。</p>
+
+        <h2 id="quickstart">クイックスタート</h2>
+        <p>ブラウザのアドレス欄、または <code>&lt;img&gt;</code> の <code>src</code> に次を置きます。</p>
+        <pre><code>GET /gradient?w=800&amp;h=800&amp;seed=jalapeno&amp;colors=2EE59D,4FC3F7,00ACC1</code></pre>
+        <pre><code id="ex-curl"></code></pre>
+        <p>ローカル起動:</p>
+        <pre><code>npm start
+# http://localhost:8787</code></pre>
+
+        <h2 id="endpoint">エンドポイント</h2>
         <table>
           <thead>
-            <tr><th>パラメータ</th><th>型</th><th>デフォルト</th><th>説明</th></tr>
+            <tr><th>項目</th><th>値</th></tr>
           </thead>
           <tbody>
-            <tr><td><code>w</code> / <code>width</code></td><td>integer</td><td>800</td><td>幅。16–2048 に丸めます。</td></tr>
-            <tr><td><code>h</code> / <code>height</code></td><td>integer</td><td>800</td><td>高さ。16–2048 に丸めます。</td></tr>
-            <tr><td><code>seed</code></td><td>string</td><td>0</td><td>模様の種。同じ値なら同じ絵。</td></tr>
-            <tr><td><code>colors</code></td><td>string</td><td>#2EE59D,...</td><td>HEX。カンマ / スペース / <code>|</code> 区切り。<code>#</code> はあってもなくてもよい。</td></tr>
-            <tr><td><code>warp</code></td><td>number</td><td>0.62</td><td>流れの強さ。0–1.5。</td></tr>
-            <tr><td><code>grain</code></td><td>number</td><td>0.035</td><td>粒子。0–0.2。</td></tr>
+            <tr><td>メソッド / パス</td><td><code>GET /gradient</code></td></tr>
+            <tr><td>成功</td><td><code>200</code> <code>image/png</code></td></tr>
+            <tr><td>失敗</td><td><code>400</code> <code>application/json</code></td></tr>
+            <tr><td>認証</td><td>なし</td></tr>
+            <tr><td>CORS</td><td><code>Access-Control-Allow-Origin: *</code></td></tr>
+            <tr><td>キャッシュ</td><td><code>public, max-age=31536000, immutable</code></td></tr>
+          </tbody>
+        </table>
+        <p>
+          別名として <code>width</code> / <code>height</code> も使えます。生成以外の URL はドキュメントと機械可読ファイルだけです。存在しない生成パスを足さないでください。
+        </p>
+
+        <h2 id="params">パラメータ</h2>
+        <p>すべてクエリです。省略した項目はデフォルトになります。範囲外のサイズは丸めます。</p>
+        <table>
+          <thead>
+            <tr><th>名前</th><th>型</th><th>デフォルト</th><th>範囲</th><th>説明</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>w</code> / <code>width</code></td>
+              <td>integer</td><td>800</td><td>16–2048</td>
+              <td>幅（px）。範囲外はクランプ。</td>
+            </tr>
+            <tr>
+              <td><code>h</code> / <code>height</code></td>
+              <td>integer</td><td>800</td><td>16–2048</td>
+              <td>高さ（px）。範囲外はクランプ。</td>
+            </tr>
+            <tr>
+              <td><code>seed</code></td>
+              <td>string</td><td><code>0</code></td><td>—</td>
+              <td>模様の種。任意の文字列。空文字は <code>0</code> 扱い。</td>
+            </tr>
+            <tr>
+              <td><code>colors</code></td>
+              <td>string</td><td>#2EE59D, #4FC3F7, #00ACC1, #80DEEA</td><td>2色以上</td>
+              <td>HEX。<code>#</code> は任意。区切りはカンマ / 空白 / <code>|</code>。</td>
+            </tr>
+            <tr>
+              <td><code>warp</code></td>
+              <td>number</td><td>0.62</td><td>0–1.5</td>
+              <td>流れの強さ。0 に近いほど塊、大きいほどリボン。</td>
+            </tr>
+            <tr>
+              <td><code>grain</code></td>
+              <td>number</td><td>0.035</td><td>0–0.2</td>
+              <td>粒子感。</td>
+            </tr>
           </tbody>
         </table>
 
-        <h2>埋め込み例</h2>
-        <pre id="snippets"></pre>
-      </section>
-
-      <section id="ai">
-        <h2>各種 AI で開く</h2>
-        <p class="lede">
-          いまのプレイグラウンド設定を入れたプロンプト付きリンクです。クリックすると、その AI の入力欄に仕様と現在の画像 URL が入ります。
+        <h3 id="param-colors">colors の解釈</h3>
+        <p>
+          各トークンは 3 桁または 6 桁 HEX だけ採用します。不正な値は捨てます。有効色が 2 つ未満ならデフォルトパレットに戻します。これはエラーではありません。
         </p>
-        <div class="prompt-grid" id="ai-links"></div>
-        <label for="agent-prompt">渡しているプロンプト</label>
-        <textarea class="prompt" id="agent-prompt" readonly></textarea>
-        <div class="actions" style="max-width: 360px;">
-          <button class="primary" type="button" id="copy-prompt">プロンプトをコピー</button>
-          <a class="ghost" id="prompt-file" href="/prompt.txt" style="display:grid;place-items:center;text-decoration:none;color:inherit;">prompt.txt</a>
+        <pre><code>colors=2EE59D,4FC3F7
+colors=#FF6B6B|#FFD93D|#FF8C42
+colors=2EE59D 4FC3F7 00ACC1</code></pre>
+
+        <h3 id="param-sizes">よく使うサイズ</h3>
+        <table>
+          <thead>
+            <tr><th>用途</th><th>w × h</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>正方形 / アイコン</td><td>800 × 800</td></tr>
+            <tr><td>Open Graph</td><td>1200 × 630</td></tr>
+            <tr><td>横長ヒーロー</td><td>1920 × 1080</td></tr>
+            <tr><td>ストーリー</td><td>1080 × 1920</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="errors">エラー</h2>
+        <p>
+          <code>w</code> / <code>h</code> / <code>warp</code> / <code>grain</code> が存在するのに数値でないときだけ 400 です。
+        </p>
+        <pre><code>{
+  "error": "w と h は数値で指定してください"
+}</code></pre>
+        <div class="note">
+          HEX が壊れていても 400 にはしません。色が足りなければデフォルトに戻ります。
         </div>
 
-        <h2>機械可読ドキュメント</h2>
-        <p class="lede">エージェントはまず短い要約を読み、必要なら OpenAPI か全文を見てください。認証は不要です。</p>
-        <div class="ai-grid">
+        <h2 id="behavior">挙動</h2>
+        <h3>決定性</h3>
+        <p>クエリが同じなら PNG も同じです。見た目を変えたいときは <code>seed</code> か <code>colors</code> を変えます。</p>
+        <h3>キャッシュ</h3>
+        <p>
+          成功レスポンスは 1 年キャッシュします。同じ URL を何度貼っても再生成コストは CDN やブラウザ側で吸収できます。
+        </p>
+        <h3>CORS</h3>
+        <p>全オリジン許可です。別サイトの <code>&lt;img&gt;</code> や <code>fetch</code> から使えます。</p>
+
+        <h2 id="embed">埋め込み</h2>
+        <pre><code id="ex-html"></code></pre>
+        <pre><code id="ex-md"></code></pre>
+        <pre><code id="ex-js"></code></pre>
+
+        <h2 id="agents">エージェント向け</h2>
+        <p>
+          成功時は JSON ではありません。画像 URL を組み立てて <code>&lt;img&gt;</code> や Markdown に載せてください。幅と高さは 2048 を超えないこと。存在しないエンドポイントを作らないこと。
+        </p>
+        <div class="grid">
           <a class="card" href="/llms.txt">
             <strong>llms.txt</strong>
-            <p>1画面で掴める契約。エンドポイントと制約だけ。</p>
+            <p>短い契約。先にこれを読む。</p>
           </a>
           <a class="card" href="/llms-full.txt">
             <strong>llms-full.txt</strong>
-            <p>パラメータ・エラー・コピー用スニペットの全文。</p>
+            <p>パラメータとスニペットの全文。</p>
           </a>
           <a class="card" href="/openapi.json">
             <strong>openapi.json</strong>
-            <p>OpenAPI 3.1。ツールからの機械読み取り用。</p>
+            <p>OpenAPI 3.1。</p>
+          </a>
+          <a class="card" href="/prompt.txt">
+            <strong>prompt.txt</strong>
+            <p>下のリンクと同じプロンプト。</p>
           </a>
         </div>
-      </section>
-    </main>
+
+        <h2 id="ai-links">各種 AI で開く</h2>
+        <p>
+          仕様と作例 URL を入れたプロンプト付きリンクです。ローカルホストだと相手は <code>llms.txt</code> を取れないので、契約はプロンプトに埋め込んであります。
+        </p>
+        <div class="grid prompt-grid" id="ai-links"></div>
+        <label for="agent-prompt" style="display:block;font-size:13px;font-weight:700;margin-top:8px;">渡しているプロンプト</label>
+        <textarea class="prompt" id="agent-prompt" readonly></textarea>
+        <div class="actions">
+          <button class="primary" type="button" id="copy-prompt">プロンプトをコピー</button>
+          <a class="btn" id="prompt-file" href="/prompt.txt">prompt.txt</a>
+        </div>
+      </article>
+    </div>
     <script>
-      const form = document.getElementById("form");
-      const preview = document.getElementById("preview");
-      const urlEl = document.getElementById("url");
-      const frame = document.getElementById("frame");
-      const snippets = document.getElementById("snippets");
+      const origin = location.origin;
+      const example = `${origin}/gradient?w=800&h=800&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1`;
+      document.getElementById("ex-curl").textContent = `curl -o gradient.png "${example}"`;
+      document.getElementById("ex-html").textContent =
+        `<img src="${example}" alt="" width="800" height="800" />`;
+      document.getElementById("ex-md").textContent = `![gradient](${example})`;
+      document.getElementById("ex-js").textContent =
+        `const url = new URL("${origin}/gradient");\n` +
+        `url.searchParams.set("w", "1200");\n` +
+        `url.searchParams.set("h", "630");\n` +
+        `url.searchParams.set("seed", "hero");\n` +
+        `url.searchParams.set("colors", "2EE59D,4FC3F7,00ACC1");`;
+
+      const prompt = [
+        "You are helping me use Gradient Image Generator, an unauthenticated HTTP image API.",
+        "Read the spec if reachable, otherwise use only this contract. Do not invent endpoints.",
+        `Spec: ${origin}/llms.txt`,
+        `Full spec: ${origin}/llms-full.txt`,
+        `OpenAPI: ${origin}/openapi.json`,
+        `Docs: ${origin}/docs`,
+        `Playground: ${origin}/`,
+        "Contract:",
+        `GET ${origin}/gradient?w=&h=&seed=&colors=&warp=&grain=`,
+        "Success is image/png. Broken numeric params return JSON 400 {error}. CORS is open. Same query always returns the same PNG.",
+        "w/h: integer 16-2048, default 800, clamped. seed: any string, default 0. colors: 2+ hex (# optional), split by comma/space/|. warp: 0-1.5 default 0.62. grain: 0-0.2 default 0.035.",
+        `Current example image: ${example}`,
+        "Help me assemble URLs, embed them in HTML/Markdown/OG tags, and pick seeds/colors. If the origin is localhost you cannot fetch the spec; stay inside this prompt.",
+      ].join("\n");
+
       const promptEl = document.getElementById("agent-prompt");
-      const promptFile = document.getElementById("prompt-file");
-      const aiLinks = document.getElementById("ai-links");
+      promptEl.value = prompt;
+      document.getElementById("prompt-file").href =
+        `/prompt.txt?example=${encodeURIComponent(example)}`;
 
       const assistants = [
         ["ChatGPT", (p) => `https://chatgpt.com/?hints=search&q=${encodeURIComponent(p)}`],
@@ -290,155 +424,19 @@
         ["DeepSeek", (p) => `https://chat.deepseek.com/?q=${encodeURIComponent(p)}`],
         ["Mistral", (p) => `https://chat.mistral.ai/chat?q=${encodeURIComponent(p)}`],
       ];
-
-      for (const [name] of assistants) {
+      const box = document.getElementById("ai-links");
+      for (const [name, make] of assistants) {
         const a = document.createElement("a");
         a.className = "card";
         a.target = "_blank";
         a.rel = "noreferrer";
-        a.dataset.name = name;
+        a.href = make(prompt);
         a.innerHTML = `<strong>${name}</strong><p>プロンプト付きで開く</p>`;
-        aiLinks.append(a);
+        box.append(a);
       }
-
-      const sizes = [
-        ["800²", 800, 800],
-        ["OG 1200×630", 1200, 630],
-        ["HD 1920×1080", 1920, 1080],
-        ["Story 1080×1920", 1080, 1920],
-      ];
-      const palettes = [
-        ["Mint", "#2EE59D, #4FC3F7, #00ACC1, #80DEEA"],
-        ["Sunset", "#FF6B6B, #FFD93D, #FF8C42, #C44569"],
-        ["Twilight", "#7C5CFF, #49C6E5, #F472B6, #1E1B4B"],
-        ["Peach", "#FFB4A2, #E5989B, #FFCDB2, #B5838D"],
-      ];
-
-      const sizeBox = document.getElementById("sizes");
-      for (const [label, w, h] of sizes) {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "chip";
-        button.textContent = label;
-        button.addEventListener("click", () => {
-          form.w.value = w;
-          form.h.value = h;
-          render();
-        });
-        sizeBox.append(button);
-      }
-
-      const paletteBox = document.getElementById("palettes");
-      for (const [label, value] of palettes) {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "chip";
-        button.textContent = label;
-        button.addEventListener("click", () => {
-          form.colors.value = value;
-          render();
-        });
-        paletteBox.append(button);
-      }
-
-      function params() {
-        const data = new FormData(form);
-        const search = new URLSearchParams();
-        for (const [key, value] of data.entries()) {
-          search.set(key, String(value).trim());
-        }
-        return search;
-      }
-
-      function path() {
-        return `/gradient?${params().toString()}`;
-      }
-
-      function absolute() {
-        return `${location.origin}${path()}`;
-      }
-
-      function agentPrompt() {
-        const origin = location.origin;
-        const example = absolute();
-        return [
-          "You are helping me use Gradient Image Generator, an unauthenticated HTTP image API.",
-          "Read the spec if reachable, otherwise use only this contract. Do not invent endpoints.",
-          `Spec: ${origin}/llms.txt`,
-          `Full spec: ${origin}/llms-full.txt`,
-          `OpenAPI: ${origin}/openapi.json`,
-          `Playground: ${origin}/`,
-          "Contract:",
-          `GET ${origin}/gradient?w=&h=&seed=&colors=&warp=&grain=`,
-          "Success is image/png. Broken numeric params return JSON 400 {error}. CORS is open. Same query always returns the same PNG.",
-          "w/h: integer 16-2048, default 800, clamped. seed: any string, default 0. colors: 2+ hex (# optional), split by comma/space/|. warp: 0-1.5 default 0.62. grain: 0-0.2 default 0.035.",
-          `Current example image: ${example}`,
-          "Help me assemble URLs, embed them in HTML/Markdown/OG tags, and pick seeds/colors. If the origin is localhost you cannot fetch the spec; stay inside this prompt.",
-        ].join("\n");
-      }
-
-      function render() {
-        const w = Number(form.w.value) || 800;
-        const h = Number(form.h.value) || 800;
-        frame.style.setProperty("--ar", `${w} / ${h}`);
-        const url = path();
-        preview.src = url;
-        urlEl.textContent = absolute();
-        snippets.textContent = [
-          `<!-- HTML -->`,
-          `<img src="${absolute()}" alt="" />`,
-          ``,
-          `<!-- Markdown -->`,
-          `![gradient](${absolute()})`,
-          ``,
-          `# curl`,
-          `curl -o gradient.png "${absolute()}"`,
-        ].join("\n");
-        const prompt = agentPrompt();
-        promptEl.value = prompt;
-        promptFile.href = `/prompt.txt?example=${encodeURIComponent(absolute())}`;
-        for (const [name, make] of assistants) {
-          const a = aiLinks.querySelector(`[data-name="${name}"]`);
-          if (a) a.href = make(prompt);
-        }
-        history.replaceState(null, "", `/?${params().toString()}`);
-      }
-
-      const initial = new URLSearchParams(location.search);
-      for (const [key, value] of initial.entries()) {
-        if (form.elements[key]) form.elements[key].value = value;
-      }
-
-      let timer = 0;
-      form.addEventListener("input", () => {
-        clearTimeout(timer);
-        timer = setTimeout(render, 220);
-      });
-      form.addEventListener("submit", (event) => {
-        event.preventDefault();
-        render();
-      });
-      document.getElementById("random-seed").addEventListener("click", () => {
-        form.seed.value = Math.random().toString(36).slice(2, 10);
-        render();
-      });
-      document.getElementById("copy").addEventListener("click", async () => {
-        await navigator.clipboard.writeText(absolute());
-      });
-      document.getElementById("open").addEventListener("click", () => {
-        window.open(absolute(), "_blank");
-      });
-      document.getElementById("download").addEventListener("click", () => {
-        const a = document.createElement("a");
-        a.href = path();
-        a.download = `gradient-${form.seed.value || "image"}.png`;
-        a.click();
-      });
       document.getElementById("copy-prompt").addEventListener("click", async () => {
         await navigator.clipboard.writeText(promptEl.value);
       });
-
-      render();
     </script>
   </body>
 </html>
