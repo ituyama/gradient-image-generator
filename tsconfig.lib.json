@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "noEmit": false
+  },
+  "include": [
+    "src/lib.ts",
+    "src/cli.ts",
+    "src/generate.ts",
+    "src/color.ts",
+    "src/noise.ts",
+    "src/rng.ts",
+    "src/png.ts",
+    "src/presets.ts"
+  ]
+}

@@ -13,9 +13,9 @@ import { hashSeed, mulberry32 } from "./rng.js";
 export const DEFAULT_COLORS = ["#2EE59D", "#4FC3F7", "#00ACC1", "#80DEEA"];
 
 export type GenerateOptions = {
-  width: number;
-  height: number;
-  seed: string;
+  width?: number;
+  height?: number;
+  seed?: string;
   colors?: string;
   warp?: number;
   grain?: number;
@@ -258,10 +258,15 @@ function renderField(
   return pixels;
 }
 
-export function generateGradient(options: GenerateOptions): Uint8Array {
-  const width = clamp(Math.round(options.width), 16, 2048);
-  const height = clamp(Math.round(options.height), 16, 2048);
-  const seedValue = hashSeed(options.seed);
+function size(value: number | undefined, fallback: number): number {
+  const n = Math.round(Number(value ?? fallback));
+  return Number.isFinite(n) ? clamp(n, 16, 2048) : fallback;
+}
+
+export function generateGradient(options: GenerateOptions = {}): Uint8Array {
+  const width = size(options.width, 800);
+  const height = size(options.height, 800);
+  const seedValue = hashSeed((options.seed ?? "0").trim() || "0");
   const warp = clamp(options.warp ?? 0.62, 0, 1.5);
   const grain = clamp(options.grain ?? 0.02, 0, 0.2);
   const blur = clamp(options.blur ?? 0, 0, 32);

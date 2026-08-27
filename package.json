@@ -1,18 +1,53 @@
 {
   "name": "gradient-image-generator",
   "version": "1.0.0",
-  "private": true,
+  "description": "Organic mesh-gradient PNGs from seed and colors. Same input always returns the same image.",
   "type": "module",
+  "main": "./dist/lib.js",
+  "types": "./dist/lib.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/lib.d.ts",
+      "import": "./dist/lib.js"
+    }
+  },
+  "bin": {
+    "gradient-image-generator": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
+    "build": "tsc -p tsconfig.lib.json",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run build",
     "dev": "wrangler dev --port 8787",
     "start": "wrangler dev --port 8787",
     "deploy": "wrangler deploy"
   },
-  "dependencies": {
-    "hono": "^4.9.6"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ituyama/gradient-image-generator.git"
   },
+  "homepage": "https://gradient-image-generator.ituyama01.workers.dev",
+  "bugs": {
+    "url": "https://github.com/ituyama/gradient-image-generator/issues"
+  },
+  "keywords": [
+    "gradient",
+    "png",
+    "image",
+    "mesh",
+    "ogp"
+  ],
+  "license": "MIT",
   "devDependencies": {
     "@types/node": "^24.3.0",
+    "hono": "^4.9.6",
     "typescript": "^5.9.2",
     "wrangler": "^4.126.0"
   }

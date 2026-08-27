@@ -1,8 +1,39 @@
 # Gradient Image Generator
 
-URL のクエリだけで、有機的なメッシュグラデ PNG を返す API です。
+URL のクエリだけで、有機的なメッシュグラデ PNG を返す API です。同じ入力は同じ画像になります。
 
 公開: [https://gradient-image-generator.ituyama01.workers.dev](https://gradient-image-generator.ituyama01.workers.dev)
+
+## npm
+
+```bash
+npm install gradient-image-generator
+```
+
+```js
+import { writeFileSync } from "node:fs";
+import { generateGradient } from "gradient-image-generator";
+
+const png = generateGradient({
+  width: 800,
+  height: 800,
+  seed: "jalapeno",
+  colors: "2EE59D,4FC3F7,00ACC1",
+});
+writeFileSync("gradient.png", png);
+```
+
+CLI:
+
+```bash
+npx gradient-image-generator --seed jalapeno --colors 2EE59D,4FC3F7,00ACC1 -o gradient.png
+```
+
+公開前は GitHub から入れられます。
+
+```bash
+npm install github:ituyama/gradient-image-generator
+```
 
 ```bash
 npm start
