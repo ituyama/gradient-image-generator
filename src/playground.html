@@ -209,8 +209,9 @@
       .preview {
         position: relative;
         width: 100%;
-        aspect-ratio: var(--ar, 1);
-        max-height: min(48vh, 520px);
+        height: min(42dvh, 520px);
+        max-height: min(42dvh, 520px);
+        aspect-ratio: auto;
         border-radius: 28px;
         overflow: hidden;
         background: #1a1d26;
@@ -443,7 +444,10 @@
         }
         .preview-wrap { grid-area: preview; position: sticky; top: 84px; }
         .panel { grid-area: panel; }
-        .preview { max-height: min(72vh, 720px); }
+        .preview {
+          height: min(72dvh, 720px);
+          max-height: min(72dvh, 720px);
+        }
         .more {
           border: 0;
           background: transparent;
@@ -496,10 +500,6 @@
           min-width: 0;
         }
         .preview {
-          width: 100%;
-          height: min(26dvh, 200px);
-          max-height: 200px;
-          aspect-ratio: auto;
           margin: 0;
           border-radius: 0;
           box-shadow: none;
@@ -922,9 +922,6 @@
       }
 
       function render() {
-        const w = Number(form.w.value) || 800;
-        const h = Number(form.h.value) || 800;
-        frame.style.setProperty("--ar", `${w} / ${h}`);
         const next = path();
         if (preview.getAttribute("src") !== next) {
           preview.classList.remove("ready");
