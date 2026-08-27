@@ -102,13 +102,14 @@
       }
       .lang-switch button.on { background: #18181b; color: #fff; }
       .hero {
+        position: relative;
         max-width: 1280px;
         margin: 0 auto;
-        padding: 48px 24px 28px;
+        padding: 20px 24px 28px;
       }
       .hero-bg {
-        margin-top: 28px;
-        height: min(52vh, 560px);
+        position: relative;
+        height: min(72vh, 720px);
         border-radius: 28px;
         overflow: hidden;
         background: #f4f4f5;
@@ -119,7 +120,24 @@
         object-fit: cover;
         display: block;
       }
-      .hero-inner { max-width: 720px; }
+      .hero-bg::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(11,12,16,.08) 20%, rgba(11,12,16,.55) 100%);
+        pointer-events: none;
+      }
+      .hero-inner {
+        position: absolute;
+        left: 24px;
+        right: 24px;
+        bottom: 28px;
+        z-index: 1;
+        padding: 36px 40px 40px;
+        max-width: 760px;
+        color: #fff;
+      }
       h1 {
         margin: 0;
         font-size: clamp(42px, 7vw, 80px);
@@ -130,7 +148,7 @@
       .lede {
         margin: 18px 0 0;
         max-width: 520px;
-        color: var(--muted);
+        color: rgba(255,255,255,.86);
         font-size: 17px;
       }
       .actions {
@@ -152,8 +170,8 @@
         cursor: pointer;
         border: 1px solid transparent;
       }
-      .btn.primary { background: #18181b; color: #fff; }
-      .btn.ghost { background: #fff; color: #18181b; border-color: var(--line); }
+      .btn.primary { background: #fff; color: #18181b; }
+      .btn.ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,.45); }
       .urlbar {
         display: flex;
         align-items: center;
@@ -162,8 +180,9 @@
         max-width: 720px;
         padding: 10px 10px 10px 16px;
         border-radius: 16px;
-        background: #f7f7f8;
-        border: 1px solid var(--line);
+        background: rgba(255,255,255,.16);
+        border: 1px solid rgba(255,255,255,.28);
+        backdrop-filter: blur(12px);
       }
       .urlbar code {
         flex: 1;
@@ -171,15 +190,15 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        color: #3f3f46;
+        color: #fff;
         font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
         cursor: pointer;
       }
       .urlbar button {
         flex: none;
         border: 0;
-        background: #18181b;
-        color: #fff;
+        background: #fff;
+        color: #18181b;
         border-radius: 999px;
         padding: 8px 12px;
         font: inherit;
@@ -279,6 +298,9 @@
       </div>
     </header>
     <section class="hero">
+      <div class="hero-bg">
+        <img src="/gradient?w=1600&h=900&seed=aurora&colors=2EE59D,4FC3F7,00ACC1,80DEEA" alt="" />
+      </div>
       <div class="hero-inner">
         <h1>Gradient<br />Image API</h1>
         <p class="lede" data-i18n="home.lede">URL に幅・高さ・シード・色を載せるだけで、有機的なメッシュグラデ PNG が返ります。</p>
@@ -290,9 +312,6 @@
           <code id="url">GET /gradient?w=800&amp;h=800&amp;seed=jalapeno&amp;colors=2EE59D,4FC3F7,00ACC1</code>
           <button type="button" id="copy" data-i18n="home.copy">コピー</button>
         </div>
-      </div>
-      <div class="hero-bg">
-        <img src="/gradient?w=1600&h=900&seed=aurora&colors=2EE59D,4FC3F7,00ACC1,80DEEA" alt="" />
       </div>
     </section>
     <main>
