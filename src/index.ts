@@ -1,15 +1,13 @@
-import { serve } from "@hono/node-server";
-import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { generateGradient } from "./generate.js";
 import { buildAgentPrompt, buildLlmsFull, buildLlmsTxt, buildOpenApi } from "./spec.js";
+import docsHtml from "./docs.html";
+import homeHtml from "./home.html";
+import playgroundHtml from "./playground.html";
+import i18nJs from "./i18n.js";
 
 const app = new Hono();
-const publicDir = dirname(fileURLToPath(import.meta.url));
-const page = (name: string) => readFileSync(join(publicDir, name), "utf8");
 
 app.use("*", cors());
 
@@ -19,12 +17,12 @@ app.get("/", (c) => {
     const search = new URL(c.req.url).search;
     return c.redirect(`/playground${search}`, 302);
   }
-  return c.html(page("home.html"));
+  return c.html(homeHtml);
 });
-app.get("/playground", (c) => c.html(page("playground.html")));
-app.get("/docs", (c) => c.html(page("docs.html")));
+app.get("/playground", (c) => c.html(playgroundHtml));
+app.get("/docs", (c) => c.html(docsHtml));
 app.get("/i18n.js", (c) =>
-  c.text(page("i18n.js"), 200, { "Content-Type": "text/javascript; charset=utf-8" }),
+  c.text(i18nJs, 200, { "Content-Type": "text/javascript; charset=utf-8" }),
 );
 
 app.get("/llms.txt", (c) =>
@@ -56,7 +54,7 @@ app.get("/robots.txt", (c) =>
 const favicon = (size: number) => {
   const seed = Math.random().toString(36).slice(2, 10);
   const png = generateGradient({ width: size, height: size, seed });
-  return new Response(Uint8Array.from(png), {
+  return new Response(png, {
     headers: {
       "Content-Type": "image/png",
       "Cache-Control": "no-store",
@@ -94,7 +92,7 @@ app.get("/gradient", (c) => {
 
   const png = generateGradient({ width, height, seed, colors, warp, grain, blur });
 
-  return new Response(Uint8Array.from(png), {
+  return new Response(png, {
     headers: {
       "Content-Type": "image/png",
       "Cache-Control": "public, max-age=31536000, immutable",
@@ -102,8 +100,4 @@ app.get("/gradient", (c) => {
   });
 });
 
-const port = Number(process.env.PORT ?? 8787);
-
-serve({ fetch: app.fetch, port }, (info) => {
-  console.log(`http://localhost:${info.port}`);
-});
+export default app;

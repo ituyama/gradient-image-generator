@@ -2,13 +2,15 @@
 
 URL のクエリだけで、有機的なメッシュグラデ PNG を返す API です。
 
+公開: [https://gradient-image-generator.ituyama01.workers.dev](https://gradient-image-generator.ituyama01.workers.dev)
+
 ```bash
 npm start
 ```
 
-- トップ: [http://localhost:8787](http://localhost:8787)
-- Playground: [http://localhost:8787/playground](http://localhost:8787/playground)
-- ドキュメント: [http://localhost:8787/docs](http://localhost:8787/docs)
+- トップ: [https://gradient-image-generator.ituyama01.workers.dev](https://gradient-image-generator.ituyama01.workers.dev)
+- Playground: [https://gradient-image-generator.ituyama01.workers.dev/playground](https://gradient-image-generator.ituyama01.workers.dev/playground)
+- ドキュメント: [https://gradient-image-generator.ituyama01.workers.dev/docs](https://gradient-image-generator.ituyama01.workers.dev/docs)
 
 ## 画像を取る
 
@@ -31,8 +33,10 @@ GET /gradient?w=800&h=800&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1
 
 認証なし。成功時は PNG、壊れた数値だけ JSON 400 です。
 
-- [ChatGPT / Claude / Gemini で開く](http://localhost:8787/docs#ai-links)
-- [`/prompt.txt`](http://localhost:8787/prompt.txt)
-- [`/llms.txt`](http://localhost:8787/llms.txt)
-- [`/llms-full.txt`](http://localhost:8787/llms-full.txt)
-- [`/openapi.json`](http://localhost:8787/openapi.json)
+- [ChatGPT / Claude / Gemini で開く](https://gradient-image-generator.ituyama01.workers.dev/docs#ai-links)
+- [`/prompt.txt`](https://gradient-image-generator.ituyama01.workers.dev/prompt.txt)
+- [`/llms.txt`](https://gradient-image-generator.ituyama01.workers.dev/llms.txt)
+- [`/llms-full.txt`](https://gradient-image-generator.ituyama01.workers.dev/llms-full.txt)
+- [`/openapi.json`](https://gradient-image-generator.ituyama01.workers.dev/openapi.json)
+
+ローカルは `npm start`（`wrangler dev`）。再公開は `npm run deploy`。
