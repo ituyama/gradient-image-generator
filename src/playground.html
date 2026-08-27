@@ -56,18 +56,21 @@
         box-shadow: 0 12px 40px rgba(0,0,0,.35);
       }
       .toast[hidden] { display: none; }
-      .hint {
-        margin: 10px 0 0;
-        color: var(--muted);
-        font-size: 12px;
+      .tip-float {
+        position: fixed;
+        z-index: 10000;
+        max-width: min(280px, calc(100vw - 16px));
+        background: #f4f6fb;
+        color: #111318;
+        font-size: 11px;
+        font-weight: 650;
+        line-height: 1.35;
+        padding: 5px 8px;
+        border-radius: 7px;
+        pointer-events: none;
+        box-shadow: 0 8px 24px rgba(0,0,0,.28);
       }
-      .hint kbd, .keys kbd {
-        font: 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
-        border: 1px solid var(--line-strong);
-        background: var(--panel-2);
-        border-radius: 6px;
-        padding: 2px 6px;
-      }
+      .tip-float[hidden] { display: none; }
       .field-label {
         display: block;
         margin-bottom: 6px;
@@ -147,25 +150,12 @@
         margin: 0 auto;
         padding: 28px 24px 72px;
       }
-      .hero {
-        display: flex;
-        justify-content: space-between;
-        gap: 16px;
-        align-items: end;
-        margin-bottom: 22px;
-      }
       h1 {
-        margin: 0;
+        margin: 0 0 22px;
         font-size: 34px;
         letter-spacing: -0.05em;
         font-weight: 650;
       }
-      .lede {
-        margin: 8px 0 0;
-        color: var(--muted);
-        font-size: 14px;
-      }
-      .lede a { color: var(--text); }
       .layout {
         display: grid;
         grid-template-columns: 1fr;
@@ -217,6 +207,15 @@
       }
       .urlbar button {
         flex: none;
+      }
+      .share {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .share .ghost {
+        padding: 7px 10px;
+        font-size: 12px;
       }
       .ai-row {
         display: flex;
@@ -364,30 +363,6 @@
       }
       .ghost { border-radius: 14px; padding: 11px; }
       .ghost.copied { color: #0b0c10; background: var(--ok); border-color: transparent; }
-      [data-tip] { position: relative; }
-      [data-tip]::after {
-        content: attr(data-tip);
-        position: absolute;
-        bottom: calc(100% + 8px);
-        left: 50%;
-        transform: translateX(-50%);
-        background: #f4f6fb;
-        color: #111318;
-        font-size: 11px;
-        font-weight: 650;
-        padding: 5px 8px;
-        border-radius: 7px;
-        white-space: nowrap;
-        opacity: 0;
-        pointer-events: none;
-        z-index: 40;
-      }
-      [data-tip]:hover::after,
-      [data-tip]:focus-visible::after { opacity: 1; }
-      header [data-tip]::after {
-        bottom: auto;
-        top: calc(100% + 8px);
-      }
       @media (min-width: 1100px) {
         .layout {
           grid-template-columns: minmax(0, 1.25fr) minmax(340px, 400px);
@@ -399,7 +374,6 @@
       }
       @media (max-width: 1099px) {
         .preview-wrap { position: static; }
-        .hero { display: block; }
         h1 { font-size: 28px; }
       }
     </style>
@@ -418,18 +392,7 @@
       </div>
     </header>
     <main>
-      <div class="hero">
-        <div>
-          <h1>Playground</h1>
-          <p class="lede">値を動かすと、その場で PNG の URL ができます。<a href="/docs">仕様は Docs</a></p>
-          <p class="hint">
-            <kbd>?</kbd> ショートカット
-            <kbd>R</kbd> シード
-            <kbd>C</kbd> コピー
-            <kbd>S</kbd> 保存
-          </p>
-        </div>
-      </div>
+      <h1>Playground</h1>
       <div class="layout">
         <form class="panel" id="form">
           <div class="block">
@@ -466,16 +429,16 @@
           <div class="block row">
             <div>
               <div class="label">ワープ <span id="warp-val">0.62</span></div>
-              <input id="warp" name="warp" type="range" min="0" max="1.5" step="0.01" value="0.62" />
+              <input id="warp" name="warp" type="range" min="0" max="1.5" step="0.01" value="0.62" aria-label="ワープ" />
             </div>
             <div>
               <div class="label">グレイン <span id="grain-val">0.035</span></div>
-              <input id="grain" name="grain" type="range" min="0" max="0.2" step="0.005" value="0.035" />
+              <input id="grain" name="grain" type="range" min="0" max="0.2" step="0.005" value="0.035" aria-label="グレイン" />
             </div>
           </div>
           <div class="block">
             <div class="label">ぼかし blur <span id="blur-val">0</span></div>
-            <input id="blur" name="blur" type="range" min="0" max="32" step="1" value="0" />
+            <input id="blur" name="blur" type="range" min="0" max="32" step="1" value="0" aria-label="ぼかし" />
           </div>
           <div class="actions">
             <button class="primary" type="submit">生成する</button>
@@ -491,6 +454,10 @@
           <div class="urlbar">
             <code id="url" tabindex="0" data-tip="クリックでコピー"></code>
             <button class="ghost" type="button" id="copy" data-tip="URL をコピー（C）">コピー</button>
+          </div>
+          <div class="share" id="share">
+            <button class="ghost" type="button" id="copy-md" data-tip="Markdown 用にコピー">MD</button>
+            <button class="ghost" type="button" id="copy-html" data-tip="img タグをコピー">HTML</button>
           </div>
           <div class="ai-row">
             <div class="label">チャット</div>
@@ -591,6 +558,7 @@
           hexInput.value = picker.value.toUpperCase();
           writeColors();
         });
+        hexInput.addEventListener("focus", () => hexInput.select());
         hexInput.addEventListener("change", () => {
           const next = normalizeHex(hexInput.value);
           if (!next) {
@@ -706,6 +674,9 @@
         warpVal.textContent = Number(form.warp.value).toFixed(2);
         grainVal.textContent = Number(form.grain.value).toFixed(3);
         blurVal.textContent = String(Math.round(Number(form.blur.value)));
+        form.warp.setAttribute("aria-valuetext", warpVal.textContent);
+        form.grain.setAttribute("aria-valuetext", grainVal.textContent);
+        form.blur.setAttribute("aria-valuetext", blurVal.textContent);
       }
 
       function render() {
@@ -866,6 +837,17 @@
         toast("初期値に戻しました");
       });
 
+      document.getElementById("copy-md").addEventListener("click", async () => {
+        await navigator.clipboard.writeText(`![gradient](${absolute()})`);
+        toast("Markdown をコピーしました");
+      });
+      document.getElementById("copy-html").addEventListener("click", async () => {
+        const w = form.w.value || 800;
+        const h = form.h.value || 800;
+        await navigator.clipboard.writeText(`<img src="${absolute()}" alt="" width="${w}" height="${h}" />`);
+        toast("HTML をコピーしました");
+      });
+
       urlEl.addEventListener("click", copyUrl);
       urlEl.addEventListener("keydown", (event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -919,6 +901,67 @@
         frame.classList.remove("loading");
         frame.classList.add("err");
         toast("画像を作れませんでした");
+      });
+
+      const tip = document.createElement("div");
+      tip.className = "tip-float";
+      tip.hidden = true;
+      document.body.append(tip);
+      let tipEl = null;
+      const placeTip = () => {
+        if (!tipEl || !tipEl.isConnected) {
+          tip.hidden = true;
+          return;
+        }
+        const text = tipEl.getAttribute("data-tip");
+        if (!text) {
+          tip.hidden = true;
+          return;
+        }
+        tip.textContent = text;
+        tip.hidden = false;
+        const gap = 8;
+        const r = tipEl.getBoundingClientRect();
+        const tw = tip.offsetWidth;
+        const th = tip.offsetHeight;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const prefer = tipEl.getAttribute("data-tip-side") || "top";
+        let top = prefer === "bottom" ? r.bottom + gap : r.top - th - gap;
+        if (prefer !== "bottom" && top < gap) top = r.bottom + gap;
+        if (top + th > vh - gap) top = Math.max(gap, r.top - th - gap);
+        let left = r.left + r.width / 2 - tw / 2;
+        if (prefer === "right") left = r.right + gap;
+        if (prefer === "left") left = r.left - tw - gap;
+        left = Math.min(Math.max(gap, left), vw - tw - gap);
+        top = Math.min(Math.max(gap, top), vh - th - gap);
+        tip.style.top = `${Math.round(top)}px`;
+        tip.style.left = `${Math.round(left)}px`;
+      };
+      const showTip = (el) => { tipEl = el; placeTip(); };
+      const hideTip = () => { tipEl = null; tip.hidden = true; };
+      document.addEventListener("pointerover", (event) => {
+        const el = event.target.closest("[data-tip]");
+        if (el) showTip(el);
+      });
+      document.addEventListener("pointerout", (event) => {
+        const el = event.target.closest("[data-tip]");
+        if (!el || el.contains(event.relatedTarget)) return;
+        if (document.activeElement !== el) hideTip();
+      });
+      document.addEventListener("focusin", (event) => {
+        const el = event.target.closest("[data-tip]");
+        if (el) showTip(el);
+      });
+      document.addEventListener("focusout", (event) => {
+        if (tipEl && !tipEl.contains(event.relatedTarget)) hideTip();
+      });
+      window.addEventListener("scroll", placeTip, true);
+      window.addEventListener("resize", placeTip);
+      new MutationObserver(placeTip).observe(document.body, {
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["data-tip"],
       });
 
       render();
