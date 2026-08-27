@@ -549,7 +549,7 @@
         </a>
         <div class="end">
           <nav>
-            <a href="/" data-i18n-tip="nav.play" data-tip-side="bottom"><svg class="icon"><use href="#i-sliders"/></svg>Playground</a>
+            <a href="/playground" data-i18n-tip="nav.play" data-tip-side="bottom"><svg class="icon"><use href="#i-sliders"/></svg>Playground</a>
             <a class="active" href="/docs" data-i18n-tip="nav.docs" data-tip-side="bottom"><svg class="icon"><use href="#i-book"/></svg>Docs</a>
             <a href="/openapi.json" data-i18n-tip="nav.openapi" data-tip-side="bottom"><svg class="icon"><use href="#i-braces"/></svg>OpenAPI</a>
             <a href="/llms.txt" data-i18n-tip="nav.llms" data-tip-side="bottom"><svg class="icon"><use href="#i-file"/></svg>llms.txt</a>
@@ -606,19 +606,19 @@
           生成は <code>GET /gradient</code> だけです。幅・高さ・シード・色を URL に載せると PNG が返ります。同じクエリは同じ画像になります。
         </p>
         <div class="samples">
-          <a href="/?w=800&h=800&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1,80DEEA" data-i18n-tip="docs.try">
+          <a href="/playground?w=800&h=800&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1,80DEEA" data-i18n-tip="docs.try">
             <figure>
               <img src="/gradient?w=360&h=360&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1,80DEEA" alt="jalapeno" />
               <figcaption><svg class="icon"><use href="#i-hash"/></svg>jalapeno<svg class="icon"><use href="#i-play"/></svg></figcaption>
             </figure>
           </a>
-          <a href="/?w=800&h=800&seed=aurora&colors=2EE59D,4FC3F7,00ACC1,80DEEA" data-i18n-tip="docs.try">
+          <a href="/playground?w=800&h=800&seed=aurora&colors=2EE59D,4FC3F7,00ACC1,80DEEA" data-i18n-tip="docs.try">
             <figure>
               <img src="/gradient?w=360&h=360&seed=aurora&colors=2EE59D,4FC3F7,00ACC1,80DEEA" alt="aurora" />
               <figcaption><svg class="icon"><use href="#i-hash"/></svg>aurora<svg class="icon"><use href="#i-play"/></svg></figcaption>
             </figure>
           </a>
-          <a href="/?w=800&h=800&seed=42&colors=FF6B6B,FFD93D,FF8C42,C44569" data-i18n-tip="docs.try">
+          <a href="/playground?w=800&h=800&seed=42&colors=FF6B6B,FFD93D,FF8C42,C44569" data-i18n-tip="docs.try">
             <figure>
               <img src="/gradient?w=360&h=360&seed=42&colors=FF6B6B,FFD93D,FF8C42,C44569" alt="sunset 42" />
               <figcaption><svg class="icon"><use href="#i-hash"/></svg>42<svg class="icon"><use href="#i-play"/></svg></figcaption>
@@ -735,10 +735,10 @@ colors=2EE59D 4FC3F7 00ACC1</code></pre>
             <tr><th data-i18n="docs.th.use">用途</th><th>w × h</th><th></th></tr>
           </thead>
           <tbody>
-            <tr><td data-i18n="docs.size.sq">正方形 / アイコン</td><td>800 × 800</td><td><a class="icon-action" href="/?w=800&h=800" data-i18n-tip="docs.try" data-i18n-aria="docs.try"><svg class="icon"><use href="#i-play"/></svg></a></td></tr>
-            <tr><td>Open Graph</td><td>1200 × 630</td><td><a class="icon-action" href="/?w=1200&h=630" data-i18n-tip="docs.try" data-i18n-aria="docs.try"><svg class="icon"><use href="#i-play"/></svg></a></td></tr>
-            <tr><td data-i18n="docs.size.hero">横長ヒーロー</td><td>1920 × 1080</td><td><a class="icon-action" href="/?w=1920&h=1080" data-i18n-tip="docs.try" data-i18n-aria="docs.try"><svg class="icon"><use href="#i-play"/></svg></a></td></tr>
-            <tr><td data-i18n="docs.size.story">ストーリー</td><td>1080 × 1920</td><td><a class="icon-action" href="/?w=1080&h=1920" data-i18n-tip="docs.try" data-i18n-aria="docs.try"><svg class="icon"><use href="#i-play"/></svg></a></td></tr>
+            <tr><td data-i18n="docs.size.sq">正方形 / アイコン</td><td>800 × 800</td><td><a class="icon-action" href="/playground?w=800&h=800" data-i18n-tip="docs.try" data-i18n-aria="docs.try"><svg class="icon"><use href="#i-play"/></svg></a></td></tr>
+            <tr><td>Open Graph</td><td>1200 × 630</td><td><a class="icon-action" href="/playground?w=1200&h=630" data-i18n-tip="docs.try" data-i18n-aria="docs.try"><svg class="icon"><use href="#i-play"/></svg></a></td></tr>
+            <tr><td data-i18n="docs.size.hero">横長ヒーロー</td><td>1920 × 1080</td><td><a class="icon-action" href="/playground?w=1920&h=1080" data-i18n-tip="docs.try" data-i18n-aria="docs.try"><svg class="icon"><use href="#i-play"/></svg></a></td></tr>
+            <tr><td data-i18n="docs.size.story">ストーリー</td><td>1080 × 1920</td><td><a class="icon-action" href="/playground?w=1080&h=1920" data-i18n-tip="docs.try" data-i18n-aria="docs.try"><svg class="icon"><use href="#i-play"/></svg></a></td></tr>
           </tbody>
         </table>
         </div>
@@ -859,7 +859,7 @@ colors=2EE59D 4FC3F7 00ACC1</code></pre>
         `Full spec: ${origin}/llms-full.txt`,
         `OpenAPI: ${origin}/openapi.json`,
         `Docs: ${origin}/docs`,
-        `Playground: ${origin}/`,
+        `Playground: ${origin}/playground`,
         "Contract:",
         `GET ${origin}/gradient?w=&h=&seed=&colors=&warp=&grain=&blur=`,
         "Success is image/png. Broken numeric params return JSON 400 {error}. CORS is open. Same query always returns the same PNG.",

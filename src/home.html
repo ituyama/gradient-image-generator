@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="ja" data-i18n-title="home.title">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gradient Image API</title>
+    <link id="favicon" rel="icon" type="image/png" href="/favicon.ico" />
+    <link id="touch-icon" rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script>
+      (() => {
+        const seed = Math.random().toString(36).slice(2, 10);
+        document.getElementById("favicon").href = `/gradient?w=64&h=64&seed=${seed}`;
+        document.getElementById("touch-icon").href = `/gradient?w=180&h=180&seed=${seed}`;
+      })();
+    </script>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b0c10;
+        --panel: #12141a;
+        --text: #f4f6fb;
+        --muted: #8b93a7;
+        --line: rgba(255, 255, 255, 0.08);
+        --line-strong: rgba(255, 255, 255, 0.14);
+      }
+      * { box-sizing: border-box; }
+      html, body { min-height: 100%; }
+      :focus-visible { outline: 2px solid #7ee0b2; outline-offset: 2px; }
+      @media (prefers-reduced-motion: reduce) {
+        * { transition: none !important; }
+      }
+      body {
+        margin: 0;
+        color: var(--text);
+        font-family: ui-sans-serif, system-ui, -apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, "PingFang SC", sans-serif;
+        background: var(--bg);
+        line-height: 1.5;
+      }
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-bottom: 1px solid var(--line);
+        background: rgba(11, 12, 16, 0.72);
+        backdrop-filter: blur(18px);
+      }
+      .bar {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 24px;
+        min-height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: inherit;
+        text-decoration: none;
+        font-weight: 650;
+        letter-spacing: -0.03em;
+      }
+      .mark {
+        width: 22px;
+        height: 22px;
+        border-radius: 7px;
+        background: linear-gradient(135deg, #2ee59d, #4fc3f7);
+      }
+      nav { display: flex; gap: 6px; }
+      nav a {
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 13px;
+        padding: 7px 11px;
+        border-radius: 999px;
+      }
+      nav a:hover { color: var(--text); background: rgba(255, 255, 255, 0.04); }
+      nav a.active { color: var(--text); background: rgba(255, 255, 255, 0.08); }
+      .end { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+      .lang-switch {
+        display: inline-flex;
+        gap: 2px;
+        padding: 2px;
+        border: 1px solid var(--line-strong);
+        border-radius: 999px;
+        background: var(--panel);
+      }
+      .lang-switch button {
+        border: 0;
+        background: transparent;
+        color: var(--muted);
+        border-radius: 999px;
+        padding: 5px 9px;
+        font: inherit;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .lang-switch button.on { background: var(--text); color: #111318; }
+      .hero {
+        position: relative;
+        min-height: min(78vh, 820px);
+        display: grid;
+        align-items: end;
+        overflow: hidden;
+      }
+      .hero-bg {
+        position: absolute;
+        inset: 0;
+      }
+      .hero-bg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .hero-bg::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(11,12,16,.15) 0%, rgba(11,12,16,.72) 62%, #0b0c10 100%);
+      }
+      .hero-inner {
+        position: relative;
+        z-index: 1;
+        max-width: 1280px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 72px 24px 48px;
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(42px, 7vw, 80px);
+        letter-spacing: -0.06em;
+        line-height: 0.95;
+        font-weight: 650;
+      }
+      .lede {
+        margin: 18px 0 0;
+        max-width: 520px;
+        color: #c9d0df;
+        font-size: 17px;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 28px;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        padding: 12px 18px;
+        font: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        border: 1px solid transparent;
+      }
+      .btn.primary { background: #f4f6fb; color: #111318; }
+      .btn.ghost { background: rgba(255,255,255,.08); color: #fff; border-color: var(--line-strong); }
+      .urlbar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 22px;
+        max-width: 720px;
+        padding: 10px 10px 10px 16px;
+        border-radius: 16px;
+        background: rgba(11,12,16,.55);
+        border: 1px solid var(--line-strong);
+        backdrop-filter: blur(12px);
+      }
+      .urlbar code {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #c9d0df;
+        font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+        cursor: pointer;
+      }
+      .urlbar button {
+        flex: none;
+        border: 0;
+        background: #f4f6fb;
+        color: #111318;
+        border-radius: 999px;
+        padding: 8px 12px;
+        font: inherit;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      main {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 8px 24px 80px;
+      }
+      .gallery {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr 1fr;
+        grid-template-rows: 220px 220px;
+        gap: 12px;
+        margin: 8px 0 48px;
+      }
+      .gallery a:first-child { grid-row: 1 / span 2; }
+      .gallery a {
+        display: block;
+        border-radius: 22px;
+        overflow: hidden;
+        position: relative;
+        background: #181b23;
+        text-decoration: none;
+        color: inherit;
+      }
+      .gallery img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .gallery span {
+        position: absolute;
+        left: 14px;
+        bottom: 12px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #fff;
+        text-shadow: 0 1px 8px rgba(0,0,0,.45);
+      }
+      .facts {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+      }
+      .fact {
+        padding: 22px 22px 20px;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: var(--panel);
+      }
+      .fact b { display: block; font-size: 16px; letter-spacing: -0.03em; }
+      .fact p { margin: 8px 0 0; color: var(--muted); font-size: 14px; }
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 20px;
+        transform: translateX(-50%);
+        z-index: 60;
+        background: #f4f6fb;
+        color: #111318;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 10px 14px;
+        border-radius: 999px;
+      }
+      .toast[hidden] { display: none; }
+      @media (max-width: 880px) {
+        .gallery { grid-template-columns: 1fr 1fr; grid-template-rows: 180px 180px 180px; }
+        .gallery a:first-child { grid-row: auto; grid-column: 1 / -1; min-height: 220px; }
+        .facts { grid-template-columns: 1fr; }
+        h1 { font-size: 42px; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="bar">
+        <a class="brand" href="/"><span class="mark"></span>Gradient Image API</a>
+        <div class="end">
+          <nav>
+            <a href="/playground">Playground</a>
+            <a href="/docs">Docs</a>
+            <a href="/openapi.json">OpenAPI</a>
+            <a href="/llms.txt">llms.txt</a>
+          </nav>
+          <div class="lang-switch" role="group" data-i18n-aria="lang.label">
+            <button type="button" data-lang="ja">JA</button>
+            <button type="button" data-lang="en">EN</button>
+            <button type="button" data-lang="zh">中文</button>
+          </div>
+        </div>
+      </div>
+    </header>
+    <section class="hero">
+      <div class="hero-bg">
+        <img src="/gradient?w=1600&h=900&seed=aurora&colors=2EE59D,4FC3F7,00ACC1,80DEEA" alt="" />
+      </div>
+      <div class="hero-inner">
+        <h1>Gradient<br />Image API</h1>
+        <p class="lede" data-i18n="home.lede">URL に幅・高さ・シード・色を載せるだけで、有機的なメッシュグラデ PNG が返ります。</p>
+        <div class="actions">
+          <a class="btn primary" href="/playground" data-i18n="home.try">Playground で試す</a>
+          <a class="btn ghost" href="/docs" data-i18n="home.docs">Docs を読む</a>
+        </div>
+        <div class="urlbar">
+          <code id="url">GET /gradient?w=800&amp;h=800&amp;seed=jalapeno&amp;colors=2EE59D,4FC3F7,00ACC1</code>
+          <button type="button" id="copy" data-i18n="home.copy">コピー</button>
+        </div>
+      </div>
+    </section>
+    <main>
+      <div class="gallery">
+        <a href="/playground?w=800&h=800&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1,80DEEA">
+          <img src="/gradient?w=720&h=900&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1,80DEEA" alt="jalapeno" />
+          <span>jalapeno</span>
+        </a>
+        <a href="/playground?w=800&h=800&seed=aurora&colors=2EE59D,4FC3F7,00ACC1,80DEEA">
+          <img src="/gradient?w=480&h=360&seed=aurora&colors=2EE59D,4FC3F7,00ACC1,80DEEA" alt="aurora" />
+          <span>aurora</span>
+        </a>
+        <a href="/playground?w=800&h=800&seed=42&colors=FF6B6B,FFD93D,FF8C42,C44569">
+          <img src="/gradient?w=480&h=360&seed=42&colors=FF6B6B,FFD93D,FF8C42,C44569" alt="42" />
+          <span>42</span>
+        </a>
+        <a href="/playground?w=1200&h=630&seed=og&colors=7C5CFF,49C6E5,F472B6,1E1B4B">
+          <img src="/gradient?w=480&h=360&seed=og&colors=7C5CFF,49C6E5,F472B6,1E1B4B" alt="og" />
+          <span>og</span>
+        </a>
+        <a href="/playground?w=800&h=800&seed=peach&colors=FFB4A2,E5989B,FFCDB2,B5838D">
+          <img src="/gradient?w=480&h=360&seed=peach&colors=FFB4A2,E5989B,FFCDB2,B5838D" alt="peach" />
+          <span>peach</span>
+        </a>
+      </div>
+      <div class="facts">
+        <div class="fact">
+          <b data-i18n="home.s1">GET だけ</b>
+          <p data-i18n="home.s1b">画像を返すのは /gradient ひとつです。キーは不要です。</p>
+        </div>
+        <div class="fact">
+          <b data-i18n="home.s2">同じ URL は同じ画像</b>
+          <p data-i18n="home.s2b">クエリが同じなら PNG も同じです。見た目を変えるなら seed か colors を変えます。</p>
+        </div>
+        <div class="fact">
+          <b data-i18n="home.s3">そのまま貼れる</b>
+          <p data-i18n="home.s3b">img の src、Markdown、OGP に URL を置くだけです。</p>
+        </div>
+      </div>
+    </main>
+    <div class="toast" id="toast" hidden></div>
+    <script src="/i18n.js"></script>
+    <script>
+      const t = (key) => window.I18N ? I18N.t(key) : key;
+      const example = `${location.origin}/gradient?w=800&h=800&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1`;
+      const urlEl = document.getElementById("url");
+      const copyBtn = document.getElementById("copy");
+      const toastEl = document.getElementById("toast");
+      const toast = (msg) => {
+        toastEl.textContent = msg;
+        toastEl.hidden = false;
+        clearTimeout(toast.t);
+        toast.t = setTimeout(() => { toastEl.hidden = true; }, 1400);
+      };
+      const copy = async () => {
+        await navigator.clipboard.writeText(example);
+        copyBtn.textContent = t("home.copied");
+        toast(t("home.toastCopy"));
+        setTimeout(() => { copyBtn.textContent = t("home.copy"); }, 1200);
+      };
+      urlEl.addEventListener("click", copy);
+      copyBtn.addEventListener("click", copy);
+    </script>
+  </body>
+</html>

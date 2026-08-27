@@ -13,7 +13,15 @@ const page = (name: string) => readFileSync(join(publicDir, name), "utf8");
 
 app.use("*", cors());
 
-app.get("/", (c) => c.html(page("playground.html")));
+app.get("/", (c) => {
+  const q = c.req.query();
+  if (["w", "h", "width", "height", "seed", "colors", "warp", "grain", "blur"].some((key) => q[key] !== undefined)) {
+    const search = new URL(c.req.url).search;
+    return c.redirect(`/playground${search}`, 302);
+  }
+  return c.html(page("home.html"));
+});
+app.get("/playground", (c) => c.html(page("playground.html")));
 app.get("/docs", (c) => c.html(page("docs.html")));
 app.get("/i18n.js", (c) =>
   c.text(page("i18n.js"), 200, { "Content-Type": "text/javascript; charset=utf-8" }),

@@ -181,7 +181,7 @@ export function buildAgentPrompt(origin: string, exampleUrl?: string): string {
     `Full spec: ${origin}/llms-full.txt`,
     `OpenAPI: ${origin}/openapi.json`,
     `Docs: ${origin}/docs`,
-    `Playground: ${origin}/`,
+    `Playground: ${origin}/playground`,
     "Contract:",
     `GET ${origin}/gradient?w=&h=&seed=&colors=&warp=&grain=&blur=`,
     "Success is image/png. Broken numeric params return JSON 400 {error}. CORS is open. Same query always returns the same PNG.",
@@ -217,7 +217,8 @@ This service is an image API. Prefer GET /gradient and embed the URL in <img>, M
 
 ## Human docs
 
-- [Playground](${origin}/): live parameter editor
+- [Home](${origin}/)
+- [Playground](${origin}/playground): live parameter editor
 - [Human docs](${origin}/docs)
 - [Open in ChatGPT / Claude / Gemini](${origin}/docs#ai-links): prefilled prompt links
 - [OpenAPI 3.1](${origin}/openapi.json)
@@ -308,7 +309,8 @@ Invalid hex colors are skipped. If fewer than 2 valid colors remain, the default
 
 ## Related URLs
 
-- Playground: ${origin}/
+- Home: ${origin}/
+- Playground: ${origin}/playground
 - Human docs: ${origin}/docs
 - Prefilled AI prompt links: ${origin}/docs#ai-links
 - Short AI summary: ${origin}/llms.txt

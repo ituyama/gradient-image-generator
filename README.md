@@ -6,7 +6,8 @@ URL のクエリだけで、有機的なメッシュグラデ PNG を返す API 
 npm start
 ```
 
-- Playground: [http://localhost:8787](http://localhost:8787)
+- トップ: [http://localhost:8787](http://localhost:8787)
+- Playground: [http://localhost:8787/playground](http://localhost:8787/playground)
 - ドキュメント: [http://localhost:8787/docs](http://localhost:8787/docs)
 
 ## 画像を取る
