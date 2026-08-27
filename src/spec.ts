@@ -72,6 +72,52 @@ export const PARAMS = [
   },
 ] as const;
 
+export type GradientQuery = {
+  w?: number;
+  h?: number;
+  seed?: string;
+  colors?: string;
+  warp?: number;
+  grain?: number;
+  blur?: number;
+};
+
+function queryPair(name: string, value: string): string {
+  return `${encodeURIComponent(name)}=${encodeURIComponent(value).replace(/%2C/gi, ",")}`;
+}
+
+export function buildGradientSearch(query: GradientQuery): string {
+  const parts: string[] = [];
+  if (query.w !== undefined) parts.push(queryPair("w", String(query.w)));
+  if (query.h !== undefined) parts.push(queryPair("h", String(query.h)));
+  if (query.seed !== undefined && query.seed !== "") parts.push(queryPair("seed", query.seed));
+  if (query.colors) parts.push(queryPair("colors", query.colors));
+  if (query.warp !== undefined) parts.push(queryPair("warp", String(query.warp)));
+  if (query.grain !== undefined) parts.push(queryPair("grain", String(query.grain)));
+  if (query.blur !== undefined) parts.push(queryPair("blur", String(query.blur)));
+  return parts.length ? `?${parts.join("&")}` : "";
+}
+
+export function buildGradientUrl(origin: string, query: GradientQuery = {}): string {
+  return `${origin}/gradient${buildGradientSearch(query)}`;
+}
+
+export function buildPlaygroundUrl(origin: string, query: GradientQuery = {}): string {
+  return `${origin}/playground${buildGradientSearch(query)}`;
+}
+
+export function buildMcpDiscovery(origin: string) {
+  return {
+    name: "gradient-image-generator",
+    title: "Gradient Image API",
+    description:
+      "Stateless MCP server that assembles GET /gradient URLs. No auth. Same query always returns the same PNG.",
+    version: API_VERSION,
+    url: `${origin}/mcp`,
+    transport: "streamable-http",
+  };
+}
+
 export function buildOpenApi(origin: string) {
   return {
     openapi: "3.1.0",
@@ -180,6 +226,7 @@ export function buildAgentPrompt(origin: string, exampleUrl?: string): string {
     `Spec: ${origin}/llms.txt`,
     `Full spec: ${origin}/llms-full.txt`,
     `OpenAPI: ${origin}/openapi.json`,
+    `MCP: ${origin}/mcp`,
     `Docs: ${origin}/docs`,
     `Playground: ${origin}/playground`,
     "Contract:",
@@ -225,6 +272,7 @@ This service is an image API. Prefer GET /gradient and embed the URL in <img>, M
 - [GitHub](https://github.com/ituyama/gradient-image-generator)
 - [Contribute](${origin}/docs#contribute)
 - [OpenAPI 3.1](${origin}/openapi.json)
+- [MCP](${origin}/mcp): Streamable HTTP. Tool generate returns a GET /gradient URL.
 - [Full machine doc](${origin}/llms-full.txt)
 
 ## Endpoint
@@ -259,6 +307,7 @@ Auth: none
 - To change the look, change seed or colors. Do not invent extra endpoints.
 - Never request width or height above 2048.
 - For documentation of this API itself, fetch ${origin}/llms-full.txt or ${origin}/openapi.json.
+- Cursor / Claude Desktop can attach ${origin}/mcp and call the generate tool instead of inventing query strings.
 `;
 }
 
@@ -321,6 +370,7 @@ Invalid hex colors are skipped. If fewer than 2 valid colors remain, the default
 - Contribute: ${origin}/docs#contribute
 - Short AI summary: ${origin}/llms.txt
 - OpenAPI: ${origin}/openapi.json
+- MCP: ${origin}/mcp
 - This document: ${origin}/llms-full.txt
 
 ## Copy-paste snippets
@@ -355,5 +405,19 @@ npm:
 import { generateGradient } from "gradient-image-generator";
 const png = generateGradient({ width: 800, height: 800, seed: "jalapeno" });
 \`\`\`
+
+MCP (Cursor / Claude Desktop):
+
+\`\`\`json
+{
+  "mcpServers": {
+    "gradient": {
+      "url": "${origin}/mcp"
+    }
+  }
+}
+\`\`\`
+
+Tool: generate. Same params as GET /gradient. Returns url, markdown, html, playground. Optional include_image for small PNGs.
 `;
 }

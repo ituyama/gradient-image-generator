@@ -72,6 +72,19 @@ GET /gradient?w=800&h=800&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1
 - [`/llms.txt`](https://gradient.ituyama.com/llms.txt)
 - [`/llms-full.txt`](https://gradient.ituyama.com/llms-full.txt)
 - [`/openapi.json`](https://gradient.ituyama.com/openapi.json)
+- [MCP](https://gradient.ituyama.com/docs#mcp): `https://gradient.ituyama.com/mcp`
+
+Cursor の `mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "gradient": {
+      "url": "https://gradient.ituyama.com/mcp"
+    }
+  }
+}
+```
 
 ローカルは `npm start`（`wrangler dev`）。再公開は `npm run deploy`。
 

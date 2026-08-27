@@ -15,7 +15,8 @@ import {
   publicOrigin,
 } from "./meta.js";
 import { brandGradientPath, pickBrandPreset, presetsBrowserScript } from "./presets.js";
-import { buildAgentPrompt, buildLlmsFull, buildLlmsTxt, buildOpenApi } from "./spec.js";
+import { handleMcp } from "./mcp.js";
+import { buildAgentPrompt, buildLlmsFull, buildLlmsTxt, buildMcpDiscovery, buildOpenApi } from "./spec.js";
 import docsHtml from "./docs.html";
 import homeHtml from "./home.html";
 import playgroundHtml from "./playground.html";
@@ -123,6 +124,11 @@ app.get("/llms-full.txt", (c) =>
 );
 
 app.get("/openapi.json", (c) => c.json(buildOpenApi(publicOrigin(c.req.url))));
+
+app.get("/.well-known/mcp.json", (c) => c.json(buildMcpDiscovery(publicOrigin(c.req.url))));
+app.get("/.well-known/mcp/server-card.json", (c) =>
+  c.json(buildMcpDiscovery(publicOrigin(c.req.url))),
+);
 
 app.get("/prompt.txt", (c) =>
   c.text(buildAgentPrompt(publicOrigin(c.req.url), c.req.query("example")), 200, {
@@ -236,4 +242,12 @@ app.get("/gradient", async (c) => {
   return res;
 });
 
-export default app;
+export default {
+  fetch(request: Request, env: unknown, ctx: { waitUntil(promise: Promise<unknown>): void }) {
+    const path = new URL(request.url).pathname;
+    if (path === "/mcp" || path.startsWith("/mcp/")) {
+      return handleMcp(request, env, ctx);
+    }
+    return app.fetch(request, env, ctx);
+  },
+};

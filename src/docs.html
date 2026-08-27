@@ -687,6 +687,7 @@
         <div class="sec" data-i18n="docs.ref">参照</div>
         <div class="toc">
           <a href="#agents"><svg class="icon"><use href="#i-bot"/></svg><span data-i18n="docs.toc.agents">仕様ファイル</span></a>
+          <a href="#mcp"><svg class="icon"><use href="#i-plug"/></svg><span data-i18n="docs.toc.mcp">MCP</span></a>
           <a href="#ai-links"><svg class="icon"><use href="#i-message"/></svg><span data-i18n="docs.toc.chat">チャットで開く</span></a>
           <a href="#source"><svg class="icon"><use href="#i-github"/></svg><span data-i18n="docs.toc.source">GitHub</span></a>
           <a href="#contribute"><svg class="icon"><use href="#i-git"/></svg><span data-i18n="docs.toc.contribute">コントリビュート</span></a>
@@ -955,6 +956,22 @@ writeFileSync("gradient.png", png);</code></pre>
               <p data-i18n="docs.card.prompt">下のリンクと同じプロンプト。</p>
             </div>
           </a>
+          <a class="card" href="#mcp" data-i18n-tip="docs.card.mcpTip">
+            <svg class="icon"><use href="#i-plug"/></svg>
+            <div>
+              <strong>MCP</strong>
+              <p data-i18n="docs.card.mcp">Cursor からツールとして呼ぶ。</p>
+            </div>
+          </a>
+        </div>
+
+        <h2 id="mcp"><svg class="icon"><use href="#i-plug"/></svg><span data-i18n="docs.toc.mcp">MCP</span></h2>
+        <p data-i18n-html="docs.mcp.body">
+          Cursor や Claude Desktop から <code>/mcp</code> を足すと、ツール <code>generate</code> で <code>GET /gradient</code> の URL を組み立てます。認証はありません。画像を返す契約は HTTP のままです。
+        </p>
+        <div class="snippet">
+          <div class="caption"><svg class="icon"><use href="#i-braces"/></svg>Cursor</div>
+          <pre><code id="ex-mcp"></code></pre>
         </div>
 
         <h2 id="ai-links"><svg class="icon"><use href="#i-message"/></svg><span data-i18n="docs.toc.chat">チャットで開く</span></h2>
@@ -1004,6 +1021,7 @@ npm start
           <a href="/docs">Docs</a>
           <a href="/openapi.json">OpenAPI</a>
           <a href="/llms.txt">llms.txt</a>
+          <a href="/docs#mcp">MCP</a>
           <a href="https://github.com/ituyama/gradient-image-generator" target="_blank" rel="noreferrer">GitHub</a>
           <a href="https://www.npmjs.com/package/gradient-image-generator" target="_blank" rel="noreferrer">npm</a>
           <a href="https://ituyama.com" target="_blank" rel="noreferrer">ituyama.com</a>
@@ -1030,6 +1048,14 @@ npm start
         `url.searchParams.set("h", "630");\n` +
         `url.searchParams.set("seed", "hero");\n` +
         `url.searchParams.set("colors", "2EE59D,4FC3F7,00ACC1");`;
+      document.getElementById("ex-mcp").textContent =
+        `{\n` +
+        `  "mcpServers": {\n` +
+        `    "gradient": {\n` +
+        `      "url": "${origin}/mcp"\n` +
+        `    }\n` +
+        `  }\n` +
+        `}`;
 
       const prompt = [
         "You are helping me use Gradient Image Generator, an unauthenticated HTTP image API.",
@@ -1037,6 +1063,7 @@ npm start
         `Spec: ${origin}/llms.txt`,
         `Full spec: ${origin}/llms-full.txt`,
         `OpenAPI: ${origin}/openapi.json`,
+        `MCP: ${origin}/mcp`,
         `Docs: ${origin}/docs`,
         `Playground: ${origin}/playground`,
         "Contract:",

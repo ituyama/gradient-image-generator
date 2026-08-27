@@ -42,13 +42,17 @@
     "png",
     "image",
     "mesh",
-    "ogp"
+    "ogp",
+    "mcp"
   ],
   "license": "MIT",
   "devDependencies": {
+    "@modelcontextprotocol/server": "^2.0.0",
     "@types/node": "^24.3.0",
+    "agents": "^0.21.0",
     "hono": "^4.9.6",
     "typescript": "^5.9.2",
-    "wrangler": "^4.126.0"
+    "wrangler": "^4.126.0",
+    "zod": "^4.4.3"
   }
 }
