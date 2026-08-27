@@ -61,7 +61,7 @@ app.get("/", (c) => {
       image: ogImageUrl(origin),
       imageAlt: text.imageAlt,
       lang,
-      themeColor: "#ffffff",
+      themeColor: "#09090b",
       jsonLd: {
         "@context": "https://schema.org",
         "@type": "WebSite",
