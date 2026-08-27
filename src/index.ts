@@ -45,6 +45,20 @@ app.get("/robots.txt", (c) =>
   c.text(["User-agent: *", "Allow: /", "Sitemap: /llms.txt"].join("\n")),
 );
 
+const favicon = (size: number) => {
+  const seed = Math.random().toString(36).slice(2, 10);
+  const png = generateGradient({ width: size, height: size, seed });
+  return new Response(Uint8Array.from(png), {
+    headers: {
+      "Content-Type": "image/png",
+      "Cache-Control": "no-store",
+    },
+  });
+};
+
+app.get("/favicon.ico", () => favicon(64));
+app.get("/apple-touch-icon.png", () => favicon(180));
+
 app.get("/gradient", (c) => {
   const query = c.req.query();
   const width = Number(query.w ?? query.width ?? 800);
