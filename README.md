@@ -3,6 +3,7 @@
 URL のクエリだけで、有機的なメッシュグラデ PNG を返す API です。同じ入力は同じ画像になります。
 
 - 公開: [https://gradient-image-generator.ituyama01.workers.dev](https://gradient-image-generator.ituyama01.workers.dev)
+- npm: [https://www.npmjs.com/package/gradient-image-generator](https://www.npmjs.com/package/gradient-image-generator)
 - GitHub: [https://github.com/ituyama/gradient-image-generator](https://github.com/ituyama/gradient-image-generator)
 - ドキュメント: [npm](https://gradient-image-generator.ituyama01.workers.dev/docs#npm) / [コントリビュート](https://gradient-image-generator.ituyama01.workers.dev/docs#contribute)
 
@@ -31,7 +32,7 @@ CLI:
 npx gradient-image-generator --seed jalapeno --colors 2EE59D,4FC3F7,00ACC1 -o gradient.png
 ```
 
-公開前は GitHub から入れられます。
+ソースから入れるなら:
 
 ```bash
 npm install github:ituyama/gradient-image-generator
