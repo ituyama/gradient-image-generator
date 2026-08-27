@@ -186,10 +186,15 @@
         padding: 28px 24px 72px;
       }
       h1 {
-        margin: 0 0 22px;
+        margin: 0 0 8px;
         font-size: 34px;
         letter-spacing: -0.05em;
         font-weight: 650;
+      }
+      .lede {
+        margin: 0 0 22px;
+        color: var(--muted);
+        font-size: 13px;
       }
       .layout {
         display: grid;
@@ -221,6 +226,7 @@
         transition: opacity 0.35s ease;
       }
       .preview img.ready { opacity: 1; }
+      .preview { cursor: pointer; }
       .urlbar {
         display: flex;
         align-items: center;
@@ -234,11 +240,10 @@
       .urlbar code {
         flex: 1;
         min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        overflow-wrap: anywhere;
+        white-space: normal;
         color: #c9d0df;
-        font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+        font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace;
       }
       .urlbar button {
         flex: none;
@@ -386,6 +391,7 @@
         border-radius: 12px;
       }
       .actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 20px; }
+      .actions #copy-main { grid-column: 1 / -1; }
       .actions #reset { grid-column: 1 / -1; }
       .primary {
         grid-column: 1 / -1;
@@ -408,10 +414,17 @@
         .preview { max-height: min(72vh, 720px); }
       }
       @media (max-width: 1099px) {
-        .preview-wrap { position: static; }
         h1 { font-size: 28px; }
         .layout { display: flex; flex-direction: column; }
-        .preview-wrap { order: -1; }
+        .preview-wrap {
+          order: -1;
+          position: sticky;
+          top: calc(64px + env(safe-area-inset-top));
+          z-index: 8;
+          padding-bottom: 10px;
+          background: linear-gradient(180deg, var(--bg) 78%, transparent);
+        }
+        .preview { max-height: 34vh; }
       }
       @media (max-width: 720px) {
         .bar {
@@ -433,13 +446,16 @@
         }
         nav a { padding: 6px 8px; font-size: 12px; white-space: nowrap; flex: none; }
         main { padding: 16px 16px calc(48px + env(safe-area-inset-bottom)); }
-        h1 { font-size: 24px; margin-bottom: 14px; }
-        .preview { max-height: 42vh; border-radius: 20px; }
+        h1 { font-size: 24px; }
+        .lede { margin-bottom: 14px; }
+        .preview { max-height: 30vh; border-radius: 20px; }
+        .preview-wrap { top: calc(88px + env(safe-area-inset-top)); }
         .urlbar { flex-wrap: wrap; }
         .urlbar code { flex: 1 1 160px; }
         .share { flex-wrap: wrap; }
         .row { grid-template-columns: 1fr 1fr; }
         .actions { grid-template-columns: 1fr 1fr; }
+        .actions #copy-play { grid-column: 1 / -1; }
         .panel { padding: 14px; border-radius: 20px; }
       }
       @media (max-width: 420px) {
@@ -471,6 +487,7 @@
     </header>
     <main>
       <h1 data-i18n="pg.h1">Playground</h1>
+      <p class="lede" data-i18n="pg.hint">値を動かすとすぐ画像が変わります。R シード / C コピー / S 保存</p>
       <div class="layout">
         <form class="panel" id="form">
           <div class="block">
@@ -498,11 +515,14 @@
             </div>
           </div>
           <div class="block">
+            <div class="label" data-i18n="pg.presets">プリセット</div>
+            <div class="palettes" id="palettes"></div>
+          </div>
+          <div class="block">
             <div class="label"><span data-i18n="pg.colors">カラー</span> <span id="color-count">4 / 8</span></div>
             <input id="colors" name="colors" type="hidden" value="#2EE59D, #4FC3F7, #00ACC1, #80DEEA" />
             <div class="color-list" id="color-list"></div>
             <button class="ghost add-color" type="button" id="add-color" data-i18n="pg.addColor" data-i18n-tip="pg.addColorTip">色を追加</button>
-            <div class="palettes" id="palettes" style="margin-top:10px"></div>
           </div>
           <div class="block row">
             <div>
@@ -519,14 +539,15 @@
             <input id="blur" name="blur" type="range" min="0" max="32" step="1" value="0" data-i18n-aria="pg.blur" />
           </div>
           <div class="actions">
-            <button class="primary" type="submit" data-i18n="pg.generate">生成する</button>
+            <button class="primary" type="button" id="copy-main" data-i18n="pg.copy" data-i18n-tip="pg.copyUrl">画像 URL をコピー</button>
             <button class="ghost" type="button" id="open" data-i18n="pg.open" data-i18n-tip="pg.openTip">新しいタブ</button>
             <button class="ghost" type="button" id="download" data-i18n="pg.save" data-i18n-tip="pg.saveTip">保存</button>
+            <button class="ghost" type="button" id="copy-play" data-i18n="pg.copyPlay" data-i18n-tip="pg.copyPlayTip">この画面</button>
             <button class="ghost" type="button" id="reset" data-i18n="pg.reset" data-i18n-tip="pg.resetTip">リセット</button>
           </div>
         </form>
         <div class="preview-wrap">
-          <div class="preview" id="frame">
+          <div class="preview" id="frame" data-i18n-tip="pg.copyUrl" data-tip="画像 URL をコピー">
             <img id="preview" alt="生成されたグラデーション" data-i18n-aria="pg.preview" />
           </div>
           <div class="urlbar">
@@ -575,12 +596,12 @@
         ["HD", 1920, 1080],
         ["Story", 1080, 1920],
       ];
-      const palettes = [
-        ["Mint", "#2EE59D, #4FC3F7, #00ACC1, #80DEEA"],
-        ["Sunset", "#FF6B6B, #FFD93D, #FF8C42, #C44569"],
-        ["Twilight", "#7C5CFF, #49C6E5, #F472B6, #1E1B4B"],
-        ["Peach", "#FFB4A2, #E5989B, #FFCDB2, #B5838D"],
-      ];
+      const palettes = (window.GIG_PRESETS || [
+        { seed: "mint", colors: "2EE59D,4FC3F7,00ACC1,80DEEA" },
+        { seed: "sunset", colors: "FF6B6B,FFD93D,FF8C42,C44569" },
+        { seed: "twilight", colors: "7C5CFF,49C6E5,F472B6,1E1B4B" },
+        { seed: "peach", colors: "FFB4A2,E5989B,FFCDB2,B5838D" },
+      ]).map((p) => [p.seed, p.colors]);
 
       const sizeBox = document.getElementById("sizes");
       for (const [label, w, h] of sizes) {
@@ -672,9 +693,13 @@
         button.className = "palette";
         button.dataset.colors = value;
         button.dataset.name = label;
-        const dots = value.split(",").map((hex) => `<i style="background:${hex.trim()}"></i>`).join("");
+        const dots = value.split(",").map((hex) => {
+          const h = hex.trim().startsWith("#") ? hex.trim() : `#${hex.trim()}`;
+          return `<i style="background:${h}"></i>`;
+        }).join("");
         button.innerHTML = `<span class="swatches">${dots}</span>${label}`;
         button.addEventListener("click", () => {
+          form.seed.value = label;
           rebuildColors(value);
           render();
         });
@@ -747,10 +772,11 @@
         for (const button of sizeBox.querySelectorAll("button")) {
           button.classList.toggle("on", Number(button.dataset.w) === w && Number(button.dataset.h) === h);
         }
-        const colors = String(form.colors.value).replace(/\s/g, "").toLowerCase();
+        const colors = String(form.colors.value).replace(/[#\s]/g, "").toLowerCase();
+        const seed = String(form.seed.value).trim().toLowerCase();
         for (const button of paletteBox.querySelectorAll("button")) {
-          const key = button.dataset.colors.replace(/\s/g, "").toLowerCase();
-          button.classList.toggle("on", key === colors);
+          const key = button.dataset.colors.replace(/[#\s]/g, "").toLowerCase();
+          button.classList.toggle("on", key === colors && button.dataset.name.toLowerCase() === seed);
         }
         warpVal.textContent = Number(form.warp.value).toFixed(2);
         grainVal.textContent = Number(form.grain.value).toFixed(3);
@@ -791,7 +817,7 @@
       });
       form.addEventListener("submit", (event) => {
         event.preventDefault();
-        render();
+        copyUrl();
       });
       preview.addEventListener("load", () => {
         frame.classList.remove("loading", "err");
@@ -799,6 +825,8 @@
       });
       document.getElementById("random-seed").addEventListener("click", () => randomSeed());
       copyBtn.addEventListener("click", () => copyUrl());
+      document.getElementById("copy-main").addEventListener("click", () => copyUrl());
+      frame.addEventListener("click", () => copyUrl());
       document.getElementById("open").addEventListener("click", () => {
         window.open(absolute(), "_blank");
       });
@@ -856,12 +884,11 @@
       }
       const syncPaletteTips = () => {
         for (const button of paletteBox.querySelectorAll("button")) {
-          button.dataset.tip = t("pg.palette", { name: button.dataset.name || button.textContent });
+          button.dataset.tip = t("pg.presetTip", { name: button.dataset.name || button.textContent });
         }
       };
       for (const button of paletteBox.querySelectorAll("button")) {
-        button.dataset.name = button.textContent;
-        button.dataset.tip = t("pg.palette", { name: button.textContent });
+        button.dataset.tip = t("pg.presetTip", { name: button.dataset.name || button.textContent });
       }
 
       const defaults = {
@@ -931,6 +958,10 @@
       document.getElementById("copy-md").addEventListener("click", async () => {
         await navigator.clipboard.writeText(`![gradient](${absolute()})`);
         toast(t("pg.toastMd"));
+      });
+      document.getElementById("copy-play").addEventListener("click", async () => {
+        await navigator.clipboard.writeText(`${gigOrigin()}/playground?${params().toString()}`);
+        toast(t("pg.toastPlay"));
       });
       document.getElementById("copy-html").addEventListener("click", async () => {
         const w = form.w.value || 800;
