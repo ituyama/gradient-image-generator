@@ -507,17 +507,29 @@
           border-right: 0;
         }
         .more {
-          margin: 10px 12px 0;
+          width: calc(100% - 24px);
+          max-width: calc(100% - 24px);
+          margin: 10px auto 0;
           min-width: 0;
         }
         .panel {
-          margin: 10px 12px 0;
+          box-sizing: border-box;
+          width: calc(100% - 24px);
+          max-width: calc(100% - 24px);
+          margin: 10px auto 0;
           padding: 12px;
           border-radius: 16px;
           min-width: 0;
+          align-self: center;
+          overflow-x: hidden;
         }
+        .block { min-width: 0; max-width: 100%; }
         .block + .block { margin-top: 12px; }
-        input[type="number"], input[type="text"] { font-size: 16px; }
+        input[type="number"], input[type="text"] {
+          font-size: 16px;
+          min-width: 0;
+          max-width: 100%;
+        }
         .size-tools, .seed-row, .row, .color-list, .color-row, .urlbar, .ai-row, .ai-links {
           min-width: 0;
           max-width: 100%;
