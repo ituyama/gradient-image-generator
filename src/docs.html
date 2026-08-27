@@ -21,18 +21,6 @@
       * { box-sizing: border-box; }
       html { scroll-behavior: smooth; }
       :focus-visible { outline: 2px solid #18181b; outline-offset: 2px; }
-      .skip {
-        position: absolute;
-        left: 12px;
-        top: -40px;
-        z-index: 50;
-        background: #18181b;
-        color: #fff;
-        padding: 8px 12px;
-        border-radius: 8px;
-        text-decoration: none;
-      }
-      .skip:focus { top: 12px; }
       .toast {
         position: fixed;
         left: 50%;
@@ -485,7 +473,6 @@
     </style>
   </head>
   <body>
-    <a class="skip" href="#content">本文へ</a>
     <svg class="sprites" aria-hidden="true">
       <symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></symbol>
       <symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M2 14h4"/><path d="M10 8h4"/><path d="M18 16h4"/></symbol>
