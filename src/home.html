@@ -6,11 +6,12 @@
     <title>Gradient Image API</title>
     <link id="favicon" rel="icon" type="image/png" href="/favicon.ico" />
     <link id="touch-icon" rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script src="/presets.js"></script>
     <script>
       (() => {
-        const seed = Math.random().toString(36).slice(2, 10);
-        document.getElementById("favicon").href = `/gradient?w=64&h=64&seed=${seed}`;
-        document.getElementById("touch-icon").href = `/gradient?w=180&h=180&seed=${seed}`;
+        const p = gigPick();
+        document.getElementById("favicon").href = gigPath(64, 64, p);
+        document.getElementById("touch-icon").href = gigPath(180, 180, p);
       })();
     </script>
     <style>
@@ -371,15 +372,7 @@
         <img id="hero-img" alt="" />
         <script>
           (() => {
-            const palettes = [
-              "2EE59D,4FC3F7,00ACC1,80DEEA",
-              "FF6B6B,FFD93D,FF8C42,C44569",
-              "7C5CFF,49C6E5,F472B6,1E1B4B",
-              "FFB4A2,E5989B,FFCDB2,B5838D",
-            ];
-            const seed = Math.random().toString(36).slice(2, 10);
-            const colors = palettes[Math.floor(Math.random() * palettes.length)];
-            const path = `/gradient?w=1600&h=900&seed=${seed}&colors=${colors}`;
+            const path = gigPath(1600, 900);
             document.getElementById("hero-img").src = path;
             window.__heroPath = path;
           })();

@@ -6,11 +6,12 @@
     <title>ドキュメント · Gradient Image API</title>
     <link id="favicon" rel="icon" type="image/png" href="/favicon.ico" />
     <link id="touch-icon" rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script src="/presets.js"></script>
     <script>
       (() => {
-        const seed = Math.random().toString(36).slice(2, 10);
-        document.getElementById("favicon").href = `/gradient?w=64&h=64&seed=${seed}`;
-        document.getElementById("touch-icon").href = `/gradient?w=180&h=180&seed=${seed}`;
+        const p = gigPick();
+        document.getElementById("favicon").href = gigPath(64, 64, p);
+        document.getElementById("touch-icon").href = gigPath(180, 180, p);
       })();
     </script>
     <link rel="describedby" href="/openapi.json" type="application/vnd.oai.openapi+json" />

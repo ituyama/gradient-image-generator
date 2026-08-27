@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { generateGradient } from "./generate.js";
+import { brandGradientPath, pickBrandPreset, presetsBrowserScript } from "./presets.js";
 import { buildAgentPrompt, buildLlmsFull, buildLlmsTxt, buildOpenApi } from "./spec.js";
 import docsHtml from "./docs.html";
 import homeHtml from "./home.html";
@@ -23,6 +24,12 @@ app.get("/playground", (c) => c.html(playgroundHtml));
 app.get("/docs", (c) => c.html(docsHtml));
 app.get("/i18n.js", (c) =>
   c.text(i18nJs, 200, { "Content-Type": "text/javascript; charset=utf-8" }),
+);
+app.get("/presets.js", (c) =>
+  c.text(presetsBrowserScript(), 200, {
+    "Content-Type": "text/javascript; charset=utf-8",
+    "Cache-Control": "public, max-age=86400",
+  }),
 );
 
 app.get("/llms.txt", (c) =>
@@ -58,19 +65,25 @@ const pngHeaders = {
   "Access-Control-Allow-Origin": "*",
 } as const;
 
-const favicon = (size: number) => {
-  const seed = Math.random().toString(36).slice(2, 10);
-  const png = generateGradient({ width: size, height: size, seed });
+const brandIcon = async (requestUrl: string, size: number, waitUntil: (task: Promise<unknown>) => void) => {
+  const preset = pickBrandPreset();
+  const key = new Request(new URL(brandGradientPath(size, size, preset), requestUrl), { method: "GET" });
+  const cached = await caches.default.match(key);
+  if (cached) {
+    return new Response(cached.body, {
+      headers: { "Content-Type": "image/png", "Cache-Control": "public, max-age=86400" },
+    });
+  }
+  const png = generateGradient({ width: size, height: size, seed: preset.seed, colors: preset.colors });
+  const res = new Response(png, { headers: pngHeaders });
+  waitUntil(caches.default.put(key, res.clone()));
   return new Response(png, {
-    headers: {
-      "Content-Type": "image/png",
-      "Cache-Control": "no-store",
-    },
+    headers: { "Content-Type": "image/png", "Cache-Control": "public, max-age=86400" },
   });
 };
 
-app.get("/favicon.ico", () => favicon(64));
-app.get("/apple-touch-icon.png", () => favicon(180));
+app.get("/favicon.ico", (c) => brandIcon(c.req.url, 64, (task) => c.executionCtx.waitUntil(task)));
+app.get("/apple-touch-icon.png", (c) => brandIcon(c.req.url, 180, (task) => c.executionCtx.waitUntil(task)));
 
 app.get("/gradient", async (c) => {
   const query = c.req.query();
