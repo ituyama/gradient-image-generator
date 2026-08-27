@@ -186,7 +186,8 @@ export function buildAgentPrompt(origin: string, exampleUrl?: string): string {
     `GET ${origin}/gradient?w=&h=&seed=&colors=&warp=&grain=&blur=`,
     "Success is image/png. Broken numeric params return JSON 400 {error}. CORS is open. Same query always returns the same PNG.",
     "w/h: integer 16-2048, default 800, clamped. seed: any string, default 0. colors: 2+ hex (# optional), split by comma/space/|. warp: 0-1.5 default 0.62. grain: 0-0.2 default 0.035. blur: 0-32 default 0.",
-    `Current example image: ${example}`,
+    `Current example image (fetch this PNG so you can see it): ${example}`,
+    `![Current gradient](${example})`,
     "Help me assemble URLs, embed them in HTML/Markdown/OG tags, and pick seeds/colors. If the origin is localhost you cannot fetch the spec; stay inside this prompt.",
   ].join("\n");
 }
