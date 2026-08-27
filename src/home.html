@@ -111,7 +111,7 @@
       }
       .hero-bg {
         position: relative;
-        height: min(72vh, 720px);
+        height: min(88dvh, 920px);
         border-radius: 28px;
         overflow: hidden;
         background: #f4f4f5;
@@ -308,57 +308,91 @@
         .facts { grid-template-columns: 1fr; }
         h1 { font-size: 42px; }
       }
+      .brand-short { display: none; }
       @media (max-width: 720px) {
+        html, body { overflow-x: hidden; max-width: 100%; }
         .bar {
           display: grid;
-          grid-template-columns: 1fr auto;
-          padding: 10px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left));
-          min-height: 0;
-          gap: 8px 12px;
+          grid-template-columns: auto 1fr;
+          align-items: center;
+          padding: 8px max(12px, env(safe-area-inset-right)) 8px max(12px, env(safe-area-inset-left));
+          min-height: 48px;
+          gap: 8px;
         }
-        .brand { min-width: 0; }
-        .end { display: contents; }
-        .lang-switch { grid-column: 2; grid-row: 1; }
-        nav {
-          grid-column: 1 / -1;
-          flex-wrap: nowrap;
-          overflow-x: auto;
-          gap: 4px;
-          -webkit-overflow-scrolling: touch;
-        }
-        nav a { padding: 6px 8px; font-size: 12px; white-space: nowrap; flex: none; }
-        .hero { padding: 12px 12px 16px; }
-        .hero-bg {
-          height: auto;
-          min-height: 0;
-          border-radius: 20px;
+        .brand { min-width: 0; overflow: hidden; }
+        .brand-full { display: none; }
+        .brand-short { display: inline; white-space: nowrap; }
+        .end {
+          justify-self: end;
           display: flex;
-          flex-direction: column;
-          justify-content: flex-end;
+          flex-wrap: nowrap;
+          gap: 6px;
+          min-width: 0;
         }
-        .hero-bg img { position: absolute; inset: 0; min-height: 280px; }
-        .hero-bg::after { border-radius: 20px; }
+        nav { gap: 0; min-width: 0; }
+        nav a { padding: 8px 10px; font-size: 13px; white-space: nowrap; }
+        nav a.extra { display: none; }
+        .lang-switch button { padding: 6px 8px; }
+        .hero { padding: 0; }
+        .hero-bg {
+          height: min(84svh, 780px);
+          min-height: 520px;
+          border-radius: 0;
+        }
+        .hero-bg img {
+          position: absolute;
+          inset: 0;
+          min-height: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        .hero-bg::after { border-radius: 0; }
         .hero-inner {
-          position: relative;
-          left: auto;
-          right: auto;
-          bottom: auto;
-          padding: 80px 16px 16px;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          padding: 28px 16px calc(20px + env(safe-area-inset-bottom));
           max-width: none;
         }
-        h1 { font-size: 34px; }
+        h1 { font-size: 36px; }
         .lede { font-size: 14px; margin-top: 10px; }
-        .actions { margin-top: 16px; }
-        .btn { width: 100%; }
-        .urlbar { margin-top: 14px; flex-wrap: wrap; }
-        .urlbar code { flex: 1 1 140px; }
-        .ai-row { margin-top: 12px; }
-        main { padding: 4px 12px calc(48px + env(safe-area-inset-bottom)); }
-        .gallery { grid-template-columns: 1fr; grid-template-rows: none; gap: 10px; }
-        .gallery a, .gallery a:first-child { min-height: 200px; grid-column: auto; }
+        .actions {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 8px;
+          margin-top: 16px;
+        }
+        .btn { width: 100%; padding: 14px 16px; }
+        .urlbar {
+          margin-top: 14px;
+          max-width: none;
+        }
+        .urlbar code { min-width: 0; }
+        .ai-row {
+          margin-top: 12px;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 8px;
+        }
+        .ai-links { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+        .ai-links a { justify-content: center; min-width: 0; padding: 10px 4px; font-size: 11px; }
+        main { padding: 16px 12px calc(48px + env(safe-area-inset-bottom)); }
+        .gallery {
+          grid-template-columns: 1fr 1fr;
+          grid-template-rows: none;
+          gap: 8px;
+        }
+        .gallery a { min-height: 148px; }
+        .gallery a:first-child {
+          grid-column: 1 / -1;
+          min-height: 220px;
+        }
+        .fact { padding: 16px; }
       }
-      @media (max-width: 420px) {
-        h1 { font-size: 30px; }
+      @media (max-width: 360px) {
+        .brand-short { display: none; }
+        h1 { font-size: 32px; }
         .lede { font-size: 13px; }
       }
     </style>
@@ -366,14 +400,14 @@
   <body>
     <header>
       <div class="bar">
-        <a class="brand" href="/"><span class="mark"></span>Gradient Image API</a>
+        <a class="brand" href="/"><span class="mark"></span><span class="brand-full">Gradient Image API</span><span class="brand-short">Gradient</span></a>
         <div class="end">
           <nav>
             <a href="/playground">Playground</a>
             <a href="/docs">Docs</a>
-            <a href="/openapi.json">OpenAPI</a>
-            <a href="/llms.txt">llms.txt</a>
-            <a href="https://github.com/ituyama/gradient-image-generator" target="_blank" rel="noreferrer">GitHub</a>
+            <a class="extra" href="/openapi.json">OpenAPI</a>
+            <a class="extra" href="/llms.txt">llms.txt</a>
+            <a class="extra" href="https://github.com/ituyama/gradient-image-generator" target="_blank" rel="noreferrer">GitHub</a>
           </nav>
           <div class="lang-switch" role="group" data-i18n-aria="lang.label">
             <button type="button" data-lang="ja">JA</button>
