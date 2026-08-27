@@ -10,6 +10,9 @@
   "limits": {
     "cpu_ms": 30000
   },
+  "routes": [
+    { "pattern": "gradient.ituyama.com", "custom_domain": true }
+  ],
   "rules": [
     { "type": "Text", "globs": ["**/*.html", "**/i18n.js"], "fallthrough": false }
   ]

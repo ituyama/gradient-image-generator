@@ -1,3 +1,12 @@
+export const PUBLIC_ORIGIN = "https://gradient.ituyama.com";
+export const LEGACY_HOST = "gradient-image-generator.ituyama01.workers.dev";
+
+export function publicOrigin(requestUrl: string): string {
+  const origin = new URL(requestUrl).origin;
+  if (origin.includes("localhost") || origin.includes("127.0.0.1")) return origin;
+  return PUBLIC_ORIGIN;
+}
+
 export const OG_WIDTH = 1200;
 export const OG_HEIGHT = 630;
 export const OG_DEFAULT_SEED = "og";

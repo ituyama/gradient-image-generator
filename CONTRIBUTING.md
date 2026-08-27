@@ -15,4 +15,4 @@ npm start
 
 http://localhost:8787 で確認してから、`main` 向けに Pull Request を送ってください。
 
-詳しくは [ドキュメント](https://gradient-image-generator.ituyama01.workers.dev/docs#contribute) にあります。
+詳しくは [ドキュメント](https://gradient.ituyama.com/docs#contribute) にあります。

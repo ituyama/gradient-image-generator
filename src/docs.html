@@ -970,7 +970,7 @@ npm start
     <script src="/i18n.js"></script>
     <script>
       const t = (key, vars) => window.I18N ? I18N.t(key, vars) : key;
-      const origin = location.origin;
+      const origin = gigOrigin();
       const example = `${origin}/gradient?w=800&h=800&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1`;
       document.getElementById("ex-curl").textContent = `curl -o gradient.png "${example}"`;
       document.getElementById("ex-html").textContent =

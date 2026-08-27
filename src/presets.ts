@@ -1,3 +1,5 @@
+import { PUBLIC_ORIGIN } from "./meta.js";
+
 export type BrandPreset = { seed: string; colors: string };
 
 export const BRAND_PRESETS: BrandPreset[] = [
@@ -25,6 +27,7 @@ export function presetsBrowserScript(): string {
   return (
     `window.GIG_PRESETS=${JSON.stringify(BRAND_PRESETS)};` +
     `window.gigPick=function(){return GIG_PRESETS[Math.random()*GIG_PRESETS.length|0]};` +
-    `window.gigPath=function(w,h,p){p=p||gigPick();return"/gradient?w="+w+"&h="+h+"&seed="+p.seed+"&colors="+p.colors};`
+    `window.gigPath=function(w,h,p){p=p||gigPick();return"/gradient?w="+w+"&h="+h+"&seed="+p.seed+"&colors="+p.colors};` +
+    `window.gigOrigin=function(){var h=location.hostname;return(h==="localhost"||h==="127.0.0.1")?location.origin:"${PUBLIC_ORIGIN}"};`
   );
 }

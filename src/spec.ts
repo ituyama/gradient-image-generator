@@ -83,7 +83,7 @@ export function buildOpenApi(origin: string) {
         "GET /gradient returns an organic mesh-gradient PNG. No auth. Deterministic for a given query string. CORS is open.",
       contact: { url: origin },
     },
-    servers: [{ url: origin, description: "Current origin" }],
+    servers: [{ url: origin, description: "Public origin" }],
     paths: {
       "/gradient": {
         get: {

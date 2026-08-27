@@ -5,11 +5,14 @@ import {
   applyPageMeta,
   copy,
   gradientCacheUrl,
+  LEGACY_HOST,
   OG_HEIGHT,
   OG_WIDTH,
   ogImageUrl,
   ogParams,
   pageLang,
+  PUBLIC_ORIGIN,
+  publicOrigin,
 } from "./meta.js";
 import { brandGradientPath, pickBrandPreset, presetsBrowserScript } from "./presets.js";
 import { buildAgentPrompt, buildLlmsFull, buildLlmsTxt, buildOpenApi } from "./spec.js";
@@ -21,6 +24,13 @@ import i18nJs from "./i18n.js";
 const app = new Hono();
 
 app.use("*", cors());
+app.use("*", async (c, next) => {
+  const url = new URL(c.req.url);
+  if (url.hostname === LEGACY_HOST) {
+    return c.redirect(`${PUBLIC_ORIGIN}${url.pathname}${url.search}`, 301);
+  }
+  await next();
+});
 
 app.get("/", (c) => {
   const q = c.req.query();
@@ -28,7 +38,7 @@ app.get("/", (c) => {
     const search = new URL(c.req.url).search;
     return c.redirect(`/playground${search}`, 302);
   }
-  const origin = new URL(c.req.url).origin;
+  const origin = publicOrigin(c.req.url);
   const lang = pageLang(c.req.header("accept-language"));
   const text = copy(lang);
   return c.html(
@@ -52,7 +62,7 @@ app.get("/", (c) => {
   );
 });
 app.get("/playground", (c) => {
-  const origin = new URL(c.req.url).origin;
+  const origin = publicOrigin(c.req.url);
   const q = c.req.query();
   const lang = pageLang(c.req.header("accept-language"));
   const text = copy(lang);
@@ -72,7 +82,7 @@ app.get("/playground", (c) => {
   );
 });
 app.get("/docs", (c) => {
-  const origin = new URL(c.req.url).origin;
+  const origin = publicOrigin(c.req.url);
   const lang = pageLang(c.req.header("accept-language"));
   const text = copy(lang);
   return c.html(
@@ -99,7 +109,7 @@ app.get("/presets.js", (c) =>
 );
 
 app.get("/llms.txt", (c) =>
-  c.text(buildLlmsTxt(new URL(c.req.url).origin), 200, {
+  c.text(buildLlmsTxt(publicOrigin(c.req.url)), 200, {
     "Content-Type": "text/plain; charset=utf-8",
   }),
 );
@@ -107,21 +117,21 @@ app.get("/llms.txt", (c) =>
 app.get("/.well-known/llms.txt", (c) => c.redirect("/llms.txt", 307));
 
 app.get("/llms-full.txt", (c) =>
-  c.text(buildLlmsFull(new URL(c.req.url).origin), 200, {
+  c.text(buildLlmsFull(publicOrigin(c.req.url)), 200, {
     "Content-Type": "text/plain; charset=utf-8",
   }),
 );
 
-app.get("/openapi.json", (c) => c.json(buildOpenApi(new URL(c.req.url).origin)));
+app.get("/openapi.json", (c) => c.json(buildOpenApi(publicOrigin(c.req.url))));
 
 app.get("/prompt.txt", (c) =>
-  c.text(buildAgentPrompt(new URL(c.req.url).origin, c.req.query("example")), 200, {
+  c.text(buildAgentPrompt(publicOrigin(c.req.url), c.req.query("example")), 200, {
     "Content-Type": "text/plain; charset=utf-8",
   }),
 );
 
 app.get("/robots.txt", (c) =>
-  c.text(["User-agent: *", "Allow: /", "Sitemap: /llms.txt"].join("\n")),
+  c.text(["User-agent: *", "Allow: /", `Sitemap: ${PUBLIC_ORIGIN}/llms.txt`].join("\n")),
 );
 
 const pngHeaders = {
@@ -170,7 +180,7 @@ app.get("/og.png", async (c) => {
     return c.json({ error: "blur は数値で指定してください" }, 400);
   }
 
-  const origin = new URL(c.req.url).origin;
+  const origin = publicOrigin(c.req.url);
   const cacheKey = new Request(gradientCacheUrl(origin, query), { method: "GET" });
   const cached = await caches.default.match(cacheKey);
   if (cached) {

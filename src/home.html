@@ -467,7 +467,7 @@
     <script>
       const t = (key) => window.I18N ? I18N.t(key) : key;
       const path = window.__heroPath || "/gradient?w=1600&h=900&seed=aurora";
-      const example = `${location.origin}${path}`;
+      const example = `${gigOrigin()}${path}`;
       document.getElementById("url").textContent = `GET ${path}`;
       const urlEl = document.getElementById("url");
       const copyBtn = document.getElementById("copy");
@@ -487,7 +487,7 @@
       urlEl.addEventListener("click", copy);
       copyBtn.addEventListener("click", copy);
 
-      const origin = location.origin;
+      const origin = gigOrigin();
       const prompt = [
         "You are helping me use Gradient Image Generator, an unauthenticated HTTP image API.",
         "Read the spec if reachable, otherwise use only this contract. Do not invent endpoints.",

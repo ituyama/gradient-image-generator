@@ -705,11 +705,11 @@
       }
 
       function absolute() {
-        return `${location.origin}${path()}`;
+        return `${gigOrigin()}${path()}`;
       }
 
       function agentPrompt() {
-        const origin = location.origin;
+        const origin = gigOrigin();
         const example = absolute();
         return [
           "You are helping me use Gradient Image Generator, an unauthenticated HTTP image API.",

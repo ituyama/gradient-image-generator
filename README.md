@@ -2,10 +2,10 @@
 
 URL のクエリだけで、有機的なメッシュグラデ PNG を返す API です。同じ入力は同じ画像になります。
 
-- 公開: [https://gradient-image-generator.ituyama01.workers.dev](https://gradient-image-generator.ituyama01.workers.dev)
+- 公開: [https://gradient.ituyama.com](https://gradient.ituyama.com)
 - npm: [https://www.npmjs.com/package/gradient-image-generator](https://www.npmjs.com/package/gradient-image-generator)
 - GitHub: [https://github.com/ituyama/gradient-image-generator](https://github.com/ituyama/gradient-image-generator)
-- ドキュメント: [npm](https://gradient-image-generator.ituyama01.workers.dev/docs#npm) / [コントリビュート](https://gradient-image-generator.ituyama01.workers.dev/docs#contribute)
+- ドキュメント: [npm](https://gradient.ituyama.com/docs#npm) / [コントリビュート](https://gradient.ituyama.com/docs#contribute)
 
 ## npm
 
@@ -42,9 +42,9 @@ npm install github:ituyama/gradient-image-generator
 npm start
 ```
 
-- トップ: [https://gradient-image-generator.ituyama01.workers.dev](https://gradient-image-generator.ituyama01.workers.dev)
-- Playground: [https://gradient-image-generator.ituyama01.workers.dev/playground](https://gradient-image-generator.ituyama01.workers.dev/playground)
-- ドキュメント: [https://gradient-image-generator.ituyama01.workers.dev/docs](https://gradient-image-generator.ituyama01.workers.dev/docs)
+- トップ: [https://gradient.ituyama.com](https://gradient.ituyama.com)
+- Playground: [https://gradient.ituyama.com/playground](https://gradient.ituyama.com/playground)
+- ドキュメント: [https://gradient.ituyama.com/docs](https://gradient.ituyama.com/docs)
 
 ## 画像を取る
 
@@ -67,11 +67,11 @@ GET /gradient?w=800&h=800&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1
 
 認証なし。成功時は PNG、壊れた数値だけ JSON 400 です。
 
-- [ChatGPT / Claude / Gemini で開く](https://gradient-image-generator.ituyama01.workers.dev/docs#ai-links)
-- [`/prompt.txt`](https://gradient-image-generator.ituyama01.workers.dev/prompt.txt)
-- [`/llms.txt`](https://gradient-image-generator.ituyama01.workers.dev/llms.txt)
-- [`/llms-full.txt`](https://gradient-image-generator.ituyama01.workers.dev/llms-full.txt)
-- [`/openapi.json`](https://gradient-image-generator.ituyama01.workers.dev/openapi.json)
+- [ChatGPT / Claude / Gemini で開く](https://gradient.ituyama.com/docs#ai-links)
+- [`/prompt.txt`](https://gradient.ituyama.com/prompt.txt)
+- [`/llms.txt`](https://gradient.ituyama.com/llms.txt)
+- [`/llms-full.txt`](https://gradient.ituyama.com/llms-full.txt)
+- [`/openapi.json`](https://gradient.ituyama.com/openapi.json)
 
 ローカルは `npm start`（`wrangler dev`）。再公開は `npm run deploy`。
 
@@ -86,4 +86,4 @@ npm install
 npm start
 ```
 
-直したら `main` 向けに Pull Request を送ってください。完成した塊ごとにコミットすると追いやすいです。詳しくは [ドキュメント](https://gradient-image-generator.ituyama01.workers.dev/docs#contribute) と [CONTRIBUTING.md](CONTRIBUTING.md) を見てください。
+直したら `main` 向けに Pull Request を送ってください。完成した塊ごとにコミットすると追いやすいです。詳しくは [ドキュメント](https://gradient.ituyama.com/docs#contribute) と [CONTRIBUTING.md](CONTRIBUTING.md) を見てください。
