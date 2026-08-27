@@ -463,13 +463,8 @@
           max-width: 100%;
         }
         header {
-          position: absolute;
+          position: sticky;
           top: 0;
-          left: 0;
-          right: 0;
-          border-bottom: 0;
-          background: linear-gradient(180deg, rgba(11, 12, 16, 0.78), transparent);
-          backdrop-filter: none;
         }
         .bar {
           display: grid;
@@ -508,55 +503,29 @@
         }
         .preview {
           order: -1;
-          height: 100svh;
-          max-height: 100svh;
-          margin: 0;
+          width: min(100%, calc(38dvh * (var(--aw, 800) / var(--ah, 800))));
+          height: min(38dvh, calc(100vw * (var(--ah, 800) / var(--aw, 800))));
+          max-width: 100%;
+          max-height: 38dvh;
+          aspect-ratio: var(--ar, 1);
+          margin: 0 auto;
           border-radius: 0;
           box-shadow: none;
-          border: 0;
+          border-left: 0;
+          border-right: 0;
         }
-        .kv-scroll {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          position: absolute;
-          left: 0;
-          right: 0;
-          bottom: calc(88px + env(safe-area-inset-bottom));
-          z-index: 2;
-          color: #fff;
-          text-decoration: none;
-          font-size: 12px;
-          font-weight: 700;
-          letter-spacing: 0.04em;
-          text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
-        }
-        .kv-scroll::before {
-          content: "⌄";
-          margin-right: 6px;
-          font-size: 16px;
-        }
+        .preview img { object-fit: contain; }
+        .kv-scroll { display: none; }
         .panel {
           order: 0;
           box-sizing: border-box;
           width: 100%;
           max-width: 100%;
-          margin: -28px 0 0;
-          padding: 12px 16px 20px;
+          margin: 0;
+          padding: 16px 16px 20px;
           border: 0;
-          border-radius: 24px 24px 0 0;
-          box-shadow: 0 -16px 40px rgba(0, 0, 0, 0.35);
+          border-radius: 0;
           overflow-x: hidden;
-          scroll-margin-top: 12px;
-        }
-        .panel::before {
-          content: "";
-          display: block;
-          width: 36px;
-          height: 4px;
-          margin: 4px auto 16px;
-          border-radius: 999px;
-          background: rgba(255, 255, 255, 0.22);
         }
         .more {
           order: 1;
@@ -1007,6 +976,11 @@
       }
 
       function render() {
+        const w = Number(form.w.value) || 800;
+        const h = Number(form.h.value) || 800;
+        frame.style.setProperty("--ar", `${w} / ${h}`);
+        frame.style.setProperty("--aw", String(w));
+        frame.style.setProperty("--ah", String(h));
         const next = path();
         if (preview.getAttribute("src") !== next) {
           preview.classList.remove("ready");
