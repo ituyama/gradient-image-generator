@@ -521,13 +521,17 @@
         }
         .share, .ai-row { margin-top: 10px; }
         .palettes {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
+          display: flex;
+          flex-wrap: nowrap;
+          overflow-x: auto;
           gap: 6px;
+          scrollbar-width: none;
         }
+        .palettes::-webkit-scrollbar { display: none; }
         .palette {
-          border-radius: 12px;
-          padding: 6px 8px 6px 6px;
+          flex: 0 0 auto;
+          border-radius: 999px;
+          padding: 4px 8px 4px 4px;
           font-size: 11px;
         }
         .color-row { grid-template-columns: 40px 1fr 32px; gap: 6px; }
