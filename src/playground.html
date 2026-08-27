@@ -492,11 +492,16 @@
           border-top: 1px solid var(--line);
         }
         .preview {
-          height: min(76dvh, 780px);
+          width: min(100%, calc(min(76dvh, 780px) * (var(--aw, 800) / var(--ah, 800))));
+          height: min(76dvh, 780px, calc(100% * (var(--ah, 800) / var(--aw, 800))));
+          max-width: 100%;
           max-height: min(76dvh, 780px);
+          aspect-ratio: var(--ar, 1);
+          margin: 0 auto;
           border-radius: 22px;
           box-shadow: 0 18px 56px rgba(0, 0, 0, 0.34);
         }
+        .preview img { object-fit: contain; }
         .more {
           border: 0;
           background: transparent;
