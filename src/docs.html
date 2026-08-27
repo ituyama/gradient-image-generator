@@ -240,52 +240,64 @@
         padding: 0;
         justify-content: center;
       }
-      [data-tip] { position: relative; }
-      [data-tip]::after {
-        content: attr(data-tip);
-        position: absolute;
-        bottom: calc(100% + 8px);
-        left: 50%;
-        transform: translateX(-50%);
+      .tip-float {
+        position: fixed;
+        z-index: 10000;
+        max-width: min(280px, calc(100vw - 16px));
         background: #18181b;
         color: #fff;
         font-size: 11px;
         font-weight: 650;
-        line-height: 1.3;
+        line-height: 1.35;
         padding: 5px 8px;
         border-radius: 7px;
-        white-space: nowrap;
-        opacity: 0;
         pointer-events: none;
-        z-index: 40;
+        box-shadow: 0 8px 24px rgba(0,0,0,.18);
       }
-      [data-tip]:hover::after,
-      [data-tip]:focus-visible::after { opacity: 1; }
-      [data-tip-side="left"]::after {
-        left: auto;
-        right: 0;
-        transform: none;
-      }
-      [data-tip-side="bottom"]::after {
-        bottom: auto;
-        top: calc(100% + 8px);
-      }
-      [data-tip-side="right"]::after {
-        left: calc(100% + 8px);
-        bottom: auto;
-        top: 50%;
-        transform: translateY(-50%);
-      }
+      .tip-float[hidden] { display: none; }
       .caption {
         display: flex;
         align-items: center;
         gap: 6px;
-        margin: 18px 0 0;
+        margin: 0 0 6px;
         font-size: 12px;
         font-weight: 700;
         color: var(--muted);
       }
       .caption .icon { width: 13px; height: 13px; }
+      .snippet { margin: 14px 0 18px; }
+      .snippet .code { margin: 0; }
+      details.snippet {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 14px;
+        padding: 10px 12px;
+      }
+      details.snippet[open] { padding-bottom: 12px; }
+      details.snippet > summary {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        list-style: none;
+        margin: 0;
+      }
+      details.snippet > summary::-webkit-details-marker { display: none; }
+      details.snippet > summary::after {
+        content: "表示";
+        margin-left: auto;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--muted);
+      }
+      details.snippet[open] > summary::after { content: "閉じる"; }
+      details.snippet .code { margin-top: 10px; }
+      #find-empty {
+        margin: 0 0 20px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      #find-empty[hidden] { display: none; }
       pre {
         background: var(--code);
         color: #e8eaef;
@@ -586,13 +598,19 @@
 
         <h2 id="quickstart"><svg class="icon"><use href="#i-zap"/></svg>クイックスタート</h2>
         <p>ブラウザのアドレス欄、または <code>&lt;img&gt;</code> の <code>src</code> に次を置きます。</p>
-        <div class="caption"><svg class="icon"><use href="#i-link"/></svg>URL</div>
-        <pre><code>GET /gradient?w=800&amp;h=800&amp;seed=jalapeno&amp;colors=2EE59D,4FC3F7,00ACC1</code></pre>
-        <div class="caption"><svg class="icon"><use href="#i-terminal"/></svg>curl</div>
-        <pre><code id="ex-curl"></code></pre>
-        <div class="caption"><svg class="icon"><use href="#i-zap"/></svg>ローカル起動</div>
-        <pre><code>npm start
+        <div class="snippet">
+          <div class="caption"><svg class="icon"><use href="#i-link"/></svg>URL</div>
+          <pre><code>GET /gradient?w=800&amp;h=800&amp;seed=jalapeno&amp;colors=2EE59D,4FC3F7,00ACC1</code></pre>
+        </div>
+        <details class="snippet">
+          <summary class="caption"><svg class="icon"><use href="#i-terminal"/></svg>curl</summary>
+          <pre><code id="ex-curl"></code></pre>
+        </details>
+        <details class="snippet">
+          <summary class="caption"><svg class="icon"><use href="#i-zap"/></svg>ローカル起動</summary>
+          <pre><code>npm start
 # http://localhost:8787</code></pre>
+        </details>
 
         <h2 id="endpoint"><svg class="icon"><use href="#i-plug"/></svg>エンドポイント</h2>
         <div class="facts">
@@ -718,12 +736,18 @@ colors=2EE59D 4FC3F7 00ACC1</code></pre>
         <p>全オリジン許可です。別サイトの <code>&lt;img&gt;</code> や <code>fetch</code> から使えます。</p>
 
         <h2 id="embed"><svg class="icon"><use href="#i-code"/></svg>埋め込み</h2>
-        <div class="caption"><svg class="icon"><use href="#i-code"/></svg>HTML</div>
-        <pre><code id="ex-html"></code></pre>
-        <div class="caption"><svg class="icon"><use href="#i-hash"/></svg>Markdown</div>
-        <pre><code id="ex-md"></code></pre>
-        <div class="caption"><svg class="icon"><use href="#i-braces"/></svg>JavaScript</div>
-        <pre><code id="ex-js"></code></pre>
+        <div class="snippet">
+          <div class="caption"><svg class="icon"><use href="#i-code"/></svg>HTML</div>
+          <pre><code id="ex-html"></code></pre>
+        </div>
+        <div class="snippet">
+          <div class="caption"><svg class="icon"><use href="#i-hash"/></svg>Markdown</div>
+          <pre><code id="ex-md"></code></pre>
+        </div>
+        <div class="snippet">
+          <div class="caption"><svg class="icon"><use href="#i-braces"/></svg>JavaScript</div>
+          <pre><code id="ex-js"></code></pre>
+        </div>
 
         <h2 id="agents"><svg class="icon"><use href="#i-bot"/></svg>仕様ファイル</h2>
         <p>
@@ -830,6 +854,7 @@ colors=2EE59D 4FC3F7 00ACC1</code></pre>
         await navigator.clipboard.writeText(promptEl.value);
         const btn = document.getElementById("copy-prompt");
         btn.dataset.tip = "コピー済み";
+        say("プロンプトをコピーしました");
         setTimeout(() => { btn.dataset.tip = "プロンプトをコピー"; }, 1200);
       });
 
@@ -892,15 +917,45 @@ colors=2EE59D 4FC3F7 00ACC1</code></pre>
       document.addEventListener("scroll", syncTop, { passive: true });
 
       const find = document.getElementById("find");
+      const article = document.getElementById("content");
+      const empty = document.createElement("p");
+      empty.id = "find-empty";
+      empty.hidden = true;
+      empty.textContent = "該当する項目がありません";
+      article.querySelector("h1")?.after(empty);
+
+      const chunkText = (el) => {
+        const parts = [el.textContent];
+        let n = el.nextElementSibling;
+        while (n && n.tagName !== "H2" && n.tagName !== "H3") {
+          parts.push(n.textContent);
+          n = n.nextElementSibling;
+        }
+        return parts.join(" ").toLowerCase();
+      };
+
       const filterDocs = () => {
         const q = find.value.trim().toLowerCase();
+        const heads = [...article.querySelectorAll("h2[id], h3[id]")];
+        const shown = new Set();
+        for (const head of heads) {
+          const hit = !q || chunkText(head).includes(q);
+          let n = head;
+          while (n && (n === head || (n.tagName !== "H2" && n.tagName !== "H3"))) {
+            n.style.display = hit ? "" : "none";
+            n = n.nextElementSibling;
+          }
+          if (hit) shown.add(head.id);
+        }
         for (const a of toc) {
-          const hit = !q || a.textContent.toLowerCase().includes(q);
-          a.style.display = hit ? "" : "none";
+          const id = a.getAttribute("href").slice(1);
+          const label = a.textContent.toLowerCase();
+          a.style.display = !q || label.includes(q) || shown.has(id) ? "" : "none";
         }
         for (const row of document.querySelectorAll("article table tbody tr")) {
           row.style.display = !q || row.textContent.toLowerCase().includes(q) ? "" : "none";
         }
+        empty.hidden = !q || shown.size > 0;
       };
       find.addEventListener("input", filterDocs);
       document.addEventListener("keydown", (event) => {
@@ -917,16 +972,6 @@ colors=2EE59D 4FC3F7 00ACC1</code></pre>
         }
       });
 
-      for (const heading of document.querySelectorAll("article h2[id], article h3[id]")) {
-        heading.style.cursor = "pointer";
-        heading.dataset.tip = "リンクをコピー";
-        heading.addEventListener("click", async (event) => {
-          if (event.target.closest("a")) return;
-          const url = `${location.origin}${location.pathname}#${heading.id}`;
-          await navigator.clipboard.writeText(url);
-          say("見出しリンクをコピーしました");
-        });
-      }
       for (const code of document.querySelectorAll("article table code")) {
         code.style.cursor = "pointer";
         code.dataset.tip = "名前をコピー";
@@ -935,6 +980,75 @@ colors=2EE59D 4FC3F7 00ACC1</code></pre>
           say(`${code.textContent} をコピーしました`);
         });
       }
+
+      const tip = document.createElement("div");
+      tip.className = "tip-float";
+      tip.hidden = true;
+      document.body.append(tip);
+      let tipEl = null;
+      const placeTip = () => {
+        if (!tipEl || !tipEl.isConnected) {
+          tip.hidden = true;
+          return;
+        }
+        const text = tipEl.getAttribute("data-tip");
+        if (!text) {
+          tip.hidden = true;
+          return;
+        }
+        tip.textContent = text;
+        tip.hidden = false;
+        const gap = 8;
+        const r = tipEl.getBoundingClientRect();
+        const tw = tip.offsetWidth;
+        const th = tip.offsetHeight;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const prefer = tipEl.getAttribute("data-tip-side") || "top";
+        let top = prefer === "bottom" ? r.bottom + gap : r.top - th - gap;
+        if (prefer === "right") {
+          top = r.top + r.height / 2 - th / 2;
+          let left = r.right + gap;
+          if (left + tw > vw - gap) left = r.left - tw - gap;
+          left = Math.min(Math.max(gap, left), vw - tw - gap);
+          top = Math.min(Math.max(gap, top), vh - th - gap);
+          tip.style.top = `${Math.round(top)}px`;
+          tip.style.left = `${Math.round(left)}px`;
+          return;
+        }
+        if (prefer !== "bottom" && top < gap) top = r.bottom + gap;
+        if (top + th > vh - gap) top = Math.max(gap, r.top - th - gap);
+        let left = prefer === "left" ? r.left - tw - gap : r.left + r.width / 2 - tw / 2;
+        left = Math.min(Math.max(gap, left), vw - tw - gap);
+        top = Math.min(Math.max(gap, top), vh - th - gap);
+        tip.style.top = `${Math.round(top)}px`;
+        tip.style.left = `${Math.round(left)}px`;
+      };
+      const showTip = (el) => { tipEl = el; placeTip(); };
+      const hideTip = () => { tipEl = null; tip.hidden = true; };
+      document.addEventListener("pointerover", (event) => {
+        const el = event.target.closest("[data-tip]");
+        if (el) showTip(el);
+      });
+      document.addEventListener("pointerout", (event) => {
+        const el = event.target.closest("[data-tip]");
+        if (!el || el.contains(event.relatedTarget)) return;
+        if (document.activeElement !== el) hideTip();
+      });
+      document.addEventListener("focusin", (event) => {
+        const el = event.target.closest("[data-tip]");
+        if (el) showTip(el);
+      });
+      document.addEventListener("focusout", (event) => {
+        if (tipEl && !tipEl.contains(event.relatedTarget)) hideTip();
+      });
+      window.addEventListener("scroll", placeTip, true);
+      window.addEventListener("resize", placeTip);
+      new MutationObserver(placeTip).observe(document.body, {
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["data-tip"],
+      });
     </script>
   </body>
 </html>
