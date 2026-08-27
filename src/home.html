@@ -49,8 +49,8 @@
         top: 0;
         z-index: 20;
         border-bottom: 1px solid var(--line);
-        background: rgba(255, 255, 255, 0.86);
-        backdrop-filter: blur(22px) saturate(1.2);
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(18px);
         padding-top: env(safe-area-inset-top);
       }
       .bar {
@@ -114,12 +114,12 @@
         position: relative;
         max-width: 1280px;
         margin: 0 auto;
-        padding: 12px 24px 8px;
+        padding: 20px 24px 28px;
       }
       .hero-bg {
         position: relative;
         height: min(72vh, 720px);
-        border-radius: 22px;
+        border-radius: 28px;
         overflow: hidden;
         background: #f4f4f5;
       }
@@ -133,81 +133,65 @@
         content: "";
         position: absolute;
         inset: 0;
-        border-radius: inherit;
-        background: linear-gradient(180deg, rgba(9,9,11,.06) 16%, rgba(9,9,11,.4) 58%, rgba(9,9,11,.78) 100%);
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(11,12,16,.08) 20%, rgba(11,12,16,.55) 100%);
         pointer-events: none;
       }
       .hero-inner {
         position: absolute;
-        left: 28px;
-        right: 28px;
+        left: 24px;
+        right: 24px;
         bottom: 28px;
         z-index: 1;
-        max-width: 720px;
+        padding: 36px 40px 40px;
+        max-width: 760px;
         color: #fff;
-      }
-      .kicker {
-        margin: 0 0 14px;
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-        color: rgba(255,255,255,.7);
       }
       h1 {
         margin: 0;
-        font-size: clamp(44px, 7.2vw, 88px);
-        letter-spacing: -0.07em;
-        line-height: 0.9;
-        font-weight: 560;
+        font-size: clamp(42px, 7vw, 80px);
+        letter-spacing: -0.06em;
+        line-height: 0.95;
+        font-weight: 650;
       }
       .lede {
-        margin: 16px 0 0;
-        max-width: 460px;
-        color: rgba(255,255,255,.78);
-        font-size: 15px;
-        line-height: 1.55;
+        margin: 18px 0 0;
+        max-width: 520px;
+        color: rgba(255,255,255,.86);
+        font-size: 17px;
       }
       .actions {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
-        margin-top: 22px;
+        margin-top: 28px;
       }
       .btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
         border-radius: 999px;
-        padding: 11px 16px;
+        padding: 12px 18px;
         font: inherit;
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 700;
         text-decoration: none;
         cursor: pointer;
         border: 1px solid transparent;
       }
       .btn.primary { background: #fff; color: #18181b; }
-      .btn.ghost { background: rgba(255,255,255,.08); color: #fff; border-color: rgba(255,255,255,.18); }
-      .btn.ghost:hover { background: rgba(255,255,255,.14); }
+      .btn.ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,.45); }
       .urlbar {
         display: flex;
         align-items: center;
         gap: 10px;
-        margin-top: 18px;
-        max-width: 680px;
-        padding: 8px 8px 8px 12px;
-        border-radius: 14px;
-        background: rgba(9,9,11,.28);
-        border: 1px solid rgba(255,255,255,.16);
-        backdrop-filter: blur(16px);
-      }
-      .urlbar .verb {
-        flex: none;
-        font: 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        color: rgba(255,255,255,.55);
+        margin-top: 22px;
+        max-width: 720px;
+        padding: 10px 10px 10px 16px;
+        border-radius: 16px;
+        background: rgba(255,255,255,.16);
+        border: 1px solid rgba(255,255,255,.28);
+        backdrop-filter: blur(12px);
       }
       .urlbar code {
         flex: 1;
@@ -236,16 +220,14 @@
         align-items: center;
         gap: 10px;
         flex-wrap: wrap;
-        margin-top: 12px;
+        margin-top: 14px;
       }
       .ai-row .label {
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: rgba(255,255,255,.58);
+        color: rgba(255,255,255,.78);
       }
-      .ai-links { display: flex; flex-wrap: wrap; gap: 6px; }
+      .ai-links { display: flex; flex-wrap: wrap; gap: 8px; }
       .ai-links a {
         display: inline-flex;
         align-items: center;
@@ -253,34 +235,32 @@
         color: #fff;
         text-decoration: none;
         border-radius: 999px;
-        padding: 7px 11px;
+        padding: 8px 12px;
         font-size: 12px;
-        font-weight: 650;
-        background: rgba(255,255,255,.08);
-        border: 1px solid rgba(255,255,255,.12);
+        font-weight: 700;
       }
-      .ai-links a:hover { background: rgba(255,255,255,.14); }
+      .ai-links a[data-ai="chatgpt"] { background: #10a37f; }
+      .ai-links a[data-ai="claude"] { background: #d97757; }
+      .ai-links a[data-ai="gemini"] { background: #1a73e8; }
       .ai-links .logo { width: 14px; height: 14px; pointer-events: none; }
       main {
         max-width: 1280px;
         margin: 0 auto;
-        padding: 28px 24px 88px;
+        padding: 8px 24px 80px;
       }
-      .popular { margin: 0 0 56px; }
+      .popular { margin: 8px 0 48px; }
       .rank-head {
         display: flex;
         align-items: baseline;
         justify-content: space-between;
         gap: 12px 24px;
         flex-wrap: wrap;
-        margin: 0 0 18px;
+        margin: 0 0 16px;
       }
       .rank-head h2 {
         margin: 0;
-        font-size: 15px;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        font-weight: 700;
+        font-size: 22px;
+        letter-spacing: -0.04em;
       }
       .rank-head p {
         margin: 0;
@@ -290,11 +270,11 @@
       .rank-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
+        gap: 12px;
       }
       .rank-card {
         display: block;
-        border-radius: 16px;
+        border-radius: 22px;
         overflow: hidden;
         position: relative;
         background: #f4f4f5;
@@ -313,15 +293,13 @@
         height: 100%;
         object-fit: cover;
         display: block;
-        transition: transform 0.55s ease;
       }
-      .rank-card:hover img { transform: scale(1.045); }
       .rank-card .n {
         position: absolute;
         top: 12px;
         left: 14px;
-        font-size: 13px;
-        font-weight: 700;
+        font-size: 18px;
+        font-weight: 800;
         letter-spacing: -0.04em;
         color: #fff;
         text-shadow: 0 1px 8px rgba(0,0,0,.45);
@@ -347,25 +325,15 @@
       .facts {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 0;
-        border-top: 1px solid var(--line);
+        gap: 14px;
       }
       .fact {
-        padding: 28px 28px 4px 0;
-        border: 0;
-        background: transparent;
+        padding: 22px 22px 20px;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: var(--panel);
       }
-      .fact + .fact { padding-left: 28px; border-left: 1px solid var(--line); }
-      .fact i {
-        display: block;
-        margin-bottom: 12px;
-        font: 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        color: var(--muted);
-        font-style: normal;
-      }
-      .fact b { display: block; font-size: 16px; letter-spacing: -0.04em; font-weight: 600; }
+      .fact b { display: block; font-size: 16px; letter-spacing: -0.03em; }
       .fact p { margin: 8px 0 0; color: var(--muted); font-size: 14px; }
       .toast {
         position: fixed;
@@ -422,7 +390,6 @@
         .rank-grid { grid-template-columns: 1fr 1fr; }
         .rank-card:first-child { grid-column: 1 / -1; grid-row: auto; min-height: 220px; }
         .facts { grid-template-columns: 1fr; }
-        .fact + .fact { padding-left: 0; border-left: 0; padding-top: 22px; border-top: 1px solid var(--line); }
         h1 { font-size: 42px; }
       }
       .brand-short { display: none; }
@@ -493,7 +460,7 @@
           gap: 8px;
         }
         .ai-links { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-        .ai-links a { justify-content: center; min-width: 0; padding: 10px 4px; font-size: 11px; background: rgba(255,255,255,.1); }
+        .ai-links a { justify-content: center; min-width: 0; padding: 10px 4px; font-size: 11px; }
         main { padding: 16px 12px calc(48px + env(safe-area-inset-bottom)); }
         .rank-grid { gap: 8px; }
         .rank-card { min-height: 148px; }
@@ -541,7 +508,6 @@
           })();
         </script>
       <div class="hero-inner">
-        <p class="kicker" data-i18n="home.kicker">画像を返す HTTP API</p>
         <h1>Gradient<br />Image API</h1>
         <p class="lede" data-i18n="home.lede">URL に幅・高さ・シード・色を載せるだけで、有機的なメッシュグラデ PNG が返ります。</p>
         <div class="actions">
@@ -549,8 +515,7 @@
           <a class="btn ghost" href="/docs" data-i18n="home.docs">Docs を読む</a>
         </div>
         <div class="urlbar">
-          <span class="verb">GET</span>
-          <code id="url">/gradient?w=800&amp;h=800&amp;seed=jalapeno&amp;colors=2EE59D,4FC3F7,00ACC1</code>
+          <code id="url">GET /gradient?w=800&amp;h=800&amp;seed=jalapeno&amp;colors=2EE59D,4FC3F7,00ACC1</code>
           <button type="button" id="copy" data-i18n="home.copy">コピー</button>
         </div>
         <div class="ai-row">
@@ -604,17 +569,14 @@
       </section>
       <div class="facts">
         <div class="fact">
-          <i>01</i>
           <b data-i18n="home.s1">GET だけ</b>
           <p data-i18n="home.s1b">画像を返すのは /gradient ひとつです。キーは不要です。</p>
         </div>
         <div class="fact">
-          <i>02</i>
           <b data-i18n="home.s2">同じ URL は同じ画像</b>
           <p data-i18n="home.s2b">クエリが同じなら PNG も同じです。見た目を変えるなら seed か colors を変えます。</p>
         </div>
         <div class="fact">
-          <i>03</i>
           <b data-i18n="home.s3">そのまま貼れる</b>
           <p data-i18n="home.s3b">img の src、Markdown、OGP に URL を置くだけです。</p>
         </div>
@@ -643,7 +605,7 @@
       const t = (key, vars) => window.I18N ? I18N.t(key, vars) : key;
       const path = window.__heroPath || "/gradient?w=1600&h=900&seed=aurora";
       const example = `${gigOrigin()}${path}`;
-      document.getElementById("url").textContent = path;
+      document.getElementById("url").textContent = `GET ${path}`;
       const urlEl = document.getElementById("url");
       const copyBtn = document.getElementById("copy");
       const toastEl = document.getElementById("toast");
