@@ -54,20 +54,30 @@ export function rgbToOklab(rgb: Rgb): Oklab {
 }
 
 export function oklabToRgb(lab: Oklab): Rgb {
+  const rgb = { r: 0, g: 0, b: 0 };
+  writeOklabRgb(lab, rgb);
+  return rgb;
+}
+
+export function writeOklabRgb(lab: Oklab, out: Rgb): void {
   const l_ = lab.L + 0.3963377774 * lab.a + 0.2158037573 * lab.b;
   const m_ = lab.L - 0.1055613458 * lab.a - 0.0638541728 * lab.b;
   const s_ = lab.L - 0.0894841775 * lab.a - 1.291485548 * lab.b;
   const l = l_ * l_ * l_;
   const m = m_ * m_ * m_;
   const s = s_ * s_ * s_;
-  return {
-    r: linearToSrgb(+4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s),
-    g: linearToSrgb(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s),
-    b: linearToSrgb(-0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s),
-  };
+  out.r = linearToSrgb(+4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s);
+  out.g = linearToSrgb(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s);
+  out.b = linearToSrgb(-0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s);
 }
 
 export function mixOklab(colors: Oklab[], weights: number[]): Oklab {
+  const out = { L: 0, a: 0, b: 0 };
+  mixOklabInto(colors, weights, out);
+  return out;
+}
+
+export function mixOklabInto(colors: Oklab[], weights: number[], out: Oklab): void {
   let L = 0;
   let a = 0;
   let b = 0;
@@ -80,5 +90,7 @@ export function mixOklab(colors: Oklab[], weights: number[]): Oklab {
     w += weight;
   }
   const inv = w > 1e-8 ? 1 / w : 1;
-  return { L: L * inv, a: a * inv, b: b * inv };
+  out.L = L * inv;
+  out.a = a * inv;
+  out.b = b * inv;
 }

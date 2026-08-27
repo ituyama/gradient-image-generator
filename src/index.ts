@@ -51,6 +51,13 @@ app.get("/robots.txt", (c) =>
   c.text(["User-agent: *", "Allow: /", "Sitemap: /llms.txt"].join("\n")),
 );
 
+const pngHeaders = {
+  "Content-Type": "image/png",
+  "Cache-Control": "public, max-age=31536000, immutable",
+  "CDN-Cache-Control": "public, max-age=31536000, immutable",
+  "Access-Control-Allow-Origin": "*",
+} as const;
+
 const favicon = (size: number) => {
   const seed = Math.random().toString(36).slice(2, 10);
   const png = generateGradient({ width: size, height: size, seed });
@@ -65,7 +72,7 @@ const favicon = (size: number) => {
 app.get("/favicon.ico", () => favicon(64));
 app.get("/apple-touch-icon.png", () => favicon(180));
 
-app.get("/gradient", (c) => {
+app.get("/gradient", async (c) => {
   const query = c.req.query();
   const width = Number(query.w ?? query.width ?? 800);
   const height = Number(query.h ?? query.height ?? 800);
@@ -90,14 +97,14 @@ app.get("/gradient", (c) => {
     return c.json({ error: "blur は数値で指定してください" }, 400);
   }
 
-  const png = generateGradient({ width, height, seed, colors, warp, grain, blur });
+  const cacheKey = new Request(c.req.url, { method: "GET" });
+  const cached = await caches.default.match(cacheKey);
+  if (cached) return cached;
 
-  return new Response(png, {
-    headers: {
-      "Content-Type": "image/png",
-      "Cache-Control": "public, max-age=31536000, immutable",
-    },
-  });
+  const png = generateGradient({ width, height, seed, colors, warp, grain, blur });
+  const res = new Response(png, { headers: pngHeaders });
+  c.executionCtx.waitUntil(caches.default.put(cacheKey, res.clone()));
+  return res;
 });
 
 export default app;

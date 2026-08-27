@@ -1,12 +1,13 @@
-import { PNG } from "pngjs";
 import {
-  mixOklab,
-  oklabToRgb,
+  mixOklabInto,
   parseColors,
   rgbToOklab,
+  writeOklabRgb,
   type Oklab,
+  type Rgb,
 } from "./color.js";
-import { createPerlin, fbm, type Noise2D } from "./noise.js";
+import { createPerlin, type Noise2D } from "./noise.js";
+import { encodePngRgb } from "./png.js";
 import { hashSeed, mulberry32 } from "./rng.js";
 
 export const DEFAULT_COLORS = ["#2EE59D", "#4FC3F7", "#00ACC1", "#80DEEA"];
@@ -35,14 +36,6 @@ function clamp(n: number, min: number, max: number): number {
 function smoothstep(t: number): number {
   const x = clamp(t, 0, 1);
   return x * x * (3 - 2 * x);
-}
-
-function samplePalette(palette: Oklab[], t: number): Oklab {
-  if (palette.length === 1) return palette[0];
-  const x = clamp(t, 0, 1) * (palette.length - 1);
-  const i = Math.min(palette.length - 2, Math.floor(x));
-  const f = x - i;
-  return mixOklab([palette[i], palette[i + 1]], [1 - f, f]);
 }
 
 function buildBlobs(seed: number, palette: Oklab[]): Blob[] {
@@ -84,6 +77,16 @@ function workingSize(width: number, height: number): { w: number; h: number } {
   };
 }
 
+function fbm4(noise: Noise2D, x: number, y: number): number {
+  return (
+    (noise(x, y) * 0.5 +
+      noise(x * 2, y * 2) * 0.25 +
+      noise(x * 4, y * 4) * 0.125 +
+      noise(x * 8, y * 8) * 0.0625) /
+    0.9375
+  );
+}
+
 function sampleBilinear(
   src: Uint8Array,
   sw: number,
@@ -97,28 +100,21 @@ function sampleBilinear(
   const y1 = Math.min(sh - 1, y0 + 1);
   const tx = x - x0;
   const ty = y - y0;
+  const w00 = (1 - tx) * (1 - ty);
+  const w10 = tx * (1 - ty);
+  const w01 = (1 - tx) * ty;
+  const w11 = tx * ty;
 
-  const i00 = (y0 * sw + x0) * 4;
-  const i10 = (y0 * sw + x1) * 4;
-  const i01 = (y1 * sw + x0) * 4;
-  const i11 = (y1 * sw + x1) * 4;
+  const i00 = (y0 * sw + x0) * 3;
+  const i10 = (y0 * sw + x1) * 3;
+  const i01 = (y1 * sw + x0) * 3;
+  const i11 = (y1 * sw + x1) * 3;
 
-  const r =
-    src[i00] * (1 - tx) * (1 - ty) +
-    src[i10] * tx * (1 - ty) +
-    src[i01] * (1 - tx) * ty +
-    src[i11] * tx * ty;
-  const g =
-    src[i00 + 1] * (1 - tx) * (1 - ty) +
-    src[i10 + 1] * tx * (1 - ty) +
-    src[i01 + 1] * (1 - tx) * ty +
-    src[i11 + 1] * tx * ty;
-  const b =
-    src[i00 + 2] * (1 - tx) * (1 - ty) +
-    src[i10 + 2] * tx * (1 - ty) +
-    src[i01 + 2] * (1 - tx) * ty +
-    src[i11 + 2] * tx * ty;
-  return [r, g, b];
+  return [
+    src[i00] * w00 + src[i10] * w10 + src[i01] * w01 + src[i11] * w11,
+    src[i00 + 1] * w00 + src[i10 + 1] * w10 + src[i01 + 1] * w01 + src[i11 + 1] * w11,
+    src[i00 + 2] * w00 + src[i10 + 2] * w10 + src[i01 + 2] * w01 + src[i11 + 2] * w11,
+  ];
 }
 
 function boxBlurPass(
@@ -139,21 +135,20 @@ function boxBlurPass(
     let b = 0;
     for (let i = -radius; i <= radius; i++) {
       const p = clamp(i, 0, extent - 1);
-      const idx = horizontal ? (line * w + p) * 4 : (p * w + line) * 4;
+      const idx = horizontal ? (line * w + p) * 3 : (p * w + line) * 3;
       r += src[idx];
       g += src[idx + 1];
       b += src[idx + 2];
     }
     for (let i = 0; i < extent; i++) {
-      const idx = horizontal ? (line * w + i) * 4 : (i * w + line) * 4;
+      const idx = horizontal ? (line * w + i) * 3 : (i * w + line) * 3;
       out[idx] = r / window;
       out[idx + 1] = g / window;
       out[idx + 2] = b / window;
-      out[idx + 3] = 255;
       const drop = clamp(i - radius, 0, extent - 1);
       const add = clamp(i + radius + 1, 0, extent - 1);
-      const di = horizontal ? (line * w + drop) * 4 : (drop * w + line) * 4;
-      const ai = horizontal ? (line * w + add) * 4 : (add * w + line) * 4;
+      const di = horizontal ? (line * w + drop) * 3 : (drop * w + line) * 3;
+      const ai = horizontal ? (line * w + add) * 3 : (add * w + line) * 3;
       r += src[ai] - src[di];
       g += src[ai + 1] - src[di + 1];
       b += src[ai + 2] - src[di + 2];
@@ -192,63 +187,78 @@ function renderField(
   const bandFreq = 5.4 + rand() * 2.2;
 
   const scale = 1 / Math.max(width, height);
-  const pixels = new Uint8Array(width * height * 4);
+  const pixels = new Uint8Array(width * height * 3);
   const weights = new Array<number>(blobs.length);
-
-  const warpField = (noise: Noise2D, x: number, y: number) =>
-    fbm(noise, x, y, 4);
+  const invR2 = blobs.map((blob) => 1 / (blob.r * blob.r));
+  const bandColor: Oklab = { L: 0, a: 0, b: 0 };
+  const blobColor: Oklab = { L: 0, a: 0, b: 0 };
+  const mixed: Oklab = { L: 0, a: 0, b: 0 };
+  const rgb: Rgb = { r: 0, g: 0, b: 0 };
+  const pair = [bandColor, blobColor];
+  const pairW = [0.62, 0.38];
+  const palPair: Oklab[] = [palette[0], palette[Math.min(1, palette.length - 1)]];
+  const mixT = [0, 0];
 
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       const nx = x * scale;
       const ny = y * scale;
 
-      const w1x = warpField(noiseA, nx * 1.7, ny * 1.7);
-      const w1y = warpField(noiseB, nx * 1.7 + 4.8, ny * 1.7 + 1.1);
+      const w1x = fbm4(noiseA, nx * 1.7, ny * 1.7);
+      const w1y = fbm4(noiseB, nx * 1.7 + 4.8, ny * 1.7 + 1.1);
       const px = nx + w1x * warp;
       const py = ny + w1y * warp;
 
-      const w2x = warpField(noiseC, px * 2.4 + 12.0, py * 2.4);
-      const w2y = warpField(noiseA, px * 2.4 + 18.4, py * 2.4 + 3.7);
+      const w2x = fbm4(noiseC, px * 2.4 + 12.0, py * 2.4);
+      const w2y = fbm4(noiseA, px * 2.4 + 18.4, py * 2.4 + 3.7);
       const qx = px + w2x * warp * 0.55;
       const qy = py + w2y * warp * 0.55;
 
       const along = qx * cosA + qy * sinA;
       const across = -qx * sinA + qy * cosA;
-      const flow = fbm(noiseC, qx * 2.1, qy * 2.1, 4);
+      const flow = fbm4(noiseC, qx * 2.1, qy * 2.1);
       const ribbon = 0.5 + 0.5 * Math.sin(along * bandFreq + flow * 3.4);
       const ribbon2 = 0.5 + 0.5 * Math.sin(across * (bandFreq * 0.62) + flow * 2.1);
       const field = smoothstep(clamp(ribbon * 0.72 + ribbon2 * 0.28, 0, 1));
-      const bandColor = samplePalette(palette, field);
+      if (palette.length === 1) {
+        bandColor.L = palette[0].L;
+        bandColor.a = palette[0].a;
+        bandColor.b = palette[0].b;
+      } else {
+        const palX = field * (palette.length - 1);
+        const palI = Math.min(palette.length - 2, Math.floor(palX));
+        const f = palX - palI;
+        palPair[0] = palette[palI];
+        palPair[1] = palette[palI + 1];
+        mixT[0] = 1 - f;
+        mixT[1] = f;
+        mixOklabInto(palPair, mixT, bandColor);
+      }
 
       for (let i = 0; i < blobs.length; i++) {
         const dx = qx - blobs[i].x;
         const dy = qy - blobs[i].y;
-        const r = blobs[i].r;
-        weights[i] = Math.exp((-0.5 * (dx * dx + dy * dy)) / (r * r));
+        weights[i] = Math.exp(-0.5 * (dx * dx + dy * dy) * invR2[i]);
       }
 
-      const blobColor = mixOklab(blobColors, weights);
-      const mixed = mixOklab([bandColor, blobColor], [0.62, 0.38]);
-      const sat = 1.12;
-      const rgb = oklabToRgb({
-        L: clamp(mixed.L + (field - 0.5) * 0.045, 0, 1),
-        a: mixed.a * sat,
-        b: mixed.b * sat,
-      });
+      mixOklabInto(blobColors, weights, blobColor);
+      mixOklabInto(pair, pairW, mixed);
+      mixed.L = clamp(mixed.L + (field - 0.5) * 0.045, 0, 1);
+      mixed.a *= 1.12;
+      mixed.b *= 1.12;
+      writeOklabRgb(mixed, rgb);
 
-      const idx = (y * width + x) * 4;
+      const idx = (y * width + x) * 3;
       pixels[idx] = rgb.r;
       pixels[idx + 1] = rgb.g;
       pixels[idx + 2] = rgb.b;
-      pixels[idx + 3] = 255;
     }
   }
 
   return pixels;
 }
 
-export function generateGradient(options: GenerateOptions): Buffer {
+export function generateGradient(options: GenerateOptions): Uint8Array {
   const width = clamp(Math.round(options.width), 16, 2048);
   const height = clamp(Math.round(options.height), 16, 2048);
   const seedValue = hashSeed(options.seed);
@@ -263,8 +273,11 @@ export function generateGradient(options: GenerateOptions): Buffer {
   const workRadius = blur * (w / Math.max(width, 1));
   const src = blurPixels(field, w, h, workRadius);
 
-  const png = new PNG({ width, height });
-  const data = png.data;
+  if (w === width && h === height && grain === 0) {
+    return encodePngRgb(width, height, src);
+  }
+
+  const rgb = new Uint8Array(width * height * 3);
   const grainRng = mulberry32(seedValue ^ 0x85ebca6b);
   const scaleX = (w - 1) / Math.max(1, width - 1);
   const scaleY = (h - 1) / Math.max(1, height - 1);
@@ -273,13 +286,12 @@ export function generateGradient(options: GenerateOptions): Buffer {
     for (let x = 0; x < width; x++) {
       const [r, g, b] = sampleBilinear(src, w, h, x * scaleX, y * scaleY);
       const n = grain === 0 ? 0 : (grainRng() - 0.5) * 255 * grain;
-      const idx = (y * width + x) * 4;
-      data[idx] = clamp(r + n, 0, 255);
-      data[idx + 1] = clamp(g + n, 0, 255);
-      data[idx + 2] = clamp(b + n, 0, 255);
-      data[idx + 3] = 255;
+      const idx = (y * width + x) * 3;
+      rgb[idx] = clamp(r + n, 0, 255);
+      rgb[idx + 1] = clamp(g + n, 0, 255);
+      rgb[idx + 2] = clamp(b + n, 0, 255);
     }
   }
 
-  return PNG.sync.write(png, { colorType: 6 });
+  return encodePngRgb(width, height, rgb);
 }
