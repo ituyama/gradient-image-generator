@@ -495,50 +495,80 @@
       .more .share, .more .ai-row { margin: 0 0 12px; }
       .dock { display: none; }
       @media (min-width: 1100px) {
+        html, body {
+          height: 100%;
+          overflow: hidden;
+        }
+        body {
+          display: flex;
+          flex-direction: column;
+          min-height: 0;
+        }
+        header { flex: none; }
+        .bar { min-height: 56px; }
         main {
+          flex: 1 1 auto;
+          min-height: 0;
           max-width: 1440px;
-          padding: 22px 28px 56px;
+          width: 100%;
+          padding: 14px 28px 10px;
+          display: flex;
+          flex-direction: column;
         }
         h1, .lede { display: none; }
         .layout {
-          grid-template-columns: minmax(0, 1fr) 360px;
+          flex: 1 1 auto;
+          min-height: 0;
+          grid-template-columns: minmax(0, 1fr) 340px;
           grid-template-areas: "preview panel";
-          gap: 28px;
+          gap: 20px;
+          align-items: stretch;
         }
-        .preview-wrap { grid-area: preview; position: sticky; top: 80px; }
+        .preview-wrap {
+          grid-area: preview;
+          position: static;
+          display: flex;
+          flex-direction: column;
+          min-height: 0;
+        }
         .panel {
           grid-area: panel;
+          min-height: 0;
+          overflow: auto;
           background: rgba(18, 20, 26, 0.88);
           border-radius: 20px;
-          padding: 18px 18px 16px;
+          padding: 14px;
           box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
         }
         .block + .block {
-          margin-top: 14px;
-          padding-top: 14px;
+          margin-top: 10px;
+          padding-top: 10px;
           border-top: 1px solid var(--line);
         }
         .preview {
-          width: min(100%, calc(min(76dvh, 780px) * (var(--aw, 800) / var(--ah, 800))));
-          height: min(76dvh, 780px, calc(100% * (var(--ah, 800) / var(--aw, 800))));
+          width: min(100%, calc((100dvh - 220px) * (var(--aw, 800) / var(--ah, 800))));
+          height: min(calc(100dvh - 220px), calc(100% * (var(--ah, 800) / var(--aw, 800))));
           max-width: 100%;
-          max-height: min(76dvh, 780px);
+          max-height: calc(100dvh - 220px);
           aspect-ratio: var(--ar, 1);
           margin: 0 auto;
-          border-radius: 22px;
+          border-radius: 20px;
           box-shadow: 0 18px 56px rgba(0, 0, 0, 0.34);
         }
         .preview img { object-fit: contain; }
         .more {
+          flex: none;
           border: 0;
           background: transparent;
           padding: 0;
           border-radius: 0;
+          margin-top: 10px;
         }
         .more summary { display: none; }
+        .more .urlbar, .more .share, .more .ai-row { margin: 0 0 8px; }
         .urlbar {
-          margin-top: 14px;
-          padding: 8px 8px 8px 14px;
+          margin-top: 0;
+          padding: 6px 6px 6px 12px;
           border-radius: 12px;
         }
         .urlbar code {
@@ -546,7 +576,23 @@
           overflow: hidden;
           text-overflow: ellipsis;
         }
-        .share, .ai-row { margin-top: 10px; }
+        .share, .ai-row { margin-top: 0; }
+        input[type="number"], input[type="text"] { padding: 8px 10px; }
+        .icon-btn, .icon-action { width: 36px; height: 36px; }
+        .color-list {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 6px;
+        }
+        .color-row {
+          grid-template-columns: 32px minmax(0, 1fr) 28px;
+          gap: 6px;
+        }
+        .color-row input[type="color"] { width: 32px; height: 32px; }
+        .color-row .icon-btn { width: 28px; height: 28px; }
+        .add-color { margin-top: 6px; padding: 8px; }
+        .actions { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+        .site-foot { flex: none; padding: 10px 24px; }
         .palettes {
           display: flex;
           flex-wrap: nowrap;
@@ -560,13 +606,6 @@
           border-radius: 999px;
           padding: 4px 8px 4px 4px;
           font-size: 11px;
-        }
-        .color-row { grid-template-columns: 40px 1fr 32px; gap: 6px; }
-        .color-row input[type="color"] { width: 40px; height: 40px; }
-        .actions {
-          margin-top: 16px;
-          padding-top: 16px;
-          border-top: 1px solid var(--line);
         }
         .seg button, .icon-btn, .ghost { transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease; }
         .seg button:hover, .icon-btn:hover, .ghost:hover {
