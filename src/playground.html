@@ -2,7 +2,7 @@
 <html lang="ja" data-i18n-title="pg.title">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Playground · Gradient Image API</title>
     <link id="favicon" rel="icon" type="image/png" href="/favicon.ico" />
     <link id="touch-icon" rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -28,7 +28,7 @@
         --ok: #7ee0b2;
       }
       * { box-sizing: border-box; }
-      html, body { min-height: 100%; }
+      html, body { min-height: 100%; overflow-x: clip; }
       :focus-visible {
         outline: 2px solid #7ee0b2;
         outline-offset: 2px;
@@ -64,6 +64,8 @@
         padding: 10px 14px;
         border-radius: 999px;
         box-shadow: 0 12px 40px rgba(0,0,0,.35);
+        max-width: calc(100vw - 24px);
+        bottom: calc(16px + env(safe-area-inset-bottom));
       }
       .toast[hidden] { display: none; }
       .tip-float {
@@ -119,6 +121,7 @@
         border-bottom: 1px solid var(--line);
         background: rgba(11, 12, 16, 0.72);
         backdrop-filter: blur(18px);
+        padding-top: env(safe-area-inset-top);
       }
       .bar {
         max-width: 1280px;
@@ -129,6 +132,7 @@
         align-items: center;
         justify-content: space-between;
         gap: 16px;
+        flex-wrap: wrap;
       }
       .brand {
         display: flex;
@@ -406,6 +410,27 @@
       @media (max-width: 1099px) {
         .preview-wrap { position: static; }
         h1 { font-size: 28px; }
+        .layout { display: flex; flex-direction: column; }
+        .preview-wrap { order: -1; }
+      }
+      @media (max-width: 720px) {
+        .bar { padding: 10px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); min-height: 0; gap: 10px; }
+        .end { width: 100%; justify-content: space-between; }
+        nav { flex-wrap: wrap; gap: 4px; }
+        nav a { padding: 6px 8px; font-size: 12px; }
+        main { padding: 16px 16px calc(48px + env(safe-area-inset-bottom)); }
+        h1 { font-size: 24px; margin-bottom: 14px; }
+        .preview { max-height: 42vh; border-radius: 20px; }
+        .urlbar { flex-wrap: wrap; }
+        .urlbar code { flex: 1 1 160px; }
+        .share { flex-wrap: wrap; }
+        .row { grid-template-columns: 1fr 1fr; }
+        .actions { grid-template-columns: 1fr 1fr; }
+        .panel { padding: 14px; border-radius: 20px; }
+      }
+      @media (max-width: 420px) {
+        .row { grid-template-columns: 1fr; }
+        .ai-links a { flex: 1 1 calc(50% - 8px); justify-content: center; }
       }
     </style>
   </head>
