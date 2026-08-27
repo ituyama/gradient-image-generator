@@ -309,34 +309,49 @@
         h1 { font-size: 42px; }
       }
       @media (max-width: 720px) {
-        .bar { padding: 10px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); min-height: 0; gap: 10px; }
-        .end { width: 100%; justify-content: space-between; }
-        nav { flex-wrap: wrap; gap: 4px; }
-        nav a { padding: 6px 8px; font-size: 12px; }
+        .bar {
+          display: grid;
+          grid-template-columns: 1fr auto;
+          padding: 10px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left));
+          min-height: 0;
+          gap: 8px 12px;
+        }
+        .brand { min-width: 0; }
+        .end { display: contents; }
+        .lang-switch { grid-column: 2; grid-row: 1; }
+        nav {
+          grid-column: 1 / -1;
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          gap: 4px;
+          -webkit-overflow-scrolling: touch;
+        }
+        nav a { padding: 6px 8px; font-size: 12px; white-space: nowrap; flex: none; }
         .hero { padding: 12px 12px 16px; }
         .hero-bg {
           height: auto;
-          min-height: 380px;
+          min-height: 0;
           border-radius: 20px;
           display: flex;
           flex-direction: column;
           justify-content: flex-end;
         }
-        .hero-bg img { position: absolute; inset: 0; }
+        .hero-bg img { position: absolute; inset: 0; min-height: 280px; }
         .hero-bg::after { border-radius: 20px; }
         .hero-inner {
           position: relative;
           left: auto;
           right: auto;
           bottom: auto;
-          padding: 72px 16px 16px;
+          padding: 80px 16px 16px;
           max-width: none;
         }
         h1 { font-size: 34px; }
         .lede { font-size: 14px; margin-top: 10px; }
         .actions { margin-top: 16px; }
         .btn { width: 100%; }
-        .urlbar { margin-top: 14px; }
+        .urlbar { margin-top: 14px; flex-wrap: wrap; }
+        .urlbar code { flex: 1 1 140px; }
         .ai-row { margin-top: 12px; }
         main { padding: 4px 12px calc(48px + env(safe-area-inset-bottom)); }
         .gallery { grid-template-columns: 1fr; grid-template-rows: none; gap: 10px; }
@@ -377,7 +392,6 @@
             window.__heroPath = path;
           })();
         </script>
-      </div>
       <div class="hero-inner">
         <h1>Gradient<br />Image API</h1>
         <p class="lede" data-i18n="home.lede">URL に幅・高さ・シード・色を載せるだけで、有機的なメッシュグラデ PNG が返ります。</p>
@@ -406,6 +420,7 @@
             </a>
           </div>
         </div>
+      </div>
       </div>
     </section>
     <main>
