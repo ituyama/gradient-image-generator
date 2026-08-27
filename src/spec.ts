@@ -220,7 +220,10 @@ This service is an image API. Prefer GET /gradient and embed the URL in <img>, M
 - [Home](${origin}/)
 - [Playground](${origin}/playground): live parameter editor
 - [Human docs](${origin}/docs)
+- [npm](${origin}/docs#npm): generate the same PNG from Node
 - [Open in ChatGPT / Claude / Gemini](${origin}/docs#ai-links): prefilled prompt links
+- [GitHub](https://github.com/ituyama/gradient-image-generator)
+- [Contribute](${origin}/docs#contribute)
 - [OpenAPI 3.1](${origin}/openapi.json)
 - [Full machine doc](${origin}/llms-full.txt)
 
@@ -312,7 +315,10 @@ Invalid hex colors are skipped. If fewer than 2 valid colors remain, the default
 - Home: ${origin}/
 - Playground: ${origin}/playground
 - Human docs: ${origin}/docs
+- npm: ${origin}/docs#npm
 - Prefilled AI prompt links: ${origin}/docs#ai-links
+- GitHub: https://github.com/ituyama/gradient-image-generator
+- Contribute: ${origin}/docs#contribute
 - Short AI summary: ${origin}/llms.txt
 - OpenAPI: ${origin}/openapi.json
 - This document: ${origin}/llms-full.txt
@@ -341,6 +347,13 @@ url.searchParams.set("seed", "hero");
 url.searchParams.set("colors", "2EE59D,4FC3F7,00ACC1");
 const img = document.createElement("img");
 img.src = url.toString();
+\`\`\`
+
+npm:
+
+\`\`\`js
+import { generateGradient } from "gradient-image-generator";
+const png = generateGradient({ width: 800, height: 800, seed: "jalapeno" });
 \`\`\`
 `;
 }

@@ -2,7 +2,9 @@
 
 URL のクエリだけで、有機的なメッシュグラデ PNG を返す API です。同じ入力は同じ画像になります。
 
-公開: [https://gradient-image-generator.ituyama01.workers.dev](https://gradient-image-generator.ituyama01.workers.dev)
+- 公開: [https://gradient-image-generator.ituyama01.workers.dev](https://gradient-image-generator.ituyama01.workers.dev)
+- GitHub: [https://github.com/ituyama/gradient-image-generator](https://github.com/ituyama/gradient-image-generator)
+- ドキュメント: [npm](https://gradient-image-generator.ituyama01.workers.dev/docs#npm) / [コントリビュート](https://gradient-image-generator.ituyama01.workers.dev/docs#contribute)
 
 ## npm
 
@@ -71,3 +73,16 @@ GET /gradient?w=800&h=800&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1
 - [`/openapi.json`](https://gradient-image-generator.ituyama01.workers.dev/openapi.json)
 
 ローカルは `npm start`（`wrangler dev`）。再公開は `npm run deploy`。
+
+## コントリビュート
+
+小さな修正から歓迎です。`GET /gradient` の契約は変えないでください。同じクエリは同じ画像のままにします。
+
+```bash
+git clone https://github.com/ituyama/gradient-image-generator.git
+cd gradient-image-generator
+npm install
+npm start
+```
+
+直したら `main` 向けに Pull Request を送ってください。完成した塊ごとにコミットすると追いやすいです。詳しくは [ドキュメント](https://gradient-image-generator.ituyama01.workers.dev/docs#contribute) と [CONTRIBUTING.md](CONTRIBUTING.md) を見てください。

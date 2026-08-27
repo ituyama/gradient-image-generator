@@ -609,6 +609,8 @@
       <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
       <symbol id="i-terminal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 17 6-5-6-5"/><path d="M12 19h8"/></symbol>
       <symbol id="i-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></symbol>
+      <symbol id="i-github" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.52 2.87 8.36 6.84 9.72.5.1.68-.22.68-.49 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.36 1.12 2.94.85.09-.67.35-1.12.63-1.38-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.27 2.75 1.05A9.2 9.2 0 0 1 12 6.84c.85 0 1.7.12 2.5.34 1.9-1.32 2.74-1.05 2.74-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.8-4.57 5.06.36.32.68.94.68 1.9 0 1.38-.01 2.48-.01 2.82 0 .27.18.6.69.49A10.05 10.05 0 0 0 22 12.26C22 6.58 17.52 2 12 2z"/></symbol>
+      <symbol id="i-git" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/></symbol>
     </svg>
     <header>
       <div class="bar">
@@ -622,6 +624,7 @@
             <a class="active" href="/docs" data-i18n-tip="nav.docs" data-tip-side="bottom"><svg class="icon"><use href="#i-book"/></svg>Docs</a>
             <a href="/openapi.json" data-i18n-tip="nav.openapi" data-tip-side="bottom"><svg class="icon"><use href="#i-braces"/></svg>OpenAPI</a>
             <a href="/llms.txt" data-i18n-tip="nav.llms" data-tip-side="bottom"><svg class="icon"><use href="#i-file"/></svg>llms.txt</a>
+            <a href="https://github.com/ituyama/gradient-image-generator" target="_blank" rel="noreferrer" data-i18n-tip="nav.github" data-tip-side="bottom"><svg class="icon"><use href="#i-github"/></svg>GitHub</a>
           </nav>
           <div class="lang-switch" role="group" data-i18n-aria="lang.label">
             <button type="button" data-lang="ja">JA</button>
@@ -646,11 +649,14 @@
           <a href="#errors"><svg class="icon"><use href="#i-alert"/></svg><span data-i18n="docs.toc.errors">エラー</span></a>
           <a href="#behavior"><svg class="icon"><use href="#i-activity"/></svg><span data-i18n="docs.toc.behavior">挙動</span></a>
           <a href="#embed"><svg class="icon"><use href="#i-code"/></svg><span data-i18n="docs.toc.embed">埋め込み</span></a>
+          <a href="#npm"><svg class="icon"><use href="#i-terminal"/></svg><span data-i18n="docs.toc.npm">npm</span></a>
         </div>
         <div class="sec" data-i18n="docs.ref">参照</div>
         <div class="toc">
           <a href="#agents"><svg class="icon"><use href="#i-bot"/></svg><span data-i18n="docs.toc.agents">仕様ファイル</span></a>
           <a href="#ai-links"><svg class="icon"><use href="#i-message"/></svg><span data-i18n="docs.toc.chat">チャットで開く</span></a>
+          <a href="#source"><svg class="icon"><use href="#i-github"/></svg><span data-i18n="docs.toc.source">GitHub</span></a>
+          <a href="#contribute"><svg class="icon"><use href="#i-git"/></svg><span data-i18n="docs.toc.contribute">コントリビュート</span></a>
         </div>
         <nav class="ai-float" data-i18n-aria="docs.chat">
           <a data-ai="chatgpt" target="_blank" rel="noreferrer">
@@ -848,6 +854,35 @@ colors=2EE59D 4FC3F7 00ACC1</code></pre>
           <pre><code id="ex-js"></code></pre>
         </div>
 
+        <h2 id="npm"><svg class="icon"><use href="#i-terminal"/></svg><span data-i18n="docs.toc.npm">npm</span></h2>
+        <p data-i18n-html="docs.npm.body">同じ生成を Node から呼べます。HTTP の <code>/gradient</code> と同じ入力は同じ PNG です。</p>
+        <div class="snippet">
+          <div class="caption"><svg class="icon"><use href="#i-terminal"/></svg>npm</div>
+          <pre><code>npm install gradient-image-generator</code></pre>
+        </div>
+        <div class="snippet">
+          <div class="caption"><svg class="icon"><use href="#i-braces"/></svg>Node</div>
+          <pre><code>import { writeFileSync } from "node:fs";
+import { generateGradient } from "gradient-image-generator";
+
+const png = generateGradient({
+  width: 800,
+  height: 800,
+  seed: "jalapeno",
+  colors: "2EE59D,4FC3F7,00ACC1",
+});
+writeFileSync("gradient.png", png);</code></pre>
+        </div>
+        <div class="snippet">
+          <div class="caption"><svg class="icon"><use href="#i-terminal"/></svg><span data-i18n="docs.npm.cli">CLI</span></div>
+          <pre><code>npx gradient-image-generator --seed jalapeno --colors 2EE59D,4FC3F7,00ACC1 -o gradient.png</code></pre>
+        </div>
+        <p data-i18n="docs.npm.github">npm に出す前でも、GitHub から入れられます。</p>
+        <div class="snippet">
+          <div class="caption"><svg class="icon"><use href="#i-github"/></svg>GitHub</div>
+          <pre><code>npm install github:ituyama/gradient-image-generator</code></pre>
+        </div>
+
         <h2 id="agents"><svg class="icon"><use href="#i-bot"/></svg><span data-i18n="docs.toc.agents">仕様ファイル</span></h2>
         <p data-i18n-html="docs.agents.body">
           LLM に渡す用の短い仕様です。成功時は JSON ではなく PNG です。画像 URL を組み立てて <code>&lt;img&gt;</code> や Markdown に載せてください。
@@ -899,6 +934,27 @@ colors=2EE59D 4FC3F7 00ACC1</code></pre>
             </a>
           </div>
         </details>
+
+        <h2 id="source"><svg class="icon"><use href="#i-github"/></svg><span data-i18n="docs.toc.source">GitHub</span></h2>
+        <p data-i18n="docs.source.body">実装は GitHub にあります。Issue と Pull Request を受け付けています。</p>
+        <p>
+          <a class="btn" href="https://github.com/ituyama/gradient-image-generator" target="_blank" rel="noreferrer">
+            <svg class="icon"><use href="#i-github"/></svg>
+            <span data-i18n="docs.source.open">リポジトリを開く</span>
+          </a>
+        </p>
+
+        <h2 id="contribute"><svg class="icon"><use href="#i-git"/></svg><span data-i18n="docs.toc.contribute">コントリビュート</span></h2>
+        <p data-i18n-html="docs.contribute.body">小さな修正から歓迎です。<code>GET /gradient</code> の契約は変えないでください。同じクエリは同じ画像のままにします。</p>
+        <div class="snippet">
+          <div class="caption"><svg class="icon"><use href="#i-terminal"/></svg><span data-i18n="docs.contribute.local">ローカル</span></div>
+          <pre><code>git clone https://github.com/ituyama/gradient-image-generator.git
+cd gradient-image-generator
+npm install
+npm start
+# http://localhost:8787</code></pre>
+        </div>
+        <p data-i18n="docs.contribute.pr">直したら main 向けに Pull Request を送ってください。完成した塊ごとにコミットすると追いやすいです。</p>
       </article>
     </div>
     <a class="btn to-top icon-action" id="to-top" href="#content" data-i18n-tip="docs.top" data-i18n-aria="docs.top">
