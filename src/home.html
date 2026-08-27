@@ -15,17 +15,17 @@
     </script>
     <style>
       :root {
-        color-scheme: dark;
-        --bg: #0b0c10;
-        --panel: #12141a;
-        --text: #f4f6fb;
-        --muted: #8b93a7;
-        --line: rgba(255, 255, 255, 0.08);
-        --line-strong: rgba(255, 255, 255, 0.14);
+        color-scheme: light;
+        --bg: #fff;
+        --panel: #fff;
+        --text: #18181b;
+        --muted: #71717a;
+        --line: #e4e4e7;
+        --line-strong: #d4d4d8;
       }
       * { box-sizing: border-box; }
       html, body { min-height: 100%; }
-      :focus-visible { outline: 2px solid #7ee0b2; outline-offset: 2px; }
+      :focus-visible { outline: 2px solid #18181b; outline-offset: 2px; }
       @media (prefers-reduced-motion: reduce) {
         * { transition: none !important; }
       }
@@ -41,7 +41,7 @@
         top: 0;
         z-index: 20;
         border-bottom: 1px solid var(--line);
-        background: rgba(11, 12, 16, 0.72);
+        background: rgba(255, 255, 255, 0.92);
         backdrop-filter: blur(18px);
       }
       .bar {
@@ -78,8 +78,8 @@
         padding: 7px 11px;
         border-radius: 999px;
       }
-      nav a:hover { color: var(--text); background: rgba(255, 255, 255, 0.04); }
-      nav a.active { color: var(--text); background: rgba(255, 255, 255, 0.08); }
+      nav a:hover, nav a.active { color: var(--text); }
+      nav a.active { background: #f4f4f5; }
       .end { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
       .lang-switch {
         display: inline-flex;
@@ -87,7 +87,7 @@
         padding: 2px;
         border: 1px solid var(--line-strong);
         border-radius: 999px;
-        background: var(--panel);
+        background: #fff;
       }
       .lang-switch button {
         border: 0;
@@ -100,17 +100,18 @@
         font-weight: 700;
         cursor: pointer;
       }
-      .lang-switch button.on { background: var(--text); color: #111318; }
+      .lang-switch button.on { background: #18181b; color: #fff; }
       .hero {
-        position: relative;
-        min-height: min(78vh, 820px);
-        display: grid;
-        align-items: end;
-        overflow: hidden;
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 48px 24px 28px;
       }
       .hero-bg {
-        position: absolute;
-        inset: 0;
+        margin-top: 28px;
+        height: min(52vh, 560px);
+        border-radius: 28px;
+        overflow: hidden;
+        background: #f4f4f5;
       }
       .hero-bg img {
         width: 100%;
@@ -118,20 +119,7 @@
         object-fit: cover;
         display: block;
       }
-      .hero-bg::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(180deg, rgba(11,12,16,.15) 0%, rgba(11,12,16,.72) 62%, #0b0c10 100%);
-      }
-      .hero-inner {
-        position: relative;
-        z-index: 1;
-        max-width: 1280px;
-        width: 100%;
-        margin: 0 auto;
-        padding: 72px 24px 48px;
-      }
+      .hero-inner { max-width: 720px; }
       h1 {
         margin: 0;
         font-size: clamp(42px, 7vw, 80px);
@@ -142,7 +130,7 @@
       .lede {
         margin: 18px 0 0;
         max-width: 520px;
-        color: #c9d0df;
+        color: var(--muted);
         font-size: 17px;
       }
       .actions {
@@ -164,8 +152,8 @@
         cursor: pointer;
         border: 1px solid transparent;
       }
-      .btn.primary { background: #f4f6fb; color: #111318; }
-      .btn.ghost { background: rgba(255,255,255,.08); color: #fff; border-color: var(--line-strong); }
+      .btn.primary { background: #18181b; color: #fff; }
+      .btn.ghost { background: #fff; color: #18181b; border-color: var(--line); }
       .urlbar {
         display: flex;
         align-items: center;
@@ -174,9 +162,8 @@
         max-width: 720px;
         padding: 10px 10px 10px 16px;
         border-radius: 16px;
-        background: rgba(11,12,16,.55);
-        border: 1px solid var(--line-strong);
-        backdrop-filter: blur(12px);
+        background: #f7f7f8;
+        border: 1px solid var(--line);
       }
       .urlbar code {
         flex: 1;
@@ -184,15 +171,15 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        color: #c9d0df;
+        color: #3f3f46;
         font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
         cursor: pointer;
       }
       .urlbar button {
         flex: none;
         border: 0;
-        background: #f4f6fb;
-        color: #111318;
+        background: #18181b;
+        color: #fff;
         border-radius: 999px;
         padding: 8px 12px;
         font: inherit;
@@ -218,7 +205,7 @@
         border-radius: 22px;
         overflow: hidden;
         position: relative;
-        background: #181b23;
+        background: #f4f4f5;
         text-decoration: none;
         color: inherit;
       }
@@ -256,8 +243,8 @@
         bottom: 20px;
         transform: translateX(-50%);
         z-index: 60;
-        background: #f4f6fb;
-        color: #111318;
+        background: #18181b;
+        color: #fff;
         font-size: 13px;
         font-weight: 700;
         padding: 10px 14px;
@@ -292,9 +279,6 @@
       </div>
     </header>
     <section class="hero">
-      <div class="hero-bg">
-        <img src="/gradient?w=1600&h=900&seed=aurora&colors=2EE59D,4FC3F7,00ACC1,80DEEA" alt="" />
-      </div>
       <div class="hero-inner">
         <h1>Gradient<br />Image API</h1>
         <p class="lede" data-i18n="home.lede">URL に幅・高さ・シード・色を載せるだけで、有機的なメッシュグラデ PNG が返ります。</p>
@@ -306,6 +290,9 @@
           <code id="url">GET /gradient?w=800&amp;h=800&amp;seed=jalapeno&amp;colors=2EE59D,4FC3F7,00ACC1</code>
           <button type="button" id="copy" data-i18n="home.copy">コピー</button>
         </div>
+      </div>
+      <div class="hero-bg">
+        <img src="/gradient?w=1600&h=900&seed=aurora&colors=2EE59D,4FC3F7,00ACC1,80DEEA" alt="" />
       </div>
     </section>
     <main>
