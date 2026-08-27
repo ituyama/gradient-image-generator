@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ja">
+<html lang="ja" data-i18n-title="pg.title">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -145,6 +145,27 @@
       }
       nav a:hover { color: var(--text); background: rgba(255, 255, 255, 0.04); }
       nav a.active { color: var(--text); background: rgba(255, 255, 255, 0.08); }
+      .end { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+      .lang-switch {
+        display: inline-flex;
+        gap: 2px;
+        padding: 2px;
+        border: 1px solid var(--line-strong);
+        border-radius: 999px;
+        background: var(--panel);
+      }
+      .lang-switch button {
+        border: 0;
+        background: transparent;
+        color: var(--muted);
+        border-radius: 999px;
+        padding: 5px 9px;
+        font: inherit;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .lang-switch button.on { background: var(--text); color: #111318; }
       main {
         max-width: 1280px;
         margin: 0 auto;
@@ -379,98 +400,105 @@
     </style>
   </head>
   <body>
-    <a class="skip" href="#form">操作にスキップ</a>
+    <a class="skip" href="#form" data-i18n="pg.skip">操作にスキップ</a>
     <header>
       <div class="bar">
         <a class="brand" href="/"><span class="mark"></span>Gradient Image API</a>
-        <nav>
-          <a class="active" href="/" data-tip="値を動かして画像を作る">Playground</a>
-          <a href="/docs" data-tip="API の使い方">Docs</a>
-          <a href="/openapi.json" data-tip="機械可読な仕様">OpenAPI</a>
-          <a href="/llms.txt" data-tip="短い仕様テキスト">llms.txt</a>
-        </nav>
+        <div class="end">
+          <nav>
+            <a class="active" href="/" data-i18n-tip="nav.play">Playground</a>
+            <a href="/docs" data-i18n-tip="nav.docs">Docs</a>
+            <a href="/openapi.json" data-i18n-tip="nav.openapi">OpenAPI</a>
+            <a href="/llms.txt" data-i18n-tip="nav.llms">llms.txt</a>
+          </nav>
+          <div class="lang-switch" role="group" data-i18n-aria="lang.label">
+            <button type="button" data-lang="ja">JA</button>
+            <button type="button" data-lang="en">EN</button>
+            <button type="button" data-lang="zh">中文</button>
+          </div>
+        </div>
       </div>
     </header>
     <main>
-      <h1>Playground</h1>
+      <h1 data-i18n="pg.h1">Playground</h1>
       <div class="layout">
         <form class="panel" id="form">
           <div class="block">
-            <div class="label">サイズ <span id="size-hint">800 × 800</span></div>
+            <div class="label"><span data-i18n="pg.size">サイズ</span> <span id="size-hint">800 × 800</span></div>
             <div class="row">
               <div>
-                <label class="field-label" for="w">幅</label>
+                <label class="field-label" for="w" data-i18n="pg.width">幅</label>
                 <input id="w" name="w" type="number" min="16" max="2048" value="800" inputmode="numeric" />
               </div>
               <div>
-                <label class="field-label" for="h">高さ</label>
+                <label class="field-label" for="h" data-i18n="pg.height">高さ</label>
                 <input id="h" name="h" type="number" min="16" max="2048" value="800" inputmode="numeric" />
               </div>
             </div>
             <div class="row" style="margin-top:10px;grid-template-columns:1fr auto">
               <div class="seg" id="sizes"></div>
-              <button class="icon-btn" type="button" id="swap" data-tip="幅と高さを入れ替え" aria-label="幅と高さを入れ替え">⇄</button>
+              <button class="icon-btn" type="button" id="swap" data-i18n-tip="pg.swap" data-i18n-aria="pg.swap">⇄</button>
             </div>
           </div>
           <div class="block">
-            <div class="label">シード</div>
+            <div class="label" data-i18n="pg.seed">シード</div>
             <div class="seed-row">
               <input id="seed" name="seed" type="text" value="jalapeno" autocomplete="off" spellcheck="false" />
-              <button class="icon-btn" type="button" id="random-seed" data-tip="シードをランダムに（R）" aria-label="シードをランダムに">↺</button>
+              <button class="icon-btn" type="button" id="random-seed" data-i18n-tip="pg.seedRand" data-i18n-aria="pg.seedRand">↺</button>
             </div>
           </div>
           <div class="block">
-            <div class="label">カラー <span id="color-count">4 / 8</span></div>
+            <div class="label"><span data-i18n="pg.colors">カラー</span> <span id="color-count">4 / 8</span></div>
             <input id="colors" name="colors" type="hidden" value="#2EE59D, #4FC3F7, #00ACC1, #80DEEA" />
             <div class="color-list" id="color-list"></div>
-            <button class="ghost add-color" type="button" id="add-color" data-tip="パレットに色を1つ足す">色を追加</button>
+            <button class="ghost add-color" type="button" id="add-color" data-i18n="pg.addColor" data-i18n-tip="pg.addColorTip">色を追加</button>
             <div class="palettes" id="palettes" style="margin-top:10px"></div>
           </div>
           <div class="block row">
             <div>
-              <div class="label">ワープ <span id="warp-val">0.62</span></div>
-              <input id="warp" name="warp" type="range" min="0" max="1.5" step="0.01" value="0.62" aria-label="ワープ" />
+              <div class="label"><span data-i18n="pg.warp">ワープ</span> <span id="warp-val">0.62</span></div>
+              <input id="warp" name="warp" type="range" min="0" max="1.5" step="0.01" value="0.62" data-i18n-aria="pg.warp" />
             </div>
             <div>
-              <div class="label">グレイン <span id="grain-val">0.035</span></div>
-              <input id="grain" name="grain" type="range" min="0" max="0.2" step="0.005" value="0.035" aria-label="グレイン" />
+              <div class="label"><span data-i18n="pg.grain">グレイン</span> <span id="grain-val">0.035</span></div>
+              <input id="grain" name="grain" type="range" min="0" max="0.2" step="0.005" value="0.035" data-i18n-aria="pg.grain" />
             </div>
           </div>
           <div class="block">
-            <div class="label">ぼかし blur <span id="blur-val">0</span></div>
-            <input id="blur" name="blur" type="range" min="0" max="32" step="1" value="0" aria-label="ぼかし" />
+            <div class="label"><span data-i18n="pg.blur">ぼかし</span> blur <span id="blur-val">0</span></div>
+            <input id="blur" name="blur" type="range" min="0" max="32" step="1" value="0" data-i18n-aria="pg.blur" />
           </div>
           <div class="actions">
-            <button class="primary" type="submit">生成する</button>
-            <button class="ghost" type="button" id="open" data-tip="PNG を新しいタブで開く">新しいタブ</button>
-            <button class="ghost" type="button" id="download" data-tip="PNG を保存（S）">保存</button>
-            <button class="ghost" type="button" id="reset" data-tip="初期値に戻す">リセット</button>
+            <button class="primary" type="submit" data-i18n="pg.generate">生成する</button>
+            <button class="ghost" type="button" id="open" data-i18n="pg.open" data-i18n-tip="pg.openTip">新しいタブ</button>
+            <button class="ghost" type="button" id="download" data-i18n="pg.save" data-i18n-tip="pg.saveTip">保存</button>
+            <button class="ghost" type="button" id="reset" data-i18n="pg.reset" data-i18n-tip="pg.resetTip">リセット</button>
           </div>
         </form>
         <div class="preview-wrap">
           <div class="preview" id="frame">
-            <img id="preview" alt="生成されたグラデーション" />
+            <img id="preview" alt="生成されたグラデーション" data-i18n-aria="pg.preview" />
           </div>
           <div class="urlbar">
-            <code id="url" tabindex="0" data-tip="クリックでコピー"></code>
-            <button class="ghost" type="button" id="copy" data-tip="URL をコピー（C）">コピー</button>
+            <code id="url" tabindex="0" data-i18n-tip="pg.copyUrl"></code>
+            <button class="ghost" type="button" id="copy" data-i18n="pg.copy" data-i18n-tip="pg.copyUrl">コピー</button>
           </div>
           <div class="share" id="share">
-            <button class="ghost" type="button" id="copy-md" data-tip="Markdown 用にコピー">MD</button>
-            <button class="ghost" type="button" id="copy-html" data-tip="img タグをコピー">HTML</button>
+            <button class="ghost" type="button" id="copy-md" data-i18n-tip="pg.copyMd">MD</button>
+            <button class="ghost" type="button" id="copy-html" data-i18n-tip="pg.copyHtml">HTML</button>
           </div>
           <div class="ai-row">
-            <div class="label">チャット</div>
+            <div class="label" data-i18n="pg.chat">チャット</div>
             <div class="ai-links" id="ai-links">
-              <a data-ai="chatgpt" target="_blank" rel="noreferrer" data-tip="今の画像で ChatGPT を開く">
+              <a data-ai="chatgpt" target="_blank" rel="noreferrer" data-i18n-tip="pg.chatGpt">
                 <svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.374v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.777-5.833-3.387L15.119 7.12a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.409-.667zm2.01-3.023-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.2V6.865a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.37-3.453l-.142.08-4.778 2.758a.795.795 0 0 0-.393.681zm1.097-2.365 2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z"/></svg>
                 ChatGPT
               </a>
-              <a data-ai="claude" target="_blank" rel="noreferrer" data-tip="今の画像で Claude を開く">
+              <a data-ai="claude" target="_blank" rel="noreferrer" data-i18n-tip="pg.chatClaude">
                 <svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z"/></svg>
                 Claude
               </a>
-              <a data-ai="gemini" target="_blank" rel="noreferrer" data-tip="今の画像で Gemini を開く">
+              <a data-ai="gemini" target="_blank" rel="noreferrer" data-i18n-tip="pg.chatGemini">
                 <svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 1.6c.4 5 2.6 8.8 9.4 10.4C14.6 13.6 12.4 17.4 12 22.4 11.6 17.4 9.4 13.6 2.6 12 9.4 10.4 11.6 6.6 12 1.6z"/></svg>
                 Gemini
               </a>
@@ -479,7 +507,9 @@
         </div>
       </div>
     </main>
+    <script src="/i18n.js"></script>
     <script>
+      const t = (key, vars) => window.I18N ? I18N.t(key, vars) : key;
       const form = document.getElementById("form");
       const preview = document.getElementById("preview");
       const urlEl = document.getElementById("url");
@@ -547,9 +577,9 @@
         const row = document.createElement("div");
         row.className = "color-row";
         row.innerHTML = `
-          <input type="color" value="${color}" aria-label="色" />
+          <input type="color" value="${color}" data-i18n-aria="pg.color" aria-label="${t("pg.color")}" />
           <input data-hex type="text" spellcheck="false" maxlength="7" value="${color}" aria-label="HEX" />
-          <button class="icon-btn" type="button" aria-label="削除" data-tip="この色を削除">✕</button>
+          <button class="icon-btn" type="button" data-i18n-aria="pg.removeColor" data-i18n-tip="pg.removeColor" aria-label="${t("pg.removeColor")}" data-tip="${t("pg.removeColor")}">✕</button>
         `;
         const picker = row.querySelector('input[type="color"]');
         const hexInput = row.querySelector("[data-hex]");
@@ -591,6 +621,7 @@
         button.type = "button";
         button.className = "palette";
         button.dataset.colors = value;
+        button.dataset.name = label;
         const dots = value.split(",").map((hex) => `<i style="background:${hex.trim()}"></i>`).join("");
         button.innerHTML = `<span class="swatches">${dots}</span>${label}`;
         button.addEventListener("click", () => {
@@ -761,7 +792,11 @@
         document.getElementById("add-color").disabled = n >= 8;
         for (const btn of colorList.querySelectorAll("button")) {
           btn.disabled = n <= 2;
-          btn.dataset.tip = n <= 2 ? "2色は残す" : "この色を削除";
+          const key = n <= 2 ? "pg.keepColors" : "pg.removeColor";
+          btn.dataset.i18nTip = key;
+          btn.dataset.i18nAria = key;
+          btn.dataset.tip = t(key);
+          btn.setAttribute("aria-label", t(key));
         }
       }
 
@@ -769,8 +804,14 @@
       for (const button of sizeBox.querySelectorAll("button")) {
         button.dataset.tip = sizeHints[button.textContent] ?? "";
       }
+      const syncPaletteTips = () => {
+        for (const button of paletteBox.querySelectorAll("button")) {
+          button.dataset.tip = t("pg.palette", { name: button.dataset.name || button.textContent });
+        }
+      };
       for (const button of paletteBox.querySelectorAll("button")) {
-        button.dataset.tip = `${button.textContent} パレット`;
+        button.dataset.name = button.textContent;
+        button.dataset.tip = t("pg.palette", { name: button.textContent });
       }
 
       const defaults = {
@@ -785,11 +826,11 @@
 
       async function copyUrl() {
         await navigator.clipboard.writeText(absolute());
-        copyBtn.textContent = "コピー済み";
+        copyBtn.textContent = t("pg.copied");
         copyBtn.classList.add("copied");
-        toast("URL をコピーしました");
+        toast(t("pg.toastCopy"));
         setTimeout(() => {
-          copyBtn.textContent = "コピー";
+          copyBtn.textContent = t("pg.copy");
           copyBtn.classList.remove("copied");
         }, 1200);
       }
@@ -797,7 +838,7 @@
       function randomSeed() {
         form.seed.value = Math.random().toString(36).slice(2, 10);
         render();
-        toast("シードを変えました");
+        toast(t("pg.toastSeed"));
       }
 
       const origAdd = addColorRow;
@@ -817,7 +858,7 @@
         event.preventDefault();
         rebuildColors(list.slice(0, 8).join(", "));
         render();
-        toast("色を貼り付けました");
+        toast(t("pg.toastPaste"));
       });
 
       form.w.addEventListener("change", () => { clampDim(form.w); render(); });
@@ -834,18 +875,18 @@
         for (const [key, value] of Object.entries(defaults)) form.elements[key].value = value;
         rebuildColors(defaults.colors);
         render();
-        toast("初期値に戻しました");
+        toast(t("pg.toastReset"));
       });
 
       document.getElementById("copy-md").addEventListener("click", async () => {
         await navigator.clipboard.writeText(`![gradient](${absolute()})`);
-        toast("Markdown をコピーしました");
+        toast(t("pg.toastMd"));
       });
       document.getElementById("copy-html").addEventListener("click", async () => {
         const w = form.w.value || 800;
         const h = form.h.value || 800;
         await navigator.clipboard.writeText(`<img src="${absolute()}" alt="" width="${w}" height="${h}" />`);
-        toast("HTML をコピーしました");
+        toast(t("pg.toastHtml"));
       });
 
       urlEl.addEventListener("click", copyUrl);
@@ -870,7 +911,7 @@
         }
         if (event.key === "?" && !typing) {
           event.preventDefault();
-          toast("R シード / C コピー / S 保存 / ⌘↩ 生成");
+          toast(t("pg.toastHelp"));
           return;
         }
         if (typing) return;
@@ -900,7 +941,7 @@
       preview.addEventListener("error", () => {
         frame.classList.remove("loading");
         frame.classList.add("err");
-        toast("画像を作れませんでした");
+        toast(t("pg.toastErr"));
       });
 
       const tip = document.createElement("div");
@@ -963,6 +1004,13 @@
         attributes: true,
         attributeFilter: ["data-tip"],
       });
+
+      if (window.I18N) {
+        I18N.onChange(() => {
+          syncColorChrome();
+          syncPaletteTips();
+        });
+      }
 
       render();
     </script>

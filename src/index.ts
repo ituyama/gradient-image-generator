@@ -15,6 +15,9 @@ app.use("*", cors());
 
 app.get("/", (c) => c.html(page("playground.html")));
 app.get("/docs", (c) => c.html(page("docs.html")));
+app.get("/i18n.js", (c) =>
+  c.text(page("i18n.js"), 200, { "Content-Type": "text/javascript; charset=utf-8" }),
+);
 
 app.get("/llms.txt", (c) =>
   c.text(buildLlmsTxt(new URL(c.req.url).origin), 200, {
