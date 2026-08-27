@@ -959,6 +959,7 @@
         <nav class="foot-nav">
           <a href="/playground">Playground</a>
           <a href="/docs">Docs</a>
+          <a href="/#popular">Popular</a>
           <a href="/openapi.json">OpenAPI</a>
           <a href="/llms.txt">llms.txt</a>
           <a href="/docs#mcp">MCP</a>
@@ -1128,6 +1129,21 @@
         return `${gigOrigin()}${path()}`;
       }
 
+      function bumpPopular() {
+        const body = JSON.stringify({
+          seed: form.seed.value,
+          colors: form.colors.value,
+          warp: Number(form.warp.value),
+          grain: Number(form.grain.value),
+          blur: Number(form.blur.value),
+        });
+        try {
+          navigator.sendBeacon("/popular/hit", new Blob([body], { type: "application/json" }));
+        } catch {
+          fetch("/popular/hit", { method: "POST", headers: { "Content-Type": "application/json" }, body, keepalive: true });
+        }
+      }
+
       function agentPrompt() {
         const origin = gigOrigin();
         const example = absolute();
@@ -1243,6 +1259,7 @@
         a.href = path();
         a.download = `gradient-${form.seed.value || "image"}.png`;
         a.click();
+        bumpPopular();
       });
 
       const status = document.createElement("p");
@@ -1314,6 +1331,7 @@
         const copies = document.querySelectorAll("[data-copy-url]");
         for (const btn of copies) btn.classList.add("copied");
         toast(t("pg.toastCopy"));
+        bumpPopular();
         setTimeout(() => {
           for (const btn of copies) btn.classList.remove("copied");
         }, 1200);
@@ -1365,6 +1383,7 @@
       document.getElementById("copy-md").addEventListener("click", async () => {
         await navigator.clipboard.writeText(`![gradient](${absolute()})`);
         toast(t("pg.toastMd"));
+        bumpPopular();
       });
       document.getElementById("copy-play").addEventListener("click", async () => {
         await navigator.clipboard.writeText(`${gigOrigin()}/playground?${params().toString()}`);
@@ -1375,6 +1394,7 @@
         const h = form.h.value || 800;
         await navigator.clipboard.writeText(`<img src="${absolute()}" alt="" width="${w}" height="${h}" />`);
         toast(t("pg.toastHtml"));
+        bumpPopular();
       });
 
       urlEl.addEventListener("click", copyUrl);

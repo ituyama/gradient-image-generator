@@ -248,15 +248,31 @@
         margin: 0 auto;
         padding: 8px 24px 80px;
       }
-      .gallery {
-        display: grid;
-        grid-template-columns: 1.4fr 1fr 1fr;
-        grid-template-rows: 220px 220px;
-        gap: 12px;
-        margin: 8px 0 48px;
+      .popular { margin: 8px 0 48px; }
+      .rank-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px 24px;
+        flex-wrap: wrap;
+        margin: 0 0 16px;
       }
-      .gallery a:first-child { grid-row: 1 / span 2; }
-      .gallery a {
+      .rank-head h2 {
+        margin: 0;
+        font-size: 22px;
+        letter-spacing: -0.04em;
+      }
+      .rank-head p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .rank-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      .rank-card {
         display: block;
         border-radius: 22px;
         overflow: hidden;
@@ -264,21 +280,47 @@
         background: #f4f4f5;
         text-decoration: none;
         color: inherit;
+        aspect-ratio: 4 / 3;
       }
-      .gallery img {
+      .rank-card:first-child {
+        grid-column: 1 / 2;
+        grid-row: 1 / 3;
+        aspect-ratio: auto;
+        min-height: 100%;
+      }
+      .rank-card img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         display: block;
       }
-      .gallery span {
+      .rank-card .n {
+        position: absolute;
+        top: 12px;
+        left: 14px;
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        color: #fff;
+        text-shadow: 0 1px 8px rgba(0,0,0,.45);
+      }
+      .rank-card span {
         position: absolute;
         left: 14px;
+        right: 14px;
         bottom: 12px;
-        font-size: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        font-size: 13px;
         font-weight: 700;
         color: #fff;
         text-shadow: 0 1px 8px rgba(0,0,0,.45);
+      }
+      .rank-card small {
+        font-size: 11px;
+        font-weight: 650;
+        opacity: 0.86;
       }
       .facts {
         display: grid;
@@ -345,8 +387,8 @@
         font-size: 12px;
       }
       @media (max-width: 880px) {
-        .gallery { grid-template-columns: 1fr 1fr; grid-template-rows: 180px 180px 180px; }
-        .gallery a:first-child { grid-row: auto; grid-column: 1 / -1; min-height: 220px; }
+        .rank-grid { grid-template-columns: 1fr 1fr; }
+        .rank-card:first-child { grid-column: 1 / -1; grid-row: auto; min-height: 220px; }
         .facts { grid-template-columns: 1fr; }
         h1 { font-size: 42px; }
       }
@@ -420,16 +462,9 @@
         .ai-links { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
         .ai-links a { justify-content: center; min-width: 0; padding: 10px 4px; font-size: 11px; }
         main { padding: 16px 12px calc(48px + env(safe-area-inset-bottom)); }
-        .gallery {
-          grid-template-columns: 1fr 1fr;
-          grid-template-rows: none;
-          gap: 8px;
-        }
-        .gallery a { min-height: 148px; }
-        .gallery a:first-child {
-          grid-column: 1 / -1;
-          min-height: 220px;
-        }
+        .rank-grid { gap: 8px; }
+        .rank-card { min-height: 148px; }
+        .rank-card:first-child { min-height: 220px; }
         .fact { padding: 16px; }
         .site-foot { padding: 20px 16px calc(24px + env(safe-area-inset-bottom)); }
         .foot-inner { flex-direction: column; align-items: flex-start; gap: 12px; }
@@ -504,28 +539,34 @@
       </div>
     </section>
     <main>
-      <div class="gallery">
-        <a href="/playground?w=800&h=800&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1,80DEEA">
-          <img src="/gradient?w=720&h=900&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1,80DEEA" alt="jalapeno" />
-          <span>jalapeno</span>
-        </a>
-        <a href="/playground?w=800&h=800&seed=aurora&colors=2EE59D,4FC3F7,00ACC1,80DEEA">
-          <img src="/gradient?w=480&h=360&seed=aurora&colors=2EE59D,4FC3F7,00ACC1,80DEEA" alt="aurora" />
-          <span>aurora</span>
-        </a>
-        <a href="/playground?w=800&h=800&seed=42&colors=FF6B6B,FFD93D,FF8C42,C44569">
-          <img src="/gradient?w=480&h=360&seed=42&colors=FF6B6B,FFD93D,FF8C42,C44569" alt="42" />
-          <span>42</span>
-        </a>
-        <a href="/playground?w=1200&h=630&seed=og&colors=7C5CFF,49C6E5,F472B6,1E1B4B">
-          <img src="/gradient?w=480&h=360&seed=og&colors=7C5CFF,49C6E5,F472B6,1E1B4B" alt="og" />
-          <span>og</span>
-        </a>
-        <a href="/playground?w=800&h=800&seed=peach&colors=FFB4A2,E5989B,FFCDB2,B5838D">
-          <img src="/gradient?w=480&h=360&seed=peach&colors=FFB4A2,E5989B,FFCDB2,B5838D" alt="peach" />
-          <span>peach</span>
-        </a>
-      </div>
+      <section class="popular" id="popular">
+        <div class="rank-head">
+          <h2 data-i18n="home.rank">よく使われている</h2>
+          <p id="rank-note" data-i18n="home.rankEmpty">まだ少ないので、作例を出しています。</p>
+        </div>
+        <div class="rank-grid" id="rank-list">
+          <a class="rank-card" href="/playground?w=800&h=800&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1,80DEEA">
+            <img src="/gradient?w=720&h=900&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1,80DEEA" alt="jalapeno" />
+            <span>jalapeno</span>
+          </a>
+          <a class="rank-card" href="/playground?w=800&h=800&seed=aurora&colors=2EE59D,4FC3F7,00ACC1,80DEEA">
+            <img src="/gradient?w=640&h=400&seed=aurora&colors=2EE59D,4FC3F7,00ACC1,80DEEA" alt="aurora" />
+            <span>aurora</span>
+          </a>
+          <a class="rank-card" href="/playground?w=800&h=800&seed=42&colors=FF6B6B,FFD93D,FF8C42,C44569">
+            <img src="/gradient?w=640&h=400&seed=42&colors=FF6B6B,FFD93D,FF8C42,C44569" alt="42" />
+            <span>42</span>
+          </a>
+          <a class="rank-card" href="/playground?w=1200&h=630&seed=og&colors=7C5CFF,49C6E5,F472B6,1E1B4B">
+            <img src="/gradient?w=640&h=400&seed=og&colors=7C5CFF,49C6E5,F472B6,1E1B4B" alt="og" />
+            <span>og</span>
+          </a>
+          <a class="rank-card" href="/playground?w=800&h=800&seed=peach&colors=FFB4A2,E5989B,FFCDB2,B5838D">
+            <img src="/gradient?w=640&h=400&seed=peach&colors=FFB4A2,E5989B,FFCDB2,B5838D" alt="peach" />
+            <span>peach</span>
+          </a>
+        </div>
+      </section>
       <div class="facts">
         <div class="fact">
           <b data-i18n="home.s1">GET だけ</b>
@@ -547,6 +588,7 @@
         <nav class="foot-nav">
           <a href="/playground">Playground</a>
           <a href="/docs">Docs</a>
+          <a href="/#popular">Popular</a>
           <a href="/openapi.json">OpenAPI</a>
           <a href="/llms.txt">llms.txt</a>
           <a href="/docs#mcp">MCP</a>
@@ -560,7 +602,7 @@
     <div class="toast" id="toast" hidden></div>
     <script src="/i18n.js"></script>
     <script>
-      const t = (key) => window.I18N ? I18N.t(key) : key;
+      const t = (key, vars) => window.I18N ? I18N.t(key, vars) : key;
       const path = window.__heroPath || "/gradient?w=1600&h=900&seed=aurora";
       const example = `${gigOrigin()}${path}`;
       document.getElementById("url").textContent = `GET ${path}`;
@@ -607,6 +649,32 @@
       for (const a of document.querySelectorAll("#ai-links [data-ai]")) {
         a.href = hrefs[a.dataset.ai](prompt);
       }
+
+      const escape = (value) => String(value).replace(/[&<>"']/g, (ch) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+      }[ch]));
+      fetch("/popular.json").then((res) => res.json()).then((data) => {
+        const items = data.items || [];
+        const note = document.getElementById("rank-note");
+        const list = document.getElementById("rank-list");
+        if (!items.length || !list) return;
+        note.textContent = t("home.rankb");
+        list.innerHTML = items.map((item, i) => {
+          const q = new URLSearchParams();
+          q.set("seed", item.seed);
+          q.set("colors", item.colors);
+          if (item.warp !== 0.62) q.set("warp", String(item.warp));
+          if (item.grain !== 0.02) q.set("grain", String(item.grain));
+          if (item.blur !== 0) q.set("blur", String(item.blur));
+          const search = q.toString().replace(/%2C/g, ",");
+          const first = i === 0;
+          return `<a class="rank-card" href="/playground?w=${first ? 800 : 640}&h=${first ? 800 : 400}&${search}">
+            <img src="/gradient?w=${first ? 720 : 640}&h=${first ? 900 : 400}&${search}" alt="${escape(item.seed)}" />
+            <b class="n">${i + 1}</b>
+            <span>${escape(item.seed)}<small>${t("home.rankUses", { n: item.count })}</small></span>
+          </a>`;
+        }).join("");
+      }).catch(() => {});
     </script>
   </body>
 </html>

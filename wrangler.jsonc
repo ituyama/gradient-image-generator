@@ -16,5 +16,12 @@
   ],
   "rules": [
     { "type": "Text", "globs": ["**/*.html", "**/i18n.js"], "fallthrough": false }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "RANKING",
+      "id": "30bb574d0c874632bc1f1e675e928210",
+      "preview_id": "28c2aa41b4f040e59211b141bc7ea49b"
+    }
   ]
 }

@@ -16,13 +16,23 @@ import {
 } from "./meta.js";
 import { brandGradientPath, pickBrandPreset, presetsBrowserScript } from "./presets.js";
 import { handleMcp } from "./mcp.js";
+import {
+  listPopular,
+  normalizeLook,
+  recordPopular,
+  shouldAcceptHit,
+  shouldCountGradient,
+  type RankingStore,
+} from "./popular.js";
 import { buildAgentPrompt, buildLlmsFull, buildLlmsTxt, buildMcpDiscovery, buildOpenApi } from "./spec.js";
+
 import docsHtml from "./docs.html";
 import homeHtml from "./home.html";
 import playgroundHtml from "./playground.html";
 import i18nJs from "./i18n.js";
 
-const app = new Hono();
+type Bindings = { RANKING?: RankingStore };
+const app = new Hono<{ Bindings: Bindings }>();
 
 app.use("*", cors());
 app.use("*", async (c, next) => {
@@ -124,6 +134,28 @@ app.get("/llms-full.txt", (c) =>
 );
 
 app.get("/openapi.json", (c) => c.json(buildOpenApi(publicOrigin(c.req.url))));
+
+app.get("/popular.json", async (c) =>
+  c.json(
+    { items: await listPopular(c.env.RANKING) },
+    200,
+    { "Cache-Control": "public, max-age=60" },
+  ),
+);
+
+app.post("/popular/hit", async (c) => {
+  if (!shouldAcceptHit(c.req.raw)) return c.body(null, 204);
+  const body = await c.req.json().catch(() => ({}));
+  const look = normalizeLook({
+    seed: typeof body.seed === "string" ? body.seed : undefined,
+    colors: typeof body.colors === "string" ? body.colors : undefined,
+    warp: body.warp === undefined ? undefined : Number(body.warp),
+    grain: body.grain === undefined ? undefined : Number(body.grain),
+    blur: body.blur === undefined ? undefined : Number(body.blur),
+  });
+  c.executionCtx.waitUntil(recordPopular(c.env.RANKING, look));
+  return c.body(null, 204);
+});
 
 app.get("/.well-known/mcp.json", (c) => c.json(buildMcpDiscovery(publicOrigin(c.req.url))));
 app.get("/.well-known/mcp/server-card.json", (c) =>
@@ -230,6 +262,11 @@ app.get("/gradient", async (c) => {
   }
   if (blur !== undefined && !Number.isFinite(blur)) {
     return c.json({ error: "blur は数値で指定してください" }, 400);
+  }
+
+  const look = normalizeLook({ seed, colors, warp, grain, blur });
+  if (shouldCountGradient(c.req.raw)) {
+    c.executionCtx.waitUntil(recordPopular(c.env.RANKING, look));
   }
 
   const cacheKey = new Request(c.req.url, { method: "GET" });
