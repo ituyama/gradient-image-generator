@@ -504,6 +504,30 @@
       .ai-float a[data-ai="claude"] { color: #d97757; }
       .ai-float a[data-ai="gemini"] { color: #1a73e8; }
       .prompt-grid .logo { width: 28px; height: 28px; }
+      .site-foot {
+        border-top: 1px solid var(--line);
+        background: #fff;
+        padding: 28px 24px calc(28px + env(safe-area-inset-bottom));
+      }
+      .foot-inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px 24px;
+        flex-wrap: wrap;
+      }
+      .foot-brand {
+        color: inherit;
+        text-decoration: none;
+        font-weight: 650;
+        letter-spacing: -0.03em;
+      }
+      .foot-nav { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+      .foot-nav a { color: var(--muted); text-decoration: none; font-size: 13px; }
+      .foot-nav a:hover { color: var(--text); }
+      .foot-meta { margin: 0; color: var(--muted); font-size: 12px; }
       @media (max-width: 880px) {
         .shell {
           grid-template-columns: minmax(0, 1fr);
@@ -575,6 +599,8 @@
         .code pre { padding-right: 48px; }
         pre { font-size: 12px; max-width: 100%; }
         .to-top { right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); }
+        .site-foot { padding: 20px 16px calc(24px + env(safe-area-inset-bottom)); }
+        .foot-inner { flex-direction: column; align-items: flex-start; gap: 12px; }
       }
     </style>
   </head>
@@ -963,6 +989,20 @@ npm start
         <p data-i18n="docs.contribute.pr">直したら main 向けに Pull Request を送ってください。完成した塊ごとにコミットすると追いやすいです。</p>
       </article>
     </div>
+    <footer class="site-foot">
+      <div class="foot-inner">
+        <a class="foot-brand" href="/">Gradient Image API</a>
+        <nav class="foot-nav">
+          <a href="/playground">Playground</a>
+          <a href="/docs">Docs</a>
+          <a href="/openapi.json">OpenAPI</a>
+          <a href="/llms.txt">llms.txt</a>
+          <a href="https://github.com/ituyama/gradient-image-generator" target="_blank" rel="noreferrer">GitHub</a>
+          <a href="https://www.npmjs.com/package/gradient-image-generator" target="_blank" rel="noreferrer">npm</a>
+        </nav>
+        <p class="foot-meta" data-i18n="foot.license">MIT ライセンス</p>
+      </div>
+    </footer>
     <a class="btn to-top icon-action" id="to-top" href="#content" data-i18n-tip="docs.top" data-i18n-aria="docs.top">
       <svg class="icon"><use href="#i-up"/></svg>
     </a>
