@@ -299,7 +299,22 @@
     </header>
     <section class="hero">
       <div class="hero-bg">
-        <img src="/gradient?w=1600&h=900&seed=aurora&colors=2EE59D,4FC3F7,00ACC1,80DEEA" alt="" />
+        <img id="hero-img" alt="" />
+        <script>
+          (() => {
+            const palettes = [
+              "2EE59D,4FC3F7,00ACC1,80DEEA",
+              "FF6B6B,FFD93D,FF8C42,C44569",
+              "7C5CFF,49C6E5,F472B6,1E1B4B",
+              "FFB4A2,E5989B,FFCDB2,B5838D",
+            ];
+            const seed = Math.random().toString(36).slice(2, 10);
+            const colors = palettes[Math.floor(Math.random() * palettes.length)];
+            const path = `/gradient?w=1600&h=900&seed=${seed}&colors=${colors}`;
+            document.getElementById("hero-img").src = path;
+            window.__heroPath = path;
+          })();
+        </script>
       </div>
       <div class="hero-inner">
         <h1>Gradient<br />Image API</h1>
@@ -356,7 +371,9 @@
     <script src="/i18n.js"></script>
     <script>
       const t = (key) => window.I18N ? I18N.t(key) : key;
-      const example = `${location.origin}/gradient?w=800&h=800&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1`;
+      const path = window.__heroPath || "/gradient?w=1600&h=900&seed=aurora";
+      const example = `${location.origin}${path}`;
+      document.getElementById("url").textContent = `GET ${path}`;
       const urlEl = document.getElementById("url");
       const copyBtn = document.getElementById("copy");
       const toastEl = document.getElementById("toast");
