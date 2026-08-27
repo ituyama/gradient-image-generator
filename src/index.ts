@@ -1,6 +1,16 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { generateGradient } from "./generate.js";
+import {
+  applyPageMeta,
+  copy,
+  gradientCacheUrl,
+  OG_HEIGHT,
+  OG_WIDTH,
+  ogImageUrl,
+  ogParams,
+  pageLang,
+} from "./meta.js";
 import { brandGradientPath, pickBrandPreset, presetsBrowserScript } from "./presets.js";
 import { buildAgentPrompt, buildLlmsFull, buildLlmsTxt, buildOpenApi } from "./spec.js";
 import docsHtml from "./docs.html";
@@ -18,10 +28,66 @@ app.get("/", (c) => {
     const search = new URL(c.req.url).search;
     return c.redirect(`/playground${search}`, 302);
   }
-  return c.html(homeHtml);
+  const origin = new URL(c.req.url).origin;
+  const lang = pageLang(c.req.header("accept-language"));
+  const text = copy(lang);
+  return c.html(
+    applyPageMeta(homeHtml, {
+      origin,
+      path: "/",
+      title: text.homeTitle,
+      description: text.homeDesc,
+      image: ogImageUrl(origin),
+      imageAlt: text.imageAlt,
+      lang,
+      themeColor: "#ffffff",
+      jsonLd: {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: text.site,
+        url: `${origin}/`,
+        description: text.homeDesc,
+      },
+    }),
+  );
 });
-app.get("/playground", (c) => c.html(playgroundHtml));
-app.get("/docs", (c) => c.html(docsHtml));
+app.get("/playground", (c) => {
+  const origin = new URL(c.req.url).origin;
+  const q = c.req.query();
+  const lang = pageLang(c.req.header("accept-language"));
+  const text = copy(lang);
+  const seed = q.seed?.trim();
+  const search = new URL(c.req.url).search;
+  return c.html(
+    applyPageMeta(playgroundHtml, {
+      origin,
+      path: `/playground${search}`,
+      title: seed ? `${seed} · ${text.playTitle}` : text.playTitle,
+      description: text.playDesc,
+      image: ogImageUrl(origin, q),
+      imageAlt: seed ? `${seed} · ${text.imageAlt}` : text.imageAlt,
+      lang,
+      themeColor: "#0b0c10",
+    }),
+  );
+});
+app.get("/docs", (c) => {
+  const origin = new URL(c.req.url).origin;
+  const lang = pageLang(c.req.header("accept-language"));
+  const text = copy(lang);
+  return c.html(
+    applyPageMeta(docsHtml, {
+      origin,
+      path: "/docs",
+      title: text.docsTitle,
+      description: text.docsDesc,
+      image: ogImageUrl(origin),
+      imageAlt: text.imageAlt,
+      lang,
+      themeColor: "#ffffff",
+    }),
+  );
+});
 app.get("/i18n.js", (c) =>
   c.text(i18nJs, 200, { "Content-Type": "text/javascript; charset=utf-8" }),
 );
@@ -84,6 +150,46 @@ const brandIcon = async (requestUrl: string, size: number, waitUntil: (task: Pro
 
 app.get("/favicon.ico", (c) => brandIcon(c.req.url, 64, (task) => c.executionCtx.waitUntil(task)));
 app.get("/apple-touch-icon.png", (c) => brandIcon(c.req.url, 180, (task) => c.executionCtx.waitUntil(task)));
+
+app.get("/og.png", async (c) => {
+  const query = c.req.query();
+  const params = ogParams(query);
+  const seed = params.seed;
+  const colors = params.colors;
+  const warp = params.warp === undefined ? undefined : Number(params.warp);
+  const grain = params.grain === undefined ? undefined : Number(params.grain);
+  const blur = params.blur === undefined ? undefined : Number(params.blur);
+
+  if (warp !== undefined && !Number.isFinite(warp)) {
+    return c.json({ error: "warp は数値で指定してください" }, 400);
+  }
+  if (grain !== undefined && !Number.isFinite(grain)) {
+    return c.json({ error: "grain は数値で指定してください" }, 400);
+  }
+  if (blur !== undefined && !Number.isFinite(blur)) {
+    return c.json({ error: "blur は数値で指定してください" }, 400);
+  }
+
+  const origin = new URL(c.req.url).origin;
+  const cacheKey = new Request(gradientCacheUrl(origin, query), { method: "GET" });
+  const cached = await caches.default.match(cacheKey);
+  if (cached) {
+    return new Response(cached.body, { headers: pngHeaders });
+  }
+
+  const png = generateGradient({
+    width: OG_WIDTH,
+    height: OG_HEIGHT,
+    seed,
+    colors,
+    warp,
+    grain,
+    blur,
+  });
+  const res = new Response(png, { headers: pngHeaders });
+  c.executionCtx.waitUntil(caches.default.put(cacheKey, res.clone()));
+  return res;
+});
 
 app.get("/gradient", async (c) => {
   const query = c.req.query();
