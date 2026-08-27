@@ -279,15 +279,19 @@
       }
       .urlbar button {
         flex: none;
+        width: 38px;
+        height: 38px;
+        padding: 0;
+      }
+      .share .ghost {
+        width: 38px;
+        height: 38px;
+        padding: 0;
       }
       .share {
         display: flex;
         gap: 8px;
         margin-top: 8px;
-      }
-      .share .ghost {
-        padding: 7px 10px;
-        font-size: 12px;
       }
       .ai-row {
         display: flex;
@@ -377,7 +381,25 @@
         background: var(--text);
         color: #111318;
       }
-      .icon-btn { width: 42px; border-radius: 12px; }
+      .sprites { position: absolute; width: 0; height: 0; overflow: hidden; }
+      .ico {
+        width: 16px;
+        height: 16px;
+        display: block;
+        pointer-events: none;
+      }
+      .ico-done { display: none; }
+      .copied .ico-main { display: none; }
+      .copied .ico-done { display: block; }
+      .icon-btn, .icon-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        padding: 0;
+        border-radius: 12px;
+      }
       .palette {
         display: flex;
         align-items: center;
@@ -418,24 +440,29 @@
       }
       .color-row input[data-hex] { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
       .add-color {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
         width: 100%;
         margin-top: 8px;
         border-radius: 12px;
       }
-      .actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 20px; }
-      .actions #copy-main { grid-column: 1 / -1; }
-      .actions #reset { grid-column: 1 / -1; }
+      .actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 20px;
+      }
+      .actions .primary { flex: 1; width: auto; }
       .primary {
-        grid-column: 1 / -1;
-        border-radius: 14px;
-        padding: 12px;
         background: var(--text);
         color: #111318;
         border: 0;
         font-size: 14px;
       }
       .ghost { border-radius: 14px; padding: 11px; }
-      .ghost.copied { color: #0b0c10; background: var(--ok); border-color: transparent; }
+      .ghost.icon-action, .primary.icon-action { padding: 0; }
+      .copied { color: #0b0c10; background: var(--ok); border-color: transparent; }
       .brand-short { display: none; }
       .size-fields {
         grid-template-columns: 1fr auto 1fr;
@@ -540,7 +567,6 @@
           margin-top: 16px;
           padding-top: 16px;
           border-top: 1px solid var(--line);
-          grid-template-columns: 1fr 1fr;
         }
         .seg button, .icon-btn, .ghost { transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease; }
         .seg button:hover, .icon-btn:hover, .ghost:hover {
@@ -678,7 +704,7 @@
           overflow: hidden;
           text-overflow: ellipsis;
         }
-        .urlbar button { padding: 8px 10px; font-size: 12px; }
+        .urlbar button { width: 38px; height: 38px; padding: 0; }
         .ai-row { flex-direction: column; align-items: stretch; gap: 8px; }
         .ai-links { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
         .ai-links a {
@@ -726,7 +752,13 @@
           backdrop-filter: none;
         }
         .dock .primary, .dock .ghost {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
           grid-column: auto;
+          width: auto;
+          height: auto;
           margin: 0;
           padding: 14px 8px;
           font-size: 15px;
@@ -744,6 +776,20 @@
     </style>
   </head>
   <body>
+    <svg class="sprites" aria-hidden="true">
+      <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16V4a2 2 0 0 1 2-2h10"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></symbol>
+      <symbol id="i-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+      <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.4l3-3a5 5 0 0 0-7.1-7.1l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.4l-3 3a5 5 0 0 0 7.1 7.1l1.7-1.7"/></symbol>
+      <symbol id="i-reset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></symbol>
+      <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></symbol>
+      <symbol id="i-swap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+      <symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></symbol>
+      <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v6h6"/><path d="M10 13h4"/><path d="M10 17h4"/></symbol>
+    </svg>
     <a class="skip" href="#form" data-i18n="pg.skip">操作にスキップ</a>
     <header>
       <div class="bar">
@@ -776,7 +822,7 @@
                 <label class="field-label" for="w" data-i18n="pg.width">幅</label>
                 <input id="w" name="w" type="number" min="16" max="2048" value="800" inputmode="numeric" />
               </div>
-              <button class="icon-btn" type="button" id="swap" data-i18n-tip="pg.swap" data-i18n-aria="pg.swap">⇄</button>
+              <button class="icon-btn" type="button" id="swap" data-i18n-tip="pg.swap" data-i18n-aria="pg.swap"><svg class="ico" aria-hidden="true"><use href="#i-swap"/></svg></button>
               <div>
                 <label class="field-label" for="h" data-i18n="pg.height">高さ</label>
                 <input id="h" name="h" type="number" min="16" max="2048" value="800" inputmode="numeric" />
@@ -788,7 +834,7 @@
             <div class="label" data-i18n="pg.seed">シード</div>
             <div class="seed-row">
               <input id="seed" name="seed" type="text" value="jalapeno" autocomplete="off" spellcheck="false" />
-              <button class="icon-btn" type="button" id="random-seed" data-i18n-tip="pg.seedRand" data-i18n-aria="pg.seedRand">↺</button>
+              <button class="icon-btn" type="button" id="random-seed" data-i18n-tip="pg.seedRand" data-i18n-aria="pg.seedRand"><svg class="ico" aria-hidden="true"><use href="#i-refresh"/></svg></button>
             </div>
           </div>
           <div class="block">
@@ -799,7 +845,7 @@
             <div class="label"><span data-i18n="pg.colors">カラー</span> <span id="color-count">4 / 8</span></div>
             <input id="colors" name="colors" type="hidden" value="#2EE59D, #4FC3F7, #00ACC1, #80DEEA" />
             <div class="color-list" id="color-list"></div>
-            <button class="ghost add-color" type="button" id="add-color" data-i18n="pg.addColor" data-i18n-tip="pg.addColorTip">色を追加</button>
+            <button class="ghost add-color" type="button" id="add-color" data-i18n-tip="pg.addColorTip"><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg><span data-i18n="pg.addColor">色を追加</span></button>
           </div>
           <div class="block row">
             <div>
@@ -816,11 +862,11 @@
             <input id="blur" name="blur" type="range" min="0" max="32" step="1" value="0" data-i18n-aria="pg.blur" />
           </div>
           <div class="actions">
-            <button class="primary" type="button" id="copy-main" data-i18n="pg.copy" data-i18n-tip="pg.copyUrl">画像 URL をコピー</button>
-            <button class="ghost" type="button" id="open" data-i18n="pg.open" data-i18n-tip="pg.openTip">新しいタブ</button>
-            <button class="ghost" type="button" id="download" data-i18n="pg.save" data-i18n-tip="pg.saveTip">保存</button>
-            <button class="ghost" type="button" id="copy-play" data-i18n="pg.copyPlay" data-i18n-tip="pg.copyPlayTip">この画面</button>
-            <button class="ghost" type="button" id="reset" data-i18n="pg.reset" data-i18n-tip="pg.resetTip">リセット</button>
+            <button class="primary icon-action" type="button" id="copy-main" data-copy-url data-i18n-tip="pg.copyUrl" data-i18n-aria="pg.copy"><svg class="ico ico-main" aria-hidden="true"><use href="#i-copy"/></svg><svg class="ico ico-done" aria-hidden="true"><use href="#i-check"/></svg></button>
+            <button class="ghost icon-action" type="button" id="open" data-i18n-tip="pg.openTip" data-i18n-aria="pg.open"><svg class="ico" aria-hidden="true"><use href="#i-external"/></svg></button>
+            <button class="ghost icon-action" type="button" id="download" data-i18n-tip="pg.saveTip" data-i18n-aria="pg.save"><svg class="ico" aria-hidden="true"><use href="#i-download"/></svg></button>
+            <button class="ghost icon-action" type="button" id="copy-play" data-i18n-tip="pg.copyPlayTip" data-i18n-aria="pg.copyPlay"><svg class="ico" aria-hidden="true"><use href="#i-link"/></svg></button>
+            <button class="ghost icon-action" type="button" id="reset" data-i18n-tip="pg.resetTip" data-i18n-aria="pg.reset"><svg class="ico" aria-hidden="true"><use href="#i-reset"/></svg></button>
           </div>
         </form>
         <div class="preview-wrap">
@@ -832,11 +878,11 @@
             <summary data-i18n="pg.more">共有とチャット</summary>
           <div class="urlbar">
             <code id="url" tabindex="0" data-i18n-tip="pg.copyUrl"></code>
-            <button class="ghost" type="button" id="copy" data-i18n="pg.copyShort" data-i18n-tip="pg.copyUrl">コピー</button>
+            <button class="ghost icon-action" type="button" id="copy" data-copy-url data-i18n-tip="pg.copyUrl" data-i18n-aria="pg.copyShort"><svg class="ico ico-main" aria-hidden="true"><use href="#i-copy"/></svg><svg class="ico ico-done" aria-hidden="true"><use href="#i-check"/></svg></button>
           </div>
           <div class="share" id="share">
-            <button class="ghost" type="button" id="copy-md" data-i18n-tip="pg.copyMd">MD</button>
-            <button class="ghost" type="button" id="copy-html" data-i18n-tip="pg.copyHtml">HTML</button>
+            <button class="ghost icon-action" type="button" id="copy-md" data-i18n-tip="pg.copyMd" data-i18n-aria="pg.copyMd"><svg class="ico" aria-hidden="true"><use href="#i-file"/></svg></button>
+            <button class="ghost icon-action" type="button" id="copy-html" data-i18n-tip="pg.copyHtml" data-i18n-aria="pg.copyHtml"><svg class="ico" aria-hidden="true"><use href="#i-code"/></svg></button>
           </div>
           <div class="ai-row">
             <div class="label" data-i18n="pg.chat">チャット</div>
@@ -875,8 +921,8 @@
       </div>
     </footer>
     <div class="dock" id="dock">
-      <button class="primary" type="button" id="copy-dock" data-i18n="pg.copyShort" data-i18n-tip="pg.copyUrl">コピー</button>
-      <button class="ghost" type="button" id="save-dock" data-i18n="pg.save">保存</button>
+      <button class="primary" type="button" id="copy-dock" data-copy-url data-i18n-tip="pg.copyUrl"><svg class="ico ico-main" aria-hidden="true"><use href="#i-copy"/></svg><svg class="ico ico-done" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="pg.copyShort">コピー</span></button>
+      <button class="ghost" type="button" id="save-dock" data-i18n-tip="pg.saveTip"><svg class="ico" aria-hidden="true"><use href="#i-download"/></svg><span data-i18n="pg.save">保存</span></button>
     </div>
     <script src="/i18n.js"></script>
     <script>
@@ -950,7 +996,7 @@
         row.innerHTML = `
           <input type="color" value="${color}" data-i18n-aria="pg.color" aria-label="${t("pg.color")}" />
           <input data-hex type="text" spellcheck="false" maxlength="7" value="${color}" aria-label="HEX" />
-          <button class="icon-btn" type="button" data-i18n-aria="pg.removeColor" data-i18n-tip="pg.removeColor" aria-label="${t("pg.removeColor")}" data-tip="${t("pg.removeColor")}">✕</button>
+          <button class="icon-btn" type="button" data-i18n-aria="pg.removeColor" data-i18n-tip="pg.removeColor" aria-label="${t("pg.removeColor")}" data-tip="${t("pg.removeColor")}"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg></button>
         `;
         const picker = row.querySelector('input[type="color"]');
         const hexInput = row.querySelector("[data-hex]");
@@ -1215,12 +1261,11 @@
 
       async function copyUrl() {
         await navigator.clipboard.writeText(absolute());
-        copyBtn.textContent = t("pg.copied");
-        copyBtn.classList.add("copied");
+        const copies = document.querySelectorAll("[data-copy-url]");
+        for (const btn of copies) btn.classList.add("copied");
         toast(t("pg.toastCopy"));
         setTimeout(() => {
-          copyBtn.textContent = t("pg.copy");
-          copyBtn.classList.remove("copied");
+          for (const btn of copies) btn.classList.remove("copied");
         }, 1200);
       }
 
