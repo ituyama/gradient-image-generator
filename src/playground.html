@@ -453,74 +453,130 @@
         .more summary { display: none; }
       }
       @media (max-width: 1099px) {
+        html, body {
+          overflow-x: hidden;
+          max-width: 100%;
+        }
         .bar {
-          flex-wrap: nowrap;
-          padding: 8px max(14px, env(safe-area-inset-right)) 8px max(14px, env(safe-area-inset-left));
-          min-height: 52px;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) auto;
+          align-items: center;
+          padding: 8px max(12px, env(safe-area-inset-right)) 8px max(12px, env(safe-area-inset-left));
+          min-height: 48px;
           gap: 8px;
         }
-        .brand { min-width: 0; }
+        .brand { min-width: 0; overflow: hidden; }
         .brand-full { display: none; }
-        .brand-short { display: inline; }
-        .end { flex-wrap: nowrap; gap: 8px; }
-        nav { gap: 2px; }
-        nav a { padding: 6px 9px; font-size: 12px; }
-        nav a.extra { display: none; }
-        main { padding: 12px 14px calc(92px + env(safe-area-inset-bottom)); }
+        .brand-short { display: inline; white-space: nowrap; }
+        .end {
+          display: flex;
+          flex-wrap: nowrap;
+          gap: 6px;
+          min-width: 0;
+        }
+        nav { gap: 0; min-width: 0; }
+        nav a { padding: 6px 8px; font-size: 12px; white-space: nowrap; }
+        nav a.active, nav a.extra { display: none; }
+        .lang-switch button { padding: 5px 7px; }
+        main {
+          padding: 0 0 calc(72px + env(safe-area-inset-bottom));
+          overflow-x: hidden;
+        }
         h1, .lede { display: none; }
-        .layout { display: flex; flex-direction: column; gap: 12px; }
+        .layout {
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+          min-width: 0;
+        }
         .preview-wrap {
           order: -1;
           position: static;
+          width: 100%;
+          min-width: 0;
         }
         .preview {
           width: 100%;
-          height: 34vh;
-          max-height: 280px;
+          height: min(26dvh, 200px);
+          max-height: 200px;
           aspect-ratio: auto;
           margin: 0;
-          border-radius: 18px;
-          box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+          border-radius: 0;
+          box-shadow: none;
+          border-left: 0;
+          border-right: 0;
         }
-        .panel { padding: 14px; border-radius: 18px; }
-        .block + .block { margin-top: 14px; }
+        .more {
+          margin: 10px 12px 0;
+          min-width: 0;
+        }
+        .panel {
+          margin: 10px 12px 0;
+          padding: 12px;
+          border-radius: 16px;
+          min-width: 0;
+        }
+        .block + .block { margin-top: 12px; }
+        input[type="number"], input[type="text"] { font-size: 16px; }
+        .size-tools, .seed-row, .row, .color-list, .color-row, .urlbar, .ai-row, .ai-links {
+          min-width: 0;
+          max-width: 100%;
+        }
         .seg, .palettes {
           flex-wrap: nowrap;
           overflow-x: auto;
+          overscroll-behavior-x: contain;
           scrollbar-width: none;
           -webkit-overflow-scrolling: touch;
+          max-width: 100%;
         }
         .seg::-webkit-scrollbar, .palettes::-webkit-scrollbar { display: none; }
         .seg button, .palette { flex: 0 0 auto; }
         .actions { display: none; }
+        .urlbar { gap: 8px; }
         .urlbar code {
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
+        .urlbar button { padding: 8px 10px; font-size: 12px; }
+        .ai-row { flex-direction: column; align-items: stretch; gap: 8px; }
+        .ai-links { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+        .ai-links a {
+          justify-content: center;
+          min-width: 0;
+          padding: 8px 4px;
+          font-size: 11px;
+        }
         .dock {
           display: grid;
-          grid-template-columns: 1.4fr 1fr;
+          grid-template-columns: 1fr 1fr;
           gap: 8px;
           position: fixed;
           left: 0;
           right: 0;
           bottom: 0;
           z-index: 30;
-          padding: 10px max(14px, env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+          padding: 10px max(12px, env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
           background: rgba(11, 12, 16, 0.92);
           backdrop-filter: blur(16px);
           border-top: 1px solid var(--line);
         }
-        .dock .primary {
+        .dock .primary, .dock .ghost {
           grid-column: auto;
           margin: 0;
-          padding: 13px 12px;
+          padding: 12px 8px;
+          font-size: 14px;
+          white-space: nowrap;
+          min-width: 0;
         }
-        .dock .ghost { padding: 13px 12px; }
-        .toast { bottom: calc(76px + env(safe-area-inset-bottom)); }
-        .color-row { grid-template-columns: 40px 1fr 36px; }
+        .toast { bottom: calc(72px + env(safe-area-inset-bottom)); }
+        .color-row { grid-template-columns: 40px minmax(0, 1fr) 36px; }
         .color-row input[type="color"] { width: 40px; height: 40px; }
+      }
+      @media (max-width: 360px) {
+        .brand-short { display: none; }
+        .lang-switch button { padding: 5px 6px; font-size: 10px; }
       }
     </style>
   </head>
@@ -614,7 +670,7 @@
             <summary data-i18n="pg.more">共有とチャット</summary>
           <div class="urlbar">
             <code id="url" tabindex="0" data-i18n-tip="pg.copyUrl"></code>
-            <button class="ghost" type="button" id="copy" data-i18n="pg.copy" data-i18n-tip="pg.copyUrl">コピー</button>
+            <button class="ghost" type="button" id="copy" data-i18n="pg.copyShort" data-i18n-tip="pg.copyUrl">コピー</button>
           </div>
           <div class="share" id="share">
             <button class="ghost" type="button" id="copy-md" data-i18n-tip="pg.copyMd">MD</button>
@@ -642,7 +698,7 @@
       </div>
     </main>
     <div class="dock" id="dock">
-      <button class="primary" type="button" id="copy-dock" data-i18n="pg.copy">画像 URL をコピー</button>
+      <button class="primary" type="button" id="copy-dock" data-i18n="pg.copyShort" data-i18n-tip="pg.copyUrl">コピー</button>
       <button class="ghost" type="button" id="save-dock" data-i18n="pg.save">保存</button>
     </div>
     <script src="/i18n.js"></script>
