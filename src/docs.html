@@ -20,6 +20,61 @@
       }
       * { box-sizing: border-box; }
       html { scroll-behavior: smooth; }
+      :focus-visible { outline: 2px solid #18181b; outline-offset: 2px; }
+      .skip {
+        position: absolute;
+        left: 12px;
+        top: -40px;
+        z-index: 50;
+        background: #18181b;
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 8px;
+        text-decoration: none;
+      }
+      .skip:focus { top: 12px; }
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 20px;
+        transform: translateX(-50%);
+        z-index: 60;
+        background: #18181b;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 10px 14px;
+        border-radius: 999px;
+      }
+      .toast[hidden] { display: none; }
+      .find {
+        width: 100%;
+        margin: 0 0 12px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 8px 10px;
+        font: inherit;
+        font-size: 13px;
+      }
+      .table-wrap { overflow-x: auto; }
+      :target { outline: 2px solid #18181b; outline-offset: 6px; border-radius: 8px; }
+      .to-top {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        z-index: 30;
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+      .to-top.show { display: inline-flex; }
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        * { transition: none !important; }
+      }
       body {
         margin: 0;
         font-family: Inter, "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
@@ -419,6 +474,7 @@
     </style>
   </head>
   <body>
+    <a class="skip" href="#content">本文へ</a>
     <svg class="sprites" aria-hidden="true">
       <symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></symbol>
       <symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M2 14h4"/><path d="M10 8h4"/><path d="M18 16h4"/></symbol>
@@ -448,6 +504,7 @@
       <symbol id="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 5 12 7-12 7z"/></symbol>
       <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
       <symbol id="i-terminal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 17 6-5-6-5"/><path d="M12 19h8"/></symbol>
+      <symbol id="i-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></symbol>
     </svg>
     <header>
       <div class="bar">
@@ -466,6 +523,8 @@
     <div class="shell">
       <aside>
         <div class="sec">ガイド</div>
+        <label class="sr-only" for="find" style="position:absolute;width:1px;height:1px;overflow:hidden">検索</label>
+        <input class="find" id="find" type="search" placeholder="検索  /" autocomplete="off" />
         <div class="toc">
           <a href="#overview" data-tip="何が返るか" data-tip-side="right"><svg class="icon"><use href="#i-compass"/></svg>概要</a>
           <a href="#quickstart" data-tip="最初の1本" data-tip-side="right"><svg class="icon"><use href="#i-zap"/></svg>クイックスタート</a>
@@ -497,7 +556,7 @@
           </a>
         </nav>
       </aside>
-      <article>
+      <article id="content">
         <h1><svg class="icon"><use href="#i-book"/></svg>ドキュメント</h1>
 
         <h2 id="overview"><svg class="icon"><use href="#i-compass"/></svg>概要</h2>
@@ -568,6 +627,7 @@
 
         <h2 id="params"><svg class="icon"><use href="#i-tune"/></svg>パラメータ</h2>
         <p>すべてクエリです。省略した項目はデフォルトになります。範囲外のサイズは丸めます。</p>
+        <div class="table-wrap">
         <table>
           <thead>
             <tr><th>名前</th><th>型</th><th>デフォルト</th><th>範囲</th><th>説明</th></tr>
@@ -610,6 +670,7 @@
             </tr>
           </tbody>
         </table>
+        </div>
 
         <h3 id="param-colors"><svg class="icon"><use href="#i-palette"/></svg>colors の解釈</h3>
         <p>
@@ -620,6 +681,7 @@ colors=#FF6B6B|#FFD93D|#FF8C42
 colors=2EE59D 4FC3F7 00ACC1</code></pre>
 
         <h3 id="param-sizes"><svg class="icon"><use href="#i-monitor"/></svg>よく使うサイズ</h3>
+        <div class="table-wrap">
         <table>
           <thead>
             <tr><th>用途</th><th>w × h</th><th></th></tr>
@@ -631,6 +693,7 @@ colors=2EE59D 4FC3F7 00ACC1</code></pre>
             <tr><td>ストーリー</td><td>1080 × 1920</td><td><a class="icon-action" href="/?w=1080&h=1920" data-tip="Playground で試す" aria-label="Playground で試す"><svg class="icon"><use href="#i-play"/></svg></a></td></tr>
           </tbody>
         </table>
+        </div>
 
         <h2 id="errors"><svg class="icon"><use href="#i-alert"/></svg>エラー</h2>
         <p>
@@ -715,6 +778,10 @@ colors=2EE59D 4FC3F7 00ACC1</code></pre>
         </details>
       </article>
     </div>
+    <a class="btn to-top icon-action" id="to-top" href="#content" data-tip="先頭へ" aria-label="先頭へ">
+      <svg class="icon"><use href="#i-up"/></svg>
+    </a>
+    <div class="toast" id="toast" hidden></div>
     <script>
       const origin = location.origin;
       const example = `${origin}/gradient?w=800&h=800&seed=jalapeno&colors=2EE59D,4FC3F7,00ACC1`;
@@ -784,6 +851,7 @@ colors=2EE59D 4FC3F7 00ACC1</code></pre>
           btn.setAttribute("aria-label", "コピー済み");
           btn.classList.add("copied");
           btn.innerHTML = `<svg class="icon"><use href="#i-check"></use></svg>`;
+          say("コピーしました");
           setTimeout(() => {
             btn.dataset.tip = "コピー";
             btn.setAttribute("aria-label", "コピー");
@@ -809,6 +877,64 @@ colors=2EE59D 4FC3F7 00ACC1</code></pre>
       };
       syncToc();
       document.addEventListener("scroll", syncToc, { passive: true });
+
+      const toastEl = document.getElementById("toast");
+      const say = (msg) => {
+        toastEl.textContent = msg;
+        toastEl.hidden = false;
+        clearTimeout(say.t);
+        say.t = setTimeout(() => { toastEl.hidden = true; }, 1400);
+      };
+
+      const toTop = document.getElementById("to-top");
+      const syncTop = () => toTop.classList.toggle("show", window.scrollY > 400);
+      syncTop();
+      document.addEventListener("scroll", syncTop, { passive: true });
+
+      const find = document.getElementById("find");
+      const filterDocs = () => {
+        const q = find.value.trim().toLowerCase();
+        for (const a of toc) {
+          const hit = !q || a.textContent.toLowerCase().includes(q);
+          a.style.display = hit ? "" : "none";
+        }
+        for (const row of document.querySelectorAll("article table tbody tr")) {
+          row.style.display = !q || row.textContent.toLowerCase().includes(q) ? "" : "none";
+        }
+      };
+      find.addEventListener("input", filterDocs);
+      document.addEventListener("keydown", (event) => {
+        const el = document.activeElement;
+        const typing = el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA");
+        if (event.key === "/" && !typing) {
+          event.preventDefault();
+          find.focus();
+        }
+        if (event.key === "Escape" && el === find) {
+          find.value = "";
+          filterDocs();
+          find.blur();
+        }
+      });
+
+      for (const heading of document.querySelectorAll("article h2[id], article h3[id]")) {
+        heading.style.cursor = "pointer";
+        heading.dataset.tip = "リンクをコピー";
+        heading.addEventListener("click", async (event) => {
+          if (event.target.closest("a")) return;
+          const url = `${location.origin}${location.pathname}#${heading.id}`;
+          await navigator.clipboard.writeText(url);
+          say("見出しリンクをコピーしました");
+        });
+      }
+      for (const code of document.querySelectorAll("article table code")) {
+        code.style.cursor = "pointer";
+        code.dataset.tip = "名前をコピー";
+        code.addEventListener("click", async () => {
+          await navigator.clipboard.writeText(code.textContent);
+          say(`${code.textContent} をコピーしました`);
+        });
+      }
     </script>
   </body>
 </html>
