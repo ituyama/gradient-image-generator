@@ -29,7 +29,7 @@
         --icon: #52525b;
       }
       * { box-sizing: border-box; }
-      html { scroll-behavior: smooth; overflow-x: clip; }
+      html { scroll-behavior: smooth; overflow-x: hidden; }
       :focus-visible { outline: 2px solid #18181b; outline-offset: 2px; }
       .toast {
         position: fixed;
@@ -56,7 +56,8 @@
         font: inherit;
         font-size: 13px;
       }
-      .table-wrap { overflow-x: auto; }
+      .table-wrap { overflow-x: auto; max-width: 100%; -webkit-overflow-scrolling: touch; }
+      .table-wrap table { min-width: 560px; }
       .to-top {
         position: fixed;
         right: 16px;
@@ -80,7 +81,7 @@
         background: var(--bg);
         color: var(--text);
         line-height: 1.7;
-        overflow-x: clip;
+        overflow-x: hidden;
       }
       .sprites { position: absolute; width: 0; height: 0; overflow: hidden; }
       .icon {
@@ -124,8 +125,8 @@
         text-decoration: none;
       }
       .brand .icon { width: 18px; height: 18px; }
-      nav { display: flex; gap: 6px; font-size: 14px; }
-      nav a {
+      header nav { display: flex; gap: 6px; font-size: 14px; min-width: 0; }
+      header nav a {
         display: inline-flex;
         align-items: center;
         gap: 6px;
@@ -134,9 +135,9 @@
         padding: 6px 10px;
         border-radius: 999px;
       }
-      nav a .icon { width: 15px; height: 15px; }
-      nav a:hover, nav a.active { color: var(--text); }
-      nav a.active { background: #ececee; }
+      header nav a .icon { width: 15px; height: 15px; }
+      header nav a:hover, header nav a.active { color: var(--text); }
+      header nav a.active { background: #ececee; }
       .end { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
       .lang-switch {
         display: inline-flex;
@@ -198,7 +199,7 @@
         gap: 8px;
       }
       aside .sec:first-child { margin-top: 0; }
-      article { max-width: 760px; }
+      article { max-width: 760px; min-width: 0; }
       h1 {
         display: flex;
         align-items: center;
@@ -504,40 +505,31 @@
       .ai-float a[data-ai="gemini"] { color: #1a73e8; }
       .prompt-grid .logo { width: 28px; height: 28px; }
       @media (max-width: 880px) {
-        .shell { grid-template-columns: 1fr; padding: 20px 16px 80px; gap: 24px; }
-        aside { position: static; display: flex; flex-wrap: wrap; gap: 4px 14px; min-height: 0; }
-        aside .sec, aside .toc { width: 100%; }
-        aside .sec { margin-top: 8px; }
-        .samples, .grid, .prompt-grid, .facts { grid-template-columns: 1fr 1fr; }
-        h1 { font-size: 28px; }
-        .ai-float { width: 100%; margin-top: 16px; }
-        .bar {
-          display: grid;
-          grid-template-columns: 1fr auto;
-          padding: 10px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left));
-          min-height: 0;
-          gap: 8px 12px;
+        .shell {
+          grid-template-columns: minmax(0, 1fr);
+          padding: 16px 14px 80px;
+          gap: 20px;
         }
-        .brand { min-width: 0; }
-        .end { display: contents; }
-        .lang-switch { grid-column: 2; grid-row: 1; }
-        nav {
-          grid-column: 1 / -1;
+        aside {
+          position: static;
+          display: flex;
+          flex-direction: column;
           flex-wrap: nowrap;
-          overflow-x: auto;
-          gap: 4px;
-          -webkit-overflow-scrolling: touch;
+          gap: 8px;
+          min-height: 0;
+          min-width: 0;
+          width: 100%;
         }
-        nav a { padding: 6px 8px; font-size: 12px; white-space: nowrap; flex: none; }
-      }
-      @media (max-width: 720px) {
-        .shell { padding: 16px 14px calc(72px + env(safe-area-inset-bottom)); }
+        aside .sec { display: none; }
+        aside .find { width: 100%; min-width: 0; }
         aside .toc {
           display: flex;
           flex-wrap: nowrap;
           overflow-x: auto;
           gap: 6px;
-          padding-bottom: 6px;
+          width: 100%;
+          max-width: 100%;
+          padding-bottom: 4px;
           -webkit-overflow-scrolling: touch;
         }
         aside .toc a {
@@ -546,9 +538,42 @@
           white-space: nowrap;
         }
         aside .toc a.sub { padding-left: 10px; }
+        aside .ai-float { display: none; }
+        .samples, .grid, .prompt-grid, .facts { grid-template-columns: 1fr 1fr; }
+        h1 { font-size: 28px; }
+        header .bar {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          padding: 10px max(14px, env(safe-area-inset-right)) 10px max(14px, env(safe-area-inset-left));
+          min-height: 0;
+          gap: 8px 10px;
+        }
+        header .brand { flex: 1 1 auto; min-width: 0; }
+        header .end {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 8px;
+          min-width: 0;
+        }
+        header nav {
+          flex: 1 1 auto;
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          min-width: 0;
+          -webkit-overflow-scrolling: touch;
+        }
+        header nav a { padding: 6px 8px; font-size: 12px; white-space: nowrap; flex: none; }
+        header .lang-switch { flex: none; }
+      }
+      @media (max-width: 720px) {
+        .shell { padding: 14px 12px calc(72px + env(safe-area-inset-bottom)); }
         .samples, .grid, .prompt-grid, .facts { grid-template-columns: 1fr; }
-        .code pre { padding-right: 56px; }
-        pre { font-size: 12px; }
+        .table-wrap { margin: 0 -12px; padding: 0 12px; }
+        .code pre { padding-right: 48px; }
+        pre { font-size: 12px; max-width: 100%; }
         .to-top { right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); }
       }
     </style>
